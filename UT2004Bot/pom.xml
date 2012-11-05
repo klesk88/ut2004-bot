@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
+		<artifactId>pogamut-ut2004-bot-pom</artifactId>
+		<version>3.3.2-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.fmt</groupId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>UT2004Bot</name>
+	<url>http://pogamut.cuni.cz/pogamut_files/latest/doc/tutorials/EmptyBotTutorial.html</url>
+
+	<properties>
+		<bot.main.class>com.mycompany.mavenproject6.Main</bot.main.class>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>amis-artifactory</id>
+			<name>AMIS Artifactory</name>
+			<url>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.dstovall</groupId>
+				<artifactId>onejar-maven-plugin</artifactId>
+				<version>1.4.4</version>
+				<configuration>
+					<mainClass>${bot.main.class}</mainClass>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+    <dependencies>
+        <dependency>
+            <groupId>cz.cuni.amis.pogamut</groupId>
+            <artifactId>pogamut-ut2004</artifactId>
+            <version>3.3.2-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>cz.cuni.amis.pogamut</groupId>
+            <artifactId>pogamut-base</artifactId>
+            <version>3.3.2-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+    <artifactId>UT2004Bot</artifactId>
+</project>
