@@ -4,30 +4,23 @@
  */
 package com.fmt.UT2004Bot;
 
-import cz.cuni.amis.pogamut.base.agent.navigation.IPathPlanner;
+import com.google.inject.internal.BytecodeGen.Visibility;
 import cz.cuni.amis.pogamut.base.communication.command.IAct;
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.AnnotationListenerRegistrator;
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.base3d.worldview.IVisionWorldView;
-import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.AdrenalineCombo;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.AgentConfig;
-import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Raycasting;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weaponry;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.*;
-import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.visibility.Visibility;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004GetBackToNavGraph;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004Navigation;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004PathExecutor;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004RunStraight;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.floydwarshall.FloydWarshallMap;
-import cz.cuni.amis.pogamut.ut2004.bot.command.AdvancedLocomotion;
 import cz.cuni.amis.pogamut.ut2004.bot.command.CompleteBotCommandsWrapper;
 import cz.cuni.amis.pogamut.ut2004.bot.command.ImprovedShooting;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BotKilled;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import java.util.Random;
+
+
 
 /**
  *
