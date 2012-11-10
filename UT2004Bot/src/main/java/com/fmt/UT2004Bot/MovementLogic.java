@@ -106,14 +106,12 @@ public class MovementLogic {
      * Shortcut for the {@link UT2004Bot#getWorldView()}.
      */
     public IVisionWorldView world;
-    
-     /**
+    /**
      * Planner used to compute the path (consisting of navigation points) inside
      * the map. <p><p> May be used since since the first {@link IUT2004BotController#botFirstSpawn(cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo, ConfigChange, InitedMessage, Self)}
      * is called. <p><p> Initialized inside {@link UT2004BotModuleController#initializePathFinding(UT2004Bot)}.
      */
     public IPathPlanner<ILocated> pathPlanner = null;
-    
     /**
      * Path-planner ({@link IPathPlanner} using {@link NavPoint}s), you may use
      * it to find paths inside the environment wihtout waiting for round-trip of {@link GetPath}
@@ -126,15 +124,12 @@ public class MovementLogic {
      * {@link DistanceUtils#getNearest(java.util.Collection, ILocated)}.
      */
     public FloydWarshallMap fwMap;
-        
     public LogCategory log = null;
-    
-     /**
+    /**
      * Current navigation point we're navigating to.
      */
     private NavPoint targetNavPoint;
     private UT2004BotModuleController controller;
-  
     private BlackBoard bb = null;
 
     public MovementLogic(UT2004Bot bot) {
@@ -142,12 +137,11 @@ public class MovementLogic {
         this.bot = bot;
         this.controller = (UT2004BotModuleController) bot.getController();
         this.bb = BlackBoard.getInstance();
-       
+
     }
-    
-    public void init()
-    {
-         // initialize taboo set where we store temporarily unavailable navpoints
+
+    public void init() {
+        // initialize taboo set where we store temporarily unavailable navpoints
         tabooNavPoints = new TabooSet<NavPoint>(bot);
 
         // add stuck detector that watch over the path-following, if it (heuristicly) finds out that the bot has stuck somewhere,
@@ -175,7 +169,7 @@ public class MovementLogic {
 
         navigation.getLog().setLevel(Level.INFO);
     }
-    
+
     public void movementSelection() {
         if (bb.bot_killed) {
             navigation.stopNavigation();
@@ -200,7 +194,7 @@ public class MovementLogic {
         // NAVIGATION HAS STOPPED ... 
         // => we need to choose another player to navigate to
 
-       
+
         if (bb.player_visible == false) {
             // NO PLAYERS AT SIGHT
             // => navigate to random navpoint
@@ -265,10 +259,13 @@ public class MovementLogic {
         }
         int pathLeftSize = pathExecutor.getPath() == null ? 0 : pathExecutor.getPath().size() - pathExecutor.getPathElementIndex();
         log.info("Path points left:   " + pathLeftSize);
-        log.info("Remaining distance: " + navigation.getRemainingDistance());
+        if (pathLeftSize != 0) {
+            log.info("Remaining distance: " + navigation.getRemainingDistance());
+        }
         log.info("Visible navpoints:  " + world.getAllVisible(NavPoint.class).size() + " / " + world.getAll(NavPoint.class).size());
-       // log.info("Visible items:      " + (this.controller.getItems()).getVisibleItems().values() + " / " + world.getAll(Item.class).size());
-       // log.info("Visible players:    " + players.getVisiblePlayers().size());
+
+        // log.info("Visible items:      " + (this.controller.getItems()).getVisibleItems().values() + " / " + world.getAll(Item.class).size());
+        // log.info("Visible players:    " + players.getVisiblePlayers().size());
     }
 
     /**
