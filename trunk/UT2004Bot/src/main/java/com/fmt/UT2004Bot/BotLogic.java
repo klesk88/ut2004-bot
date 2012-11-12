@@ -4,6 +4,7 @@
  */
 package com.fmt.UT2004Bot;
 
+import cz.cuni.amis.introspection.java.JProp;
 import java.util.logging.Level;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathExecutorState;
@@ -51,12 +52,14 @@ import cz.cuni.amis.utils.flag.FlagListener;
  * @author Jakub Gemrot aka Jimmy
  */
 @AgentScoped
-public class BotLogic extends UT2004BotModuleController {
-
+public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
+   
     private MovementLogic ml = null;
     private BlackBoard bb = BlackBoard.getInstance();
     private Sensors sensor = null;
-
+    
+ 
+    
     @Override
     public void prepareBot(UT2004Bot bot) {
 
@@ -103,11 +106,12 @@ public class BotLogic extends UT2004BotModuleController {
         this.ml.getBackToNavGraph = getBackToNavGraph;
         this.ml.move = move;
         
-        ml.init();
+     
+    
         log.info("bot Initialize");
-
+          
     }
-
+    
     @Override
     public Initialize getInitializeCommand() {
         return new Initialize().setName("eftBot");
@@ -123,7 +127,8 @@ public class BotLogic extends UT2004BotModuleController {
     @SuppressWarnings("unchecked")
     @Override
     public void botInitialized(GameInfo gameInfo, ConfigChange config, InitedMessage init) {
-
+        
+        ml.init();
         navigation.getLog().setLevel(Level.INFO);
     }
 
@@ -170,7 +175,14 @@ public class BotLogic extends UT2004BotModuleController {
     public void logic() {
 
         log.info("Enter Logic");
+       
+
         this.sensor.updateMovement();
+        
+        //for use the raycast part (bugged for the moment) call the 
+        //method this.ml.raycast(); instead of this one
         this.ml.movementSelection();
+        
     }
+
 }

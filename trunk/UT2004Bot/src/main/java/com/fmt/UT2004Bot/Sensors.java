@@ -185,7 +185,7 @@ public class Sensors{
 
     public void updateMovement() {
         // mark that another logic iteration has began
-        log.info("--- Logic iteration ---");
+        //log.info("--- Logic iteration ---");
 
         if (players.canSeePlayers() || navigation.getCurrentTargetPlayer() != null) 
         {

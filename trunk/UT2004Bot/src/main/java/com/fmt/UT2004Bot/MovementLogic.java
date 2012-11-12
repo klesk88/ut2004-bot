@@ -4,9 +4,6 @@
  */
 package com.fmt.UT2004Bot;
 
-//import java.util.LinkedList;
-//import java.util.List;
-//import java.util.Set;
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathExecutorState;
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathPlanner;
 import cz.cuni.amis.pogamut.base.agent.navigation.PathExecutorState;
@@ -23,11 +20,15 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.UT2004TimeStuc
 import cz.cuni.amis.pogamut.ut2004.bot.command.AdvancedLocomotion;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Configuration;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.RemoveRay;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.AutoTraceRay;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
+import cz.cuni.amis.pogamut.ut2004.utils.UnrealUtils;
 import cz.cuni.amis.utils.collections.MyCollections;
 import cz.cuni.amis.utils.flag.FlagListener;
 import java.util.logging.Level;
+import javax.vecmath.Vector3d;
 
 /**
  *
@@ -129,6 +130,67 @@ public class MovementLogic {
      * Current navigation point we're navigating to.
      */
     private NavPoint targetNavPoint;
+    /**
+     * Raycast part start
+     */
+    // Constants for rays' ids. It is allways better to store such values
+    // in constants instead of using directly strings on multiple places of your
+    // source code
+    private static final String FRONT = "frontRay";
+    private static final String FRONTUP = "frontRayUp";
+    private static final String FRONTDOWN = "frontRayDown";
+    private static final String LEFT45 = "left45Ray";
+    private static final String LEFT90 = "left90Ray";
+    private static final String RIGHT45 = "right45Ray";
+    private static final String RIGHT90 = "right90Ray";
+    private AutoTraceRay left45, front, right45, left90, right90, front_up, front_down;
+    private boolean sensorLeft45 = false;
+    /**
+     * Whether the right45 sensor signalizes the collision. <p><p> Using {@link RaycastingBot#RIGHT45}
+     * as the key for the ray.
+     */
+    private boolean sensorRight45 = false;
+    /**
+     * Whether the front sensor signalizes the collision. <p><p> Using {@link RaycastingBot#FRONT}
+     * as the key for the ray.
+     */
+    private boolean sensorFront = false;
+    /**
+     * Whether the bot is moving.
+     */
+    private boolean sensorLeft90 = false;
+    private boolean sensorRight90 = false;
+    private boolean sensor_front_up = false;
+    private boolean sensor_front_down = false;
+    private boolean moving = false;
+    /**
+     * Whether any of the sensor signalize the collision. (Computed in the
+     * doLogic())
+     */
+    public boolean sensor = false;
+    /**
+     * How much time should we wait for the rotation to finish (milliseconds).
+     */
+    public int turnSleep = 250;
+    /**
+     * How fast should we move? Interval <0, 1>.
+     */
+    public float moveSpeed = 0.6f;
+    /**
+     * Small rotation (degrees).
+     */
+    public int smallTurn = 30;
+    /**
+     * Big rotation (degrees).
+     */
+    public int bigTurn = 90;
+    // initialize rays for raycasting
+    final int rayLength = (int) (UnrealUtils.CHARACTER_COLLISION_RADIUS * 3);
+    final int ray_length_front = (int) (UnrealUtils.CHARACTER_COLLISION_RADIUS * 10);
+    final int ray_length_side90 = (int) (UnrealUtils.CHARACTER_COLLISION_RADIUS * 3);
+    /*
+     * Raycast part finish
+     */
     private UT2004BotModuleController controller;
     private BlackBoard bb = null;
 
@@ -141,6 +203,10 @@ public class MovementLogic {
     }
 
     public void init() {
+
+        /*
+         * Navpoints
+         */
         // initialize taboo set where we store temporarily unavailable navpoints
         tabooNavPoints = new TabooSet<NavPoint>(bot);
 
@@ -151,10 +217,10 @@ public class MovementLogic {
         pathExecutor.addStuckDetector(new UT2004PositionStuckDetector(bot)); // watch over the position history of the bot, if the bot does not move sufficiently enough, consider that it is stuck
         pathExecutor.addStuckDetector(new UT2004DistanceStuckDetector(bot)); // watch over distances to target
 
-
-        //autoFixer = new UT2004PathAutoFixer(bot, pathExecutor, fwMap, navBuilder); // auto-removes wrong navigation links between navpoints
         // auto-removes wrong navigation links between navpoints
-        // autoFixer = new UT2004PathAutoFixer(bot,  pathExecutor,  (controller.getFwMap()),  (controller.getNavBuilder()));
+        autoFixer = new UT2004PathAutoFixer(bot, pathExecutor, fwMap, this.controller.getNavBuilder()); // auto-removes wrong navigation links between navpoints
+
+
 
         // IMPORTANT
         // adds a listener to the path executor for its state changes, it will allow you to 
@@ -167,6 +233,60 @@ public class MovementLogic {
             }
         });
 
+        /**
+         * Raycast
+         */
+        // settings for the rays
+        boolean fastTrace = false;        // perform only fast trace == we just need true/false information
+        boolean floorCorrection = false; // provide floor-angle correction for the ray (when the bot is running on the skewed floor, the ray gets rotated to match the skew)
+        boolean traceActor = false;      // whether the ray should collid with other actors == bots/players as well
+
+        // 1. remove all previous rays, each bot starts by default with three
+        // rays, for educational purposes we will set them manually
+        this.controller.getAct().act(new RemoveRay("All"));
+
+        // 2. create new rays
+        raycasting.createRay(LEFT45, new Vector3d(1, -1, 0), rayLength, fastTrace, floorCorrection, traceActor);
+        raycasting.createRay(FRONT, new Vector3d(1, 0, 0), ray_length_front, fastTrace, floorCorrection, traceActor);
+        raycasting.createRay(RIGHT45, new Vector3d(1, 1, 0), rayLength, fastTrace, floorCorrection, traceActor);
+        raycasting.createRay(LEFT90, new Vector3d(0, -1, 0), ray_length_side90, fastTrace, floorCorrection, traceActor);
+        raycasting.createRay(RIGHT90, new Vector3d(0, 1, 0), ray_length_side90, fastTrace, floorCorrection, traceActor);
+        raycasting.createRay(FRONTUP, new Vector3d(1, 0, 0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
+        raycasting.createRay(FRONTDOWN, new Vector3d(1, 0, -0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
+        // register listener called when all rays are set up in the UT engine
+        raycasting.getAllRaysInitialized().addListener(new FlagListener<Boolean>() {
+
+            public void flagChanged(Boolean changedValue) {
+                // once all rays were initialized store the AutoTraceRay objects
+                // that will come in response in local variables, it is just
+                // for convenience
+                left45 = raycasting.getRay(LEFT45);
+                front = raycasting.getRay(FRONT);
+                right45 = raycasting.getRay(RIGHT45);
+                left90 = raycasting.getRay(LEFT90);
+                right90 = raycasting.getRay(RIGHT90);
+                front_up = raycasting.getRay(FRONTUP);
+                front_down = raycasting.getRay(FRONTDOWN);
+            }
+        });
+        // have you noticed the FlagListener interface? The Pogamut is often using {@link Flag} objects that
+        // wraps some iteresting values that user might respond to, i.e., whenever the flag value is changed,
+        // all its listeners are informed
+
+        // 3. declare that we are not going to setup any other rays, so the 'raycasting' object may know what "all" is        
+        raycasting.endRayInitSequence();
+
+        // change bot's default speed
+        this.controller.getConfig().setSpeedMultiplier(moveSpeed);
+
+        // IMPORTANT:
+        // The most important thing is this line that ENABLES AUTO TRACE functionality,
+        // without ".setAutoTrace(true)" the AddRay command would be useless as the bot won't get
+        // trace-lines feature activated
+        this.controller.getAct().act(new Configuration().setDrawTraceLines(true).setAutoTrace(true));
+
+        // FINAL NOTE: the ray initialization must be done inside botInitialized method or later on inside
+        //             botSpawned method or anytime during doLogic method
         navigation.getLog().setLevel(Level.INFO);
     }
 
@@ -319,5 +439,109 @@ public class MovementLogic {
 
         // ok, all navpoints have been visited probably, try to pick one at random
         return MyCollections.getRandom(this.world.getAll(NavPoint.class).values());
+    }
+
+    public void raycast() {
+        // mark that another logic iteration has began
+        log.info("--- Logic iteration ---");
+       
+        // if the rays are not initialized yet, do nothing and wait for their initialization 
+        if (!raycasting.getAllRaysInitialized().getFlag()) {
+            log.info("Exit");
+            return;
+        }
+
+        // once the rays are up and running, move according to them
+
+        sensorFront = front.isResult();
+        sensorLeft45 = left45.isResult();
+        sensorRight45 = right45.isResult();
+        sensorLeft90 = left90.isResult();
+        sensorRight90 = right90.isResult();
+        sensor_front_up = front_up.isResult();
+        sensor_front_down = front_down.isResult();
+
+        // is any of the sensor signalig?
+        sensor = sensorFront || sensorLeft45 || sensorRight45 || sensorLeft90 || sensorRight90;
+
+        if (!sensor) {
+            // no sensor are signalizes - just proceed with forward movement
+            log.info("MOVEMENT");
+            movementSelection();
+            return;
+        }
+           moving = true;
+        // some sensor/s is/are signaling
+
+        // if we're moving
+        if (moving) {
+            // stop it, we have to turn probably
+            move.stopMovement();
+            moving = false;
+        }
+
+        // according to the signals, take action...
+        // 8 cases that might happen follows
+        if (sensorFront) {
+            if (sensorLeft45) {
+                if (sensorRight45) {
+                    // LEFT45, RIGHT45, FRONT are signaling
+                    move.turnHorizontal(bigTurn);
+                } else {
+                    // LEFT45, FRONT45 are signaling
+                    move.turnHorizontal(smallTurn);
+                }
+            } else {
+                if (sensorRight45) {
+                    // RIGHT45, FRONT are signaling
+                    move.turnHorizontal(-smallTurn);
+                } else {
+                    // FRONT is signaling
+                    move.turnHorizontal(smallTurn);
+                }
+            }
+        } else {
+            if (sensorLeft45) {
+                if (sensorRight45) {
+                    // LEFT45, RIGHT45 are signaling
+                    goForward();
+                } else {
+                    // LEFT45 is signaling
+                    move.turnHorizontal(smallTurn);
+                }
+            } else {
+                if (sensorRight45) {
+                    // RIGHT45 is signaling
+                    move.turnHorizontal(-smallTurn);
+                } else {
+                    // no sensor is signaling
+                    goForward();
+                }
+            }
+        }
+        if (sensorLeft90) {
+
+            if (Math.abs(left90.getHitNormal().x) == 1.0 || Math.abs(left90.getHitNormal().y) == 1.0) {
+                log.info("INSIDE!!!!!!!!!!!!!!!!! " + left90.getHitNormal());
+                move.turnHorizontal(10);
+            }
+        } else if (sensorRight90) {
+            if (Math.abs(right90.getHitNormal().x) == 1.0 || Math.abs(right90.getHitNormal().y) == 1.0) {
+                log.info("INSIDE 1!!!!!!!!!!!!!!!!!" + right90.getHitNormal());
+                move.turnHorizontal(-10);
+            }
+        }
+        // HOMEWORK FOR YOU GUYS:
+        // Try to utilize LEFT90 and RIGHT90 sensors and implement wall-following behavior!
+    }
+
+    /**
+     * Simple method that starts continuous movement forward + marking the
+     * situation (i.e., setting {@link RaycastingBot#moving} to true, which
+     * might be utilized later by the logic).
+     */
+    protected void goForward() {
+        move.moveContinuos();
+        moving = true;
     }
 }
