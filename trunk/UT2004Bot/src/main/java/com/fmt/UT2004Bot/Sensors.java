@@ -25,10 +25,12 @@ import java.util.Random;
 
 /**
  *
- * @author klesk
+ * @author klesk, tilman :)
  */
 public class Sensors{
 
+    public Sensor_RayCastSystem rayCastSystem;
+    
     UT2004Bot bot;
     /**
      * Random number generator that is usually useful to have during decision
@@ -181,8 +183,17 @@ public class Sensors{
        
         this.bot = bot;
         bb = BlackBoard.getInstance();
+        
+        rayCastSystem = new Sensor_RayCastSystem();
     }
 
+    public void update()
+    {
+        rayCastSystem.update();
+    }
+    
+    
+    //TODO: this should not be here!!!
     public void updateMovement() {
         // mark that another logic iteration has began
         //log.info("--- Logic iteration ---");

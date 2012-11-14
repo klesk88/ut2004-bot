@@ -55,6 +55,7 @@ import cz.cuni.amis.utils.flag.FlagListener;
 public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
    
     private MovementLogic ml = null;
+    private Decision_simpleExamples decisionMaking = null;
     private BlackBoard bb = BlackBoard.getInstance();
     private Sensors sensor = null;
     
@@ -65,6 +66,8 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
 
         sensor = new Sensors(bot);
         ml = new MovementLogic(bot);
+        
+        decisionMaking = new Decision_simpleExamples(bot);
         
         /*
          * sensors initialization
@@ -101,13 +104,18 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         this.ml.pathPlanner = pathPlanner;
         this.ml.fwMap = fwMap;
         this.ml.log = log;
-        this.ml.raycasting = raycasting;
+        
         this.ml.runStraight = runStraight;
         this.ml.getBackToNavGraph = getBackToNavGraph;
         this.ml.move = move;
         
-     
-    
+        /*
+         * 
+         */
+        this.sensor.rayCastSystem.raycasting = raycasting;
+        this.sensor.rayCastSystem.log = log;
+        
+        
         log.info("bot Initialize");
           
     }
@@ -176,12 +184,16 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
 
         log.info("Enter Logic");
        
-
+        this.decisionMaking.update();
+        
+        this.sensor.update();
+        
+        //TODO this should be removed
         this.sensor.updateMovement();
         
         //for use the raycast part (bugged for the moment) call the 
         //method this.ml.raycast(); instead of this one
-        this.ml.movementSelection();
+        this.ml.raycast();
         
     }
 
