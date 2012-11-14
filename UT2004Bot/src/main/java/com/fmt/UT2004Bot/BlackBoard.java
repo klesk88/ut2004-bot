@@ -20,6 +20,20 @@ public class BlackBoard {
     public Player player = null;
     public double player_distance = Double.MAX_VALUE;
     
+    public boolean isWallRight45 = false;
+    public boolean isWallRight90 = false;
+    public boolean isWallLeft45 = false;
+    public boolean isWallLeft90 = false;
+    public boolean isWallFrontStraight = false;
+    public boolean isWallFrontUp = false;
+    public boolean isWallFrontDown = false;
+    
+        /**
+     * Whether any of the sensor signalize the collision. (Computed in the
+     * doLogic())
+     */
+    public boolean sensor = false;
+    
     private BlackBoard() {
         // Exists only to defeat instantiation.
     }
