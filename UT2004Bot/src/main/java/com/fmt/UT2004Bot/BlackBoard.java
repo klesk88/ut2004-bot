@@ -44,4 +44,12 @@ public class BlackBoard {
         }
         return instance;
     }
+    
+    // update the current world state
+    public void updateCurrentWorldState()
+    {
+        //Worldstate bla
+        
+        
+    }
 }
