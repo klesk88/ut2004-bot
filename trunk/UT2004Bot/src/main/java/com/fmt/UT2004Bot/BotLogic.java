@@ -59,8 +59,6 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     private BlackBoard bb = BlackBoard.getInstance();
     private Sensors sensor = null;
     
- 
-    
     @Override
     public void prepareBot(UT2004Bot bot) {
 
@@ -187,13 +185,21 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         this.decisionMaking.update();
         
         this.sensor.update();
+       
+        // this.targetManager.update();
+        // target manager also calls GOAPPlanner
+        
         
         //TODO this should be removed
         this.sensor.updateMovement();
         
+        //TODO this should be removed as well
         //for use the raycast part (bugged for the moment) call the 
         //method this.ml.raycast(); instead of this one
         this.ml.raycast();
+        
+        //this should handle navigation and action performance (e.g. shooting)
+        //this.actorSystem.update();
         
     }
 

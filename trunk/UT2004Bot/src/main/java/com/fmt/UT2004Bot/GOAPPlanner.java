@@ -4,7 +4,7 @@
  */
 package com.fmt.UT2004Bot;
 
-import java.util.HashMap;
+import java.util.Stack;
 
 /**
  *
@@ -12,8 +12,24 @@ import java.util.HashMap;
  */
 public class GOAPPlanner {
     
+    BlackBoard bb;
+    Stack<Action> finalPlan;
+    
+    public GOAPPlanner()
+    {
+        bb = BlackBoard.getInstance();
+    }
+    
+    public void replan()
+    {
     // get world state
     // apply action
     // check whether goal is achieved
-    // if not, apply other action or go back
+    // if not, apply other action or go back        
+        
+        
+        //write planb to blackboard
+        bb.currentPlan = finalPlan;
+        
+    }
 }

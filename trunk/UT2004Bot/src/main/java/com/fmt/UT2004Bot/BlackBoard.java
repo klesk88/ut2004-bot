@@ -5,6 +5,7 @@
 package com.fmt.UT2004Bot;
 
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
+import java.util.Stack;
 
 /**
  *
@@ -27,6 +28,12 @@ public class BlackBoard {
     public boolean isWallFrontStraight = false;
     public boolean isWallFrontUp = false;
     public boolean isWallFrontDown = false;
+    
+    
+    // GOAP
+    boolean replan = false;
+    Stack<Action> currentPlan;
+    
     
         /**
      * Whether any of the sensor signalize the collision. (Computed in the
