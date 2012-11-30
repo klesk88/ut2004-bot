@@ -31,5 +31,11 @@ public interface Action
      */
     public void update();
     
+    /**
+     * Apply the pre conditions to the goal state of the world for add them in the search
+     * @param goal_state previous goal_state of the world
+     * @return new goal_state of the world
+     */
+    public WorldState.TruthStates[] applyPreConditions(WorldState.TruthStates[] goal_state);
     
 }
