@@ -22,7 +22,7 @@ public interface Action
     /**
      * Apply post-conditions to the (copy of the) world state
      */
-    public void ApplyPostCondtions();
+    public void ApplyPostCondtions(WorldState.TruthStates[] worls_state);
     
     //public void UndoPostConditions();
     
