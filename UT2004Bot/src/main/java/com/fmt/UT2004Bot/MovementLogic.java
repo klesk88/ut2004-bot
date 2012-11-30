@@ -418,35 +418,8 @@ public class MovementLogic {
                 }
             }
         }
-        /*
-        if (bb.isWallLeft90) {
-
-            if (Math.abs(left90.getHitNormal().x) == 1.0 || Math.abs(left90.getHitNormal().y) == 1.0) {
-                log.info("INSIDE!!!!!!!!!!!!!!!!! " + left90.getHitNormal());
-                move.turnHorizontal(10);
-            }
-        } else if (bb.isWallRight90) {
-            if (Math.abs(right90.getHitNormal().x) == 1.0 || Math.abs(right90.getHitNormal().y) == 1.0) {
-                log.info("INSIDE 1!!!!!!!!!!!!!!!!!" + right90.getHitNormal());
-                move.turnHorizontal(-10);
-            }
-        }
-        * /
-         
-        
-        */
-        // HOMEWORK FOR YOU GUYS:
-        // Try to utilize LEFT90 and RIGHT90 sensors and implement wall-following behavior!
+      
     }
 
-    /**
-     * Simple method that starts continuous movement forward + marking the
-     * situation (i.e., setting {@link RaycastingBot#moving} to true, which
-     * might be utilized later by the logic).
-     
-    protected void goForward() {
-        move.moveContinuos();
-        moving = true;
-    }
-    * */
+
 }
