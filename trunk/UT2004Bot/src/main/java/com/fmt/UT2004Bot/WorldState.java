@@ -10,6 +10,7 @@ package com.fmt.UT2004Bot;
  */
 public class WorldState {
 
+    private static WorldState instance = null;
     public enum Symbols{AtTargetPos, IsWeaponLoaded, IsTargetDead}  
     public enum TruthStates {Uninstantiated, True, False}
     public enum GoalStates {KillEnemy, SearchRandomly}
@@ -20,14 +21,25 @@ public class WorldState {
     
     private boolean[] currentGoalState;
     
+    private WorldState.TruthStates[] world_state;
     private TruthStates[] goal_current;
     
     // this is an awesome name for a hashmap!
     //Map<WorldStates,Boolean> fixedSizeArray = new HashMap<WorldStates,Boolean>();
     
 
+     private WorldState() {
+        // Exists only to defeat instantiation.
+    }
+
+    public static WorldState getInstance() {
+        if (instance == null) {
+            instance = new WorldState();
+        }
+        return instance;
+    }
     
-    public WorldState()
+    public void init()
     {
         goal_current = new TruthStates[]{TruthStates.Uninstantiated, TruthStates.Uninstantiated, TruthStates.True};
         
@@ -74,9 +86,17 @@ public class WorldState {
     
     
     
-    //current world state
+    //return current world state
+    public WorldState.TruthStates[] getWorldState()
+    {
+        return world_state;
+    }
+    
     
     //goal world state
-    
+    public TruthStates[] getActualGoal()
+    {
+        return goal_current;
+    }
 }
 
