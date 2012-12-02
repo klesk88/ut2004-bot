@@ -12,7 +12,7 @@ import java.util.Stack;
  * @author klesk
  */
 public class BlackBoard {
-
+    
     private static BlackBoard instance = null;
     public boolean follow_player = false;
     public boolean nav_point_navigation = false;
@@ -51,6 +51,7 @@ public class BlackBoard {
         }
         return instance;
     }
+
     
     // update the current world state
     public void updateCurrentWorldState()

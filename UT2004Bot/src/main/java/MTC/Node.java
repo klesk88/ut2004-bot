@@ -287,12 +287,12 @@ public class Node {
                     int number_of_preconditions_not_met = finalConditions(simulate_state, simulate_goal);
                     if(number_of_preconditions_not_met == 0)
                     {
-			score -= 1;
+			score += 1;
 		    }
 		    //or add to the score the number of unsutisfied conditions
 		    else
 		    {
-			score += number_of_preconditions_not_met;
+			score -= number_of_preconditions_not_met;
 		    }
 			
 		    temp++;
