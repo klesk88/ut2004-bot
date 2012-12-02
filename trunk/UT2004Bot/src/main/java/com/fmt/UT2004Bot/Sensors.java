@@ -15,7 +15,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
  */
 public class Sensors{
 
-    public Sensor_RayCastSystem ray_cast_system;
+    private Sensor_RayCastSystem ray_cast_system;
     
   
     private BlackBoard bb = null;
@@ -25,14 +25,19 @@ public class Sensors{
     public Sensors() {
 
        
-       
+        
         bb = BlackBoard.getInstance();
 
         
-        ray_cast_system = new Sensor_RayCastSystem();
-        ray_cast_system.init();
+        
+        
     }
-
+    
+    public void init()
+    {
+        ray_cast_system = new Sensor_RayCastSystem();
+    }
+    
     public void update()
     {
         ray_cast_system.update();

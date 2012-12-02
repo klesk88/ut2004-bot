@@ -62,6 +62,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     public BotLogic() {
         // Exists only to defeat instantiation.
         instance = this;
+        
     }
 
     public static BotLogic getInstance() {
@@ -73,6 +74,8 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     @Override
     public void prepareBot(UT2004Bot bot) {
         
+        //this.getLog().setLevel(Level.INFO);
+        this.log.info("INSIDE1111111111111111");
         sensor = new Sensors();
         ml = new MovementLogic();
 
@@ -146,7 +149,8 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     public void botInitialized(GameInfo gameInfo, ConfigChange config, InitedMessage init) {
         
         ml.init();
-        navigation.getLog().setLevel(Level.INFO);
+        sensor.init();
+        navigation.getLog().setLevel(Level.OFF);
     }
 
     /**
@@ -159,7 +163,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     @Override
     public void botFirstSpawn(GameInfo gameInfo, ConfigChange config, InitedMessage init, Self self) {
         // receive logs from the navigation so you can get a grasp on how it is working
-        pathExecutor.getLog().setLevel(Level.ALL);
+        pathExecutor.getLog().setLevel(Level.OFF);
     }
 
     /**
@@ -203,7 +207,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         
         //TODO this should be removed
         this.sensor.updateMovement();
-        getAct();
+       
         //TODO this should be removed as well
         //for use the raycast part (bugged for the moment) call the 
         //method this.ml.raycast(); instead of this one

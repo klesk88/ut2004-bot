@@ -19,6 +19,6 @@ public class Main{
       public static void main(String args[]) throws PogamutException
      {
         
-         new UT2004BotRunner(BotLogic.class, "eftBot").setMain(false).setLogLevel(Level.FINE).startAgent();
+         new UT2004BotRunner(BotLogic.class, "eftBot").setMain(false).setLogLevel(Level.OFF).startAgent();
      }
 }
