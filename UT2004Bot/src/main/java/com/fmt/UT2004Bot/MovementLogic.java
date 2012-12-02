@@ -140,7 +140,7 @@ public class MovementLogic {
     private void handlePlayerNavigation() {
         if (BotLogic.getInstance().getNavigation().isNavigating() && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null) {
             // WE'RE NAVIGATING TO SOME PLAYER
-            logNavigation();
+            //logNavigation();
             return;
         }
 
@@ -179,7 +179,7 @@ public class MovementLogic {
             }
 
             // WE'RE NAVIGATING TO SOME NAVPOINT
-            logNavigation();
+            //logNavigation();
             return;
         }
 
@@ -202,7 +202,7 @@ public class MovementLogic {
 
 
        BotLogic.getInstance().getNavigation().navigate(targetNavPoint);
-        logNavigation();
+        //logNavigation();
     }
 
     private void logNavigation() {

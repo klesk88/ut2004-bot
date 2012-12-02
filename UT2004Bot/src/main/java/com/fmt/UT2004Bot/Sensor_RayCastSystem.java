@@ -4,9 +4,6 @@
  */
 package com.fmt.UT2004Bot;
 
-import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
-import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Raycasting;
-import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Configuration;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.RemoveRay;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.AutoTraceRay;
@@ -21,18 +18,8 @@ import javax.vecmath.Vector3d;
 public class Sensor_RayCastSystem 
 {
     private BlackBoard bb = BlackBoard.getInstance();
-    public LogCategory log = null;
-    
    
-        /**
-     * Support for creating rays used for raycasting (see {@link AutoTraceRay}
-     * that is being utilized). <p><p> May be used since {@link IUT2004BotController#botInitialized(cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo, cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ConfigChange, cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.InitedMessage)}
-     * is called. <p><p> Initialized inside {@link UT2004BotModuleController#initializeModules(UT2004Bot)}.
-     */
-    public Raycasting raycasting;
-        /**
-     * Raycast part start
-     */
+    
     // Constants for rays' ids. It is allways better to store such values
     // in constants instead of using directly strings on multiple places of your
     // source code
@@ -52,30 +39,32 @@ public class Sensor_RayCastSystem
     
     public Sensor_RayCastSystem()
     {
+        this.init();
         //super();
     }
     
-    public void init(){
+    private void init(){
          /**
          * Raycast
          */
         // settings for the rays
-        boolean fastTrace = false;        // perform only fast trace == we just need true/false information
+        boolean fastTrace = true;        // perform only fast trace == we just need true/false information
         boolean floorCorrection = false; // provide floor-angle correction for the ray (when the bot is running on the skewed floor, the ray gets rotated to match the skew)
         boolean traceActor = false;      // whether the ray should collid with other actors == bots/players as well
-
+      
         // 1. remove all previous rays, each bot starts by default with three
         // rays, for educational purposes we will set them manually
         BotLogic.getInstance().getAct().act(new RemoveRay("All"));
 
         // 2. create new rays
-        BotLogic.getInstance().getRaycasting().createRay(LEFT45, new Vector3d(1, -1, 0), rayLength, fastTrace, floorCorrection, traceActor);
+        BotLogic.getInstance().getRaycasting().createRay(LEFT45, new Vector3d(1, -1, 0), rayLength, fastTrace, floorCorrection, traceActor);       
         BotLogic.getInstance().getRaycasting().createRay(FRONT, new Vector3d(1, 0, 0), ray_length_front, fastTrace, floorCorrection, traceActor);
         BotLogic.getInstance().getRaycasting().createRay(RIGHT45, new Vector3d(1, 1, 0), rayLength, fastTrace, floorCorrection, traceActor);
          BotLogic.getInstance().getRaycasting().createRay(LEFT90, new Vector3d(0, -1, 0), ray_length_side90, fastTrace, floorCorrection, traceActor);
          BotLogic.getInstance().getRaycasting().createRay(RIGHT90, new Vector3d(0, 1, 0), ray_length_side90, fastTrace, floorCorrection, traceActor);
          BotLogic.getInstance().getRaycasting().createRay(FRONTUP, new Vector3d(1, 0, 0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
          BotLogic.getInstance().getRaycasting().createRay(FRONTDOWN, new Vector3d(1, 0, -0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
+      
         // register listener called when all rays are set up in the UT engine
         
          BotLogic.getInstance().getRaycasting().getAllRaysInitialized().addListener(new FlagListener<Boolean>() {
@@ -84,13 +73,14 @@ public class Sensor_RayCastSystem
                 // once all rays were initialized store the AutoTraceRay objects
                 // that will come in response in local variables, it is just
                 // for convenience
-                left45 = raycasting.getRay(LEFT45);
-                front = raycasting.getRay(FRONT);
-                right45 = raycasting.getRay(RIGHT45);
-                left90 = raycasting.getRay(LEFT90);
-                right90 = raycasting.getRay(RIGHT90);
-                front_up = raycasting.getRay(FRONTUP);
-                front_down = raycasting.getRay(FRONTDOWN);
+                left45 = BotLogic.getInstance().getRaycasting().getRay(LEFT45);              
+                front = BotLogic.getInstance().getRaycasting().getRay(FRONT);
+                right45 = BotLogic.getInstance().getRaycasting().getRay(RIGHT45);
+                left90 = BotLogic.getInstance().getRaycasting().getRay(LEFT90);
+                right90 = BotLogic.getInstance().getRaycasting().getRay(RIGHT90);
+                front_up = BotLogic.getInstance().getRaycasting().getRay(FRONTUP);
+                front_down = BotLogic.getInstance().getRaycasting().getRay(FRONTDOWN);
+                
             }
         });
         // have you noticed the FlagListener interface? The Pogamut is often using {@link Flag} objects that
@@ -112,12 +102,13 @@ public class Sensor_RayCastSystem
     {
             // if the rays are not initialized yet, do nothing and wait for their initialization 
         if (! BotLogic.getInstance().getRaycasting().getAllRaysInitialized().getFlag()) {
-            BotLogic.getInstance().getLog().info("Exit");
+            BotLogic.getInstance().getLog().info("Exit Raycast " + rayLength);
             //TODO maybe this log was useful, so maybe put it back in once i have the log here
             
             return;
         }
 
+        
         // once the rays are up and running, move according to them
 
          bb.isWallFrontStraight = front.isResult();
