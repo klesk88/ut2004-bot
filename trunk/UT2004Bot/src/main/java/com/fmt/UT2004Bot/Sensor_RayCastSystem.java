@@ -34,7 +34,7 @@ public class Sensor_RayCastSystem
 
         // initialize rays for raycasting
     final int rayLength = (int) (UnrealUtils.CHARACTER_COLLISION_RADIUS * 3);
-    final int ray_length_front = (int) (UnrealUtils.CHARACTER_COLLISION_RADIUS * 10);
+    final int ray_length_front = (int) (UnrealUtils.CHARACTER_COLLISION_RADIUS * 4);
     final int ray_length_side90 = (int) (UnrealUtils.CHARACTER_COLLISION_RADIUS * 3);
     
     public Sensor_RayCastSystem()
@@ -62,8 +62,8 @@ public class Sensor_RayCastSystem
         BotLogic.getInstance().getRaycasting().createRay(RIGHT45, new Vector3d(1, 1, 0), rayLength, fastTrace, floorCorrection, traceActor);
          BotLogic.getInstance().getRaycasting().createRay(LEFT90, new Vector3d(0, -1, 0), ray_length_side90, fastTrace, floorCorrection, traceActor);
          BotLogic.getInstance().getRaycasting().createRay(RIGHT90, new Vector3d(0, 1, 0), ray_length_side90, fastTrace, floorCorrection, traceActor);
-         BotLogic.getInstance().getRaycasting().createRay(FRONTUP, new Vector3d(1, 0, 0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
-         BotLogic.getInstance().getRaycasting().createRay(FRONTDOWN, new Vector3d(1, 0, -0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
+         //BotLogic.getInstance().getRaycasting().createRay(FRONTUP, new Vector3d(1, 0, 0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
+         //BotLogic.getInstance().getRaycasting().createRay(FRONTDOWN, new Vector3d(1, 0, -0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
       
         // register listener called when all rays are set up in the UT engine
         
@@ -78,8 +78,8 @@ public class Sensor_RayCastSystem
                 right45 = BotLogic.getInstance().getRaycasting().getRay(RIGHT45);
                 left90 = BotLogic.getInstance().getRaycasting().getRay(LEFT90);
                 right90 = BotLogic.getInstance().getRaycasting().getRay(RIGHT90);
-                front_up = BotLogic.getInstance().getRaycasting().getRay(FRONTUP);
-                front_down = BotLogic.getInstance().getRaycasting().getRay(FRONTDOWN);
+                //front_up = BotLogic.getInstance().getRaycasting().getRay(FRONTUP);
+                //front_down = BotLogic.getInstance().getRaycasting().getRay(FRONTDOWN);
                 
             }
         });
@@ -102,7 +102,7 @@ public class Sensor_RayCastSystem
     {
             // if the rays are not initialized yet, do nothing and wait for their initialization 
         if (! BotLogic.getInstance().getRaycasting().getAllRaysInitialized().getFlag()) {
-            BotLogic.getInstance().getLog().info("Exit Raycast " + rayLength);
+            BotLogic.getInstance().getLog().info("Exit Raycast ");
             //TODO maybe this log was useful, so maybe put it back in once i have the log here
             
             return;
@@ -116,8 +116,8 @@ public class Sensor_RayCastSystem
          bb.isWallRight45 = right45.isResult();
          bb.isWallLeft90 = left90.isResult();
          bb.isWallRight90 = right90.isResult();
-         bb.isWallFrontUp = front_up.isResult();
-         bb.isWallFrontDown = front_down.isResult();
+        // bb.isWallFrontUp = front_up.isResult();
+        // bb.isWallFrontDown = front_down.isResult();
 
         // is any of the sensor signalig?
         bb.sensor = bb.isWallFrontStraight || bb.isWallLeft45 || bb.isWallRight45 || bb.isWallLeft90 || bb.isWallRight90;
