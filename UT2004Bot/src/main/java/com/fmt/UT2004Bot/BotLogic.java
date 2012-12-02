@@ -4,13 +4,10 @@
  */
 package com.fmt.UT2004Bot;
 
-import cz.cuni.amis.introspection.java.JProp;
 import java.util.logging.Level;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
-import cz.cuni.amis.pogamut.base.agent.navigation.PathExecutorState;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004Navigation;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004PathAutoFixer;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Initialize;
@@ -18,14 +15,8 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BotKill
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ConfigChange;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.InitedMessage;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Self;
-import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
-import cz.cuni.amis.utils.collections.MyCollections;
-import cz.cuni.amis.utils.exception.PogamutException;
-import cz.cuni.amis.utils.flag.FlagListener;
 
 /**
  * Example of Simple Pogamut bot, that randomly walks around the map.
@@ -74,8 +65,6 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     @Override
     public void prepareBot(UT2004Bot bot) {
         
-        //this.getLog().setLevel(Level.INFO);
-        this.log.info("INSIDE1111111111111111");
         sensor = new Sensors();
         ml = new MovementLogic();
 
@@ -164,8 +153,10 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     public void botFirstSpawn(GameInfo gameInfo, ConfigChange config, InitedMessage init, Self self) {
         // receive logs from the navigation so you can get a grasp on how it is working
         pathExecutor.getLog().setLevel(Level.OFF);
+ 
     }
 
+    
     /**
      * This method is called only once right before actual logic() method is
      * called for the first time.

@@ -6,7 +6,7 @@ package com.fmt.UT2004Bot;
 
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathExecutorState;
 import cz.cuni.amis.pogamut.base.agent.navigation.PathExecutorState;
-import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004PathExecutor;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004Navigation;
@@ -14,6 +14,7 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004PathAutoFixer;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.UT2004DistanceStuckDetector;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.UT2004PositionStuckDetector;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.UT2004TimeStuckDetector;
+import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Configuration;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.utils.collections.MyCollections;
@@ -28,7 +29,6 @@ public class MovementLogic {
 
     private UT2004PathAutoFixer autoFixer = null;
   
-
      /*
      * Taboo set is working as "black-list", that is you might add some
      * NavPoints to it for a certain time, marking them as "unavailable".
@@ -51,19 +51,19 @@ public class MovementLogic {
     /**
      * How much time should we wait for the rotation to finish (milliseconds).
      */
-    public int turnSleep = 250;
+    private int turnSleep = 250;
     /**
      * How fast should we move? Interval <0, 1>.
      */
-    public float moveSpeed = 0.6f;
+    private float moveSpeed = 0.6f;
     /**
      * Small rotation (degrees).
      */
-    public int smallTurn = 30;
+    private int smallTurn = 30;
     /**
      * Big rotation (degrees).
      */
-    public int bigTurn = 90;
+    private int bigTurn = 90;
 
     /*
      * Raycast part finish
@@ -71,6 +71,7 @@ public class MovementLogic {
 
     private BlackBoard bb = null;
 
+    
     public MovementLogic() {
         //this.log.info("Inside contructor");
      
@@ -126,6 +127,7 @@ public class MovementLogic {
     }
 
     public void movementSelection() {
+        
         if (bb.bot_killed) {
             BotLogic.getInstance().getNavigation().stopNavigation();
             bb.bot_killed = false;
@@ -138,9 +140,23 @@ public class MovementLogic {
     }
 
     private void handlePlayerNavigation() {
-        if (BotLogic.getInstance().getNavigation().isNavigating() && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null) {
+        //targetNavPoint = null;
+        
+      // BotLogic.getInstance().getLog().info("Player navigation");
+        //BotLogic.getInstance().getLog().info("navigate to nav points  " + BotLogic.getInstance().getNavigation().isNavigatingToNavPoint() );
+        //BotLogic.getInstance().getLog().info("navigate to nav points back  " + BotLogic.getInstance().getNavigation().isTryingToGetBackToNav());
+        //BotLogic.getInstance().getLog().info("navigate path executing " + BotLogic.getInstance().getNavigation().isPathExecuting());
+             
+        //if it get stuck, trying to go back and forward between the same 2 points, unlock it
+      if(BotLogic.getInstance().getNavigation().isTryingToGetBackToNav())
+      {
+          BotLogic.getInstance().getNavigation().navigate(BotLogic.getInstance().getNavigation().getCurrentTargetPlayer());
+      }
+        if (BotLogic.getInstance().getNavigation().isNavigating() && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null  ) {
             // WE'RE NAVIGATING TO SOME PLAYER
-            //logNavigation();
+            //logNavigation();ùBotLogic.getInstance().getNavigation()
+            //BotLogic.getInstance().getNavigation().
+          
             return;
         }
 
@@ -164,12 +180,13 @@ public class MovementLogic {
 
             return;
         }
-
+         BotLogic.getInstance().getLog().info("navigation to some player " );
         BotLogic.getInstance().getNavigation().navigate(bb.player);
-        logNavigation();
+        //logNavigation();
     }
 
     private void handleNavPointNavigation() {
+        
         if (BotLogic.getInstance().getNavigation().isNavigating()) {
             // IS TARGET CLOSE & NEXT TARGET NOT SPECIFIED?
             while (BotLogic.getInstance().getNavigation().getContinueTo() == null && BotLogic.getInstance().getNavigation().getRemainingDistance() < 400) {
@@ -191,9 +208,9 @@ public class MovementLogic {
 
         targetNavPoint = getRandomNavPoint();
         if (targetNavPoint == null) {
-             BotLogic.getInstance().getLog().severe("COULD NOT CHOOSE ANY NAVIGATION POINT TO RUN TO!!!");
+             BotLogic.getInstance().getLog().info("COULD NOT CHOOSE ANY NAVIGATION POINT TO RUN TO!!!");
             if (BotLogic.getInstance().getWorld().getAll(NavPoint.class).size() == 0) {
-               BotLogic.getInstance().getLog().severe("world.getAll(NavPoint.class).size() == 0, there are no navigation ponits to choose from! Is exporting of nav points enabled in GameBots2004.ini inside UT2004?");
+               BotLogic.getInstance().getLog().info("world.getAll(NavPoint.class).size() == 0, there are no navigation ponits to choose from! Is exporting of nav points enabled in GameBots2004.ini inside UT2004?");
             }
 
             return;
@@ -245,7 +262,7 @@ public class MovementLogic {
 
             case STUCK:
                 // the bot has stuck! ... target nav point is unavailable currently
-                tabooNavPoints.add(targetNavPoint, 60);
+                tabooNavPoints.add(targetNavPoint,8);
                 break;
 
             case STOPPED:
@@ -278,11 +295,8 @@ public class MovementLogic {
 
     public void raycast() {
         
-        // mark that another logic iteration has began
-        BotLogic.getInstance().getLog().info("--- Logic iteration ---");
+        
        
-
-
         if (!bb.sensor) {
             // no sensor are signalizes - just proceed with forward movement
             BotLogic.getInstance().getLog().info("MOVEMENT");
@@ -298,7 +312,9 @@ public class MovementLogic {
             BotLogic.getInstance().getMove().stopMovement();
             moving = false;
         }
-
+        
+        BotLogic.getInstance().getLog().info("Inside Raycast ");
+       
         // according to the signals, take action...
         // 8 cases that might happen follow
         if (bb.isWallFrontStraight) {
@@ -316,7 +332,7 @@ public class MovementLogic {
                     BotLogic.getInstance().getMove().turnHorizontal(-smallTurn);
                 } else {
                     // FRONT is signaling
-                    BotLogic.getInstance().getMove().turnHorizontal(smallTurn);
+                    BotLogic.getInstance().getMove().turnHorizontal(180);
                 }
             }
         } else {
@@ -324,6 +340,7 @@ public class MovementLogic {
                 if (bb.isWallRight45) {
                     // LEFT45, RIGHT45 are signaling
                     movementSelection();
+                     getRandomNavPoint();
                 } else {
                     // LEFT45 is signaling
                     BotLogic.getInstance().getMove().turnHorizontal(smallTurn);
@@ -335,6 +352,7 @@ public class MovementLogic {
                 } else {
                     // no sensor is signaling
                     movementSelection();
+                     getRandomNavPoint();
                 }
             }
         }
