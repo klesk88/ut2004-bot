@@ -7,6 +7,7 @@ package com.fmt.UT2004Bot;
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Raycasting;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Configuration;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.RemoveRay;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.AutoTraceRay;
 import cz.cuni.amis.pogamut.ut2004.utils.UnrealUtils;
@@ -22,7 +23,7 @@ public class Sensor_RayCastSystem
     private BlackBoard bb = BlackBoard.getInstance();
     public LogCategory log = null;
     
-    private UT2004BotModuleController controller;
+   
         /**
      * Support for creating rays used for raycasting (see {@link AutoTraceRay}
      * that is being utilized). <p><p> May be used since {@link IUT2004BotController#botInitialized(cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo, cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ConfigChange, cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.InitedMessage)}
@@ -50,7 +51,9 @@ public class Sensor_RayCastSystem
     final int ray_length_side90 = (int) (UnrealUtils.CHARACTER_COLLISION_RADIUS * 3);
     
     public Sensor_RayCastSystem()
-    {}
+    {
+        //super();
+    }
     
     public void init(){
          /**
@@ -63,19 +66,19 @@ public class Sensor_RayCastSystem
 
         // 1. remove all previous rays, each bot starts by default with three
         // rays, for educational purposes we will set them manually
-        this.controller.getAct().act(new RemoveRay("All"));
+        BotLogic.getInstance().getAct().act(new RemoveRay("All"));
 
         // 2. create new rays
-        raycasting.createRay(LEFT45, new Vector3d(1, -1, 0), rayLength, fastTrace, floorCorrection, traceActor);
-        raycasting.createRay(FRONT, new Vector3d(1, 0, 0), ray_length_front, fastTrace, floorCorrection, traceActor);
-        raycasting.createRay(RIGHT45, new Vector3d(1, 1, 0), rayLength, fastTrace, floorCorrection, traceActor);
-        raycasting.createRay(LEFT90, new Vector3d(0, -1, 0), ray_length_side90, fastTrace, floorCorrection, traceActor);
-        raycasting.createRay(RIGHT90, new Vector3d(0, 1, 0), ray_length_side90, fastTrace, floorCorrection, traceActor);
-        raycasting.createRay(FRONTUP, new Vector3d(1, 0, 0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
-        raycasting.createRay(FRONTDOWN, new Vector3d(1, 0, -0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
+        BotLogic.getInstance().getRaycasting().createRay(LEFT45, new Vector3d(1, -1, 0), rayLength, fastTrace, floorCorrection, traceActor);
+        BotLogic.getInstance().getRaycasting().createRay(FRONT, new Vector3d(1, 0, 0), ray_length_front, fastTrace, floorCorrection, traceActor);
+        BotLogic.getInstance().getRaycasting().createRay(RIGHT45, new Vector3d(1, 1, 0), rayLength, fastTrace, floorCorrection, traceActor);
+         BotLogic.getInstance().getRaycasting().createRay(LEFT90, new Vector3d(0, -1, 0), ray_length_side90, fastTrace, floorCorrection, traceActor);
+         BotLogic.getInstance().getRaycasting().createRay(RIGHT90, new Vector3d(0, 1, 0), ray_length_side90, fastTrace, floorCorrection, traceActor);
+         BotLogic.getInstance().getRaycasting().createRay(FRONTUP, new Vector3d(1, 0, 0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
+         BotLogic.getInstance().getRaycasting().createRay(FRONTDOWN, new Vector3d(1, 0, -0.5), ray_length_front, fastTrace, floorCorrection, traceActor);
         // register listener called when all rays are set up in the UT engine
         
-        raycasting.getAllRaysInitialized().addListener(new FlagListener<Boolean>() {
+         BotLogic.getInstance().getRaycasting().getAllRaysInitialized().addListener(new FlagListener<Boolean>() {
 
             public void flagChanged(Boolean changedValue) {
                 // once all rays were initialized store the AutoTraceRay objects
@@ -95,16 +98,21 @@ public class Sensor_RayCastSystem
         // all its listeners are informed
 
         // 3. declare that we are not going to setup any other rays, so the 'raycasting' object may know what "all" is        
-        raycasting.endRayInitSequence();
-
+         BotLogic.getInstance().getRaycasting().endRayInitSequence();
+            
+        
+         // The most important thing is this line that ENABLES AUTO TRACE functionality,
+        // without ".setAutoTrace(true)" the AddRay command would be useless as the bot won't get
+        // trace-lines feature activated
+        BotLogic.getInstance().getAct().act(new Configuration().setDrawTraceLines(true).setAutoTrace(true));
         
     }
     
     public void update()
     {
             // if the rays are not initialized yet, do nothing and wait for their initialization 
-        if (!raycasting.getAllRaysInitialized().getFlag()) {
-            log.info("Exit");
+        if (! BotLogic.getInstance().getRaycasting().getAllRaysInitialized().getFlag()) {
+            BotLogic.getInstance().getLog().info("Exit");
             //TODO maybe this log was useful, so maybe put it back in once i have the log here
             
             return;

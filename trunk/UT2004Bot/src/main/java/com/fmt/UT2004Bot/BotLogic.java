@@ -57,18 +57,30 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     private Decision_simpleExamples decisionMaking = null;
     private BlackBoard bb = BlackBoard.getInstance();
     private Sensors sensor = null;
+    public static BotLogic instance;
+  
+    public BotLogic() {
+        // Exists only to defeat instantiation.
+        instance = this;
+    }
+
+    public static BotLogic getInstance() {
+       
+        return instance;
+    }
+    
     
     @Override
     public void prepareBot(UT2004Bot bot) {
-
-        sensor = new Sensors(bot);
-        ml = new MovementLogic(bot);
         
+        sensor = new Sensors();
+        ml = new MovementLogic();
+
         decisionMaking = new Decision_simpleExamples(bot);
         
         /*
          * sensors initialization
-         */
+         
         this.sensor.navigation = navigation;
         this.sensor.config = config;
         this.sensor.log = log;
@@ -91,10 +103,10 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         this.sensor.visibility = visibility;
         this.sensor.weaponPrefs = weaponPrefs;
         this.sensor.weaponry = weaponry;
-        
+        */
         /*
          * movement initialization
-         */
+         
         this.ml.pathExecutor = pathExecutor;
         this.ml.navigation = navigation;
         this.ml.world = world;
@@ -105,12 +117,12 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         this.ml.runStraight = runStraight;
         this.ml.getBackToNavGraph = getBackToNavGraph;
         this.ml.move = move;
-        
+        */
         /*
          * 
          */
-        this.sensor.rayCastSystem.raycasting = raycasting;
-        this.sensor.rayCastSystem.log = log;
+        //this.sensor.ray_cast_system.raycasting = getRaycasting();
+        //this.sensor.ray_cast_system.log = log;
         
         
         log.info("bot Initialize");
@@ -191,7 +203,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         
         //TODO this should be removed
         this.sensor.updateMovement();
-        
+        getAct();
         //TODO this should be removed as well
         //for use the raycast part (bugged for the moment) call the 
         //method this.ml.raycast(); instead of this one
