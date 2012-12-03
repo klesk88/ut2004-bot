@@ -4,15 +4,18 @@
  */
 package com.fmt.UT2004Bot;
 
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.*;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
-import java.util.Stack;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import java.util.*;
 
 /**
  *
  * @author klesk
  */
 public class BlackBoard {
-    
+
     private static BlackBoard instance = null;
     public boolean follow_player = false;
     public boolean nav_point_navigation = false;
@@ -20,7 +23,7 @@ public class BlackBoard {
     public boolean player_visible = false;
     public Player player = null;
     public double player_distance = Double.MAX_VALUE;
-    
+    public Location targetPos;
     public boolean isWallRight45 = false;
     public boolean isWallRight90 = false;
     public boolean isWallLeft45 = false;
@@ -28,19 +31,16 @@ public class BlackBoard {
     public boolean isWallFrontStraight = false;
     public boolean isWallFrontUp = false;
     public boolean isWallFrontDown = false;
-    
-    
+    public ItemType[] mostDesiredAmmunition = new ItemType[3];
     // GOAP
     boolean replan = false;
     Stack<Action> currentPlan;
-    
-    
-        /**
+    /**
      * Whether any of the sensor signalize the collision. (Computed in the
      * doLogic())
      */
     public boolean sensor = false;
-    
+
     private BlackBoard() {
         // Exists only to defeat instantiation.
     }
@@ -52,12 +52,69 @@ public class BlackBoard {
         return instance;
     }
 
-    
     // update the current world state
-    public void updateCurrentWorldState()
-    {
+    public void updateCurrentWorldState() {
         //Worldstate bla
+
+        updateAmmoPriorities();
+
+    }
+
+    /**
+     * Attempt to priorize ammo based on current ammo and weaponery
+     */
+    private void updateAmmoPriorities() {
+        Map<Float, ItemType> priorities = new HashMap<Float, ItemType>();
+
+        float priorityRatio_ASSAULT_RIFLE = 1.0f;
+        float priorityRatio_FLAK_CANNON = 0.5f;
+        float priorityRatio_MINIGUN = 2.0f;
+
+        float priority_ASSAULT_RIFLE = calculatePriorityForWeapon(priorityRatio_ASSAULT_RIFLE, ItemType.ASSAULT_RIFLE);
+        priorities.put(priority_ASSAULT_RIFLE, ItemType.ASSAULT_RIFLE);
+
+        float priority_FLAK_CANNON = calculatePriorityForWeapon(priorityRatio_FLAK_CANNON, ItemType.FLAK_CANNON);
+        priorities.put(priority_FLAK_CANNON, ItemType.FLAK_CANNON);
+
+        float priority_MINIGUN = calculatePriorityForWeapon(priorityRatio_MINIGUN, ItemType.MINIGUN);
+        priorities.put(priority_MINIGUN, ItemType.MINIGUN);
+   
+        Map.Entry<Float, ItemType> maxEntry = null;
         
-        
+        for (int i = 0; i < mostDesiredAmmunition.length; i++) {
+
+            for (Map.Entry<Float, ItemType> entry : priorities.entrySet()) {
+                if (maxEntry == null || entry.getKey().compareTo(maxEntry.getKey()) > 0) {
+                    maxEntry = entry;
+                }
+            }
+
+            mostDesiredAmmunition[i] = maxEntry.getValue();
+            priorities.remove(maxEntry.getKey());
+        }
+
+    }
+
+    /**
+     * Use only for weapons. Returns (max - current ammo) * priorityRatio
+     *
+     * @param priorityRatio
+     * @param item
+     * @return
+     */
+    private float calculatePriorityForWeapon(float priorityRatio, ItemType item) {
+        float calculatedPriority =  BotLogic.getInstance().getWeaponry().getWeaponDescriptor(item).getPriMaxAmount();
+
+        if (BotLogic.getInstance().getWeaponry().hasWeapon(item)) {
+            calculatedPriority =
+                    (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(item).getPriMaxAmount()
+                    - BotLogic.getInstance().getWeaponry().getAmmo(item))
+                    * priorityRatio;
+        }
+
+        BotLogic.getInstance().writeToLog_HackCosIMNoob("priority: " + calculatedPriority + " for " + item.getName()
+                + " Max ammo: " + BotLogic.getInstance().getWeaponry().getWeaponDescriptor(item).getPriMaxAmount()
+                + " cur ammo: " + BotLogic.getInstance().getWeaponry().getAmmo(item));
+        return calculatedPriority;
     }
 }

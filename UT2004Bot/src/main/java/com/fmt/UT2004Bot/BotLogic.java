@@ -66,7 +66,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     public void prepareBot(UT2004Bot bot) {
         
         sensor = new Sensors();
-        ml = new MovementLogic();
+        ml = MovementLogic.getInstance();
 
         decisionMaking = new Decision_simpleExamples(bot);
         
@@ -192,6 +192,8 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         
         this.sensor.update();
        
+        this.bb.updateCurrentWorldState();
+        
         // this.targetManager.update();
         // target manager also calls GOAPPlanner
         
@@ -204,9 +206,16 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         //method this.ml.raycast(); instead of this one
         this.ml.raycast();
         
+        ActorSystem.getInstance().update();
+        
         //this should handle navigation and action performance (e.g. shooting)
         //this.actorSystem.update();
         
+    }
+    
+    public void writeToLog_HackCosIMNoob(String string)
+    {
+        log.info(string);
     }
 
 }

@@ -27,6 +27,16 @@ import java.util.logging.Level;
  */
 public class MovementLogic {
 
+    private static MovementLogic instance;
+
+    public static MovementLogic getInstance() {
+        if (instance == null) {
+            instance = new MovementLogic();
+        }
+        return instance;
+    }
+    
+    
     private UT2004PathAutoFixer autoFixer = null;
   
      /*
@@ -35,7 +45,7 @@ public class MovementLogic {
      *
      *
      */
-    private TabooSet<NavPoint> tabooNavPoints;
+    public TabooSet<NavPoint> tabooNavPoints;
     /**
      * Shortcut for the {@link UT2004Bot#getWorldView()}.
      */
@@ -72,7 +82,7 @@ public class MovementLogic {
     private BlackBoard bb = null;
 
     
-    public MovementLogic() {
+    private MovementLogic() {
         //this.log.info("Inside contructor");
      
         //this.controller = (UT2004BotModuleController) bot.getController();
@@ -132,13 +142,29 @@ public class MovementLogic {
             BotLogic.getInstance().getNavigation().stopNavigation();
             bb.bot_killed = false;
         }
+        
+        handleBlackboardNavigation();
+                /*
         if (this.bb.follow_player) {
             handlePlayerNavigation();
         } else {
             handleNavPointNavigation();
         }
+        * */
+        
     }
 
+    private void handleBlackboardNavigation()
+    {
+      if(BotLogic.getInstance().getNavigation().isTryingToGetBackToNav())
+      {
+          // TODO: solve this problem
+          //BotLogic.getInstance().getNavigation().navigate(bb.targetPos);
+      }
+      
+      BotLogic.getInstance().getNavigation().navigate(bb.targetPos);
+    }
+    
     private void handlePlayerNavigation() {
         //targetNavPoint = null;
         
@@ -150,16 +176,17 @@ public class MovementLogic {
         //if it get stuck, trying to go back and forward between the same 2 points, unlock it
       if(BotLogic.getInstance().getNavigation().isTryingToGetBackToNav())
       {
-          BotLogic.getInstance().getNavigation().navigate(BotLogic.getInstance().getNavigation().getCurrentTargetPlayer());
+          BotLogic.getInstance().getNavigation().navigate(bb.targetPos);
       }
-        if (BotLogic.getInstance().getNavigation().isNavigating() && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null  ) {
+      
+        if (BotLogic.getInstance().getNavigation().isNavigating() 
+                && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null  ) {
             // WE'RE NAVIGATING TO SOME PLAYER
             //logNavigation();ùBotLogic.getInstance().getNavigation()
             //BotLogic.getInstance().getNavigation().
           
             return;
         }
-
 
 
         // NAVIGATION HAS STOPPED ... 
