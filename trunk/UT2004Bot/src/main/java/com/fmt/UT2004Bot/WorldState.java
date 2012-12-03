@@ -18,8 +18,7 @@ public class WorldState {
     private boolean[] fixedSizeArray;
     private boolean[] fixedSizeArray_save;
     
-    
-    private boolean[] currentGoalState;
+    //private boolean[] currentGoalState;
     
     private WorldState.TruthStates[] world_state;
     private TruthStates[] goal_current;
@@ -44,11 +43,11 @@ public class WorldState {
         goal_current = new TruthStates[]{TruthStates.Uninstantiated, TruthStates.Uninstantiated, TruthStates.True};
         
         fixedSizeArray = new boolean[Symbols.values().length];
-        currentGoalState = new boolean[Symbols.values().length];
+        //currentGoalState = new boolean[Symbols.values().length];
         for (int i = 0; i< fixedSizeArray.length; i++)
         {
             fixedSizeArray[i] = false;
-            currentGoalState[i] = false;
+          //  currentGoalState[i] = false;
         }
        //fixedSizeArray.put(WorldStates.AtTargetPos, Boolean.FALSE);
        //fixedSizeArray.put(WorldStates.ReloadWeapon, Boolean.FALSE);
@@ -63,7 +62,25 @@ public class WorldState {
     {
         // compare world state with goal_current
         
-        return false;
+        boolean value_to_return = true;
+        
+        for (int i = 0; i < goal_current.length; i++)
+        {
+            if (!(goal_current[i] == TruthStates.Uninstantiated))
+            {
+                if (goal_current[i] == TruthStates.True) {
+                    if (!fixedSizeArray[i]) {
+                        value_to_return = false;
+                    }
+                } else if (goal_current[i] == TruthStates.False) {
+                    if (fixedSizeArray[i]) {
+                        value_to_return = false;
+                    }
+                }
+            }     
+        }
+
+        return value_to_return;
     }
     
     public void setGoalState(GoalStates goal)
@@ -82,16 +99,13 @@ public class WorldState {
     
     //key value pairs
         // for example: is target dead, is weapon loaded (these two are only one slot, so a differet class needs to manage these)
-        // others: at target pos, 
-    
-    
+        // others: at target pos,   
     
     //return current world state
     public WorldState.TruthStates[] getWorldState()
     {
         return world_state;
     }
-    
     
     //goal world state
     public TruthStates[] getActualGoal()
