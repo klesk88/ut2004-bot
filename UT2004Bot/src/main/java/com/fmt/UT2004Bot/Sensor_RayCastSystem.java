@@ -13,7 +13,7 @@ import javax.vecmath.Vector3d;
 
 /**
  *
- * @author Ado
+ * @author Michele
  */
 public class Sensor_RayCastSystem 
 {
