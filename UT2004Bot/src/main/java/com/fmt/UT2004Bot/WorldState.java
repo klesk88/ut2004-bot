@@ -93,7 +93,13 @@ public class WorldState {
      * @return the current real world goal
      */
     public TruthStates[] getActualGoal() {
-        return goal_current;
+        
+        TruthStates[] temp = new TruthStates[goal_current.length];
+        for(int i=0; i<goal_current.length;i++)
+        {
+            temp[i] = goal_current[i];
+        }
+        return temp;
     }
 
     /**
