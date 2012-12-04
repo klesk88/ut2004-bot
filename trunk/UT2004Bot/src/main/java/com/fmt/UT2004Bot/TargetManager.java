@@ -14,6 +14,7 @@ public class TargetManager
 {
     //SINGLETON START
     private static TargetManager instance = null;
+    private GOAPPlanner goap = null;
     
     private TargetManager() {
         // Exists only to defeat instantiation.
@@ -26,6 +27,12 @@ public class TargetManager
         return instance;
     }
     //SINGLETON END
+    
+    public void init()
+    {
+        goap = new GOAPPlanner();
+        
+    }
     
     public void update()
     {

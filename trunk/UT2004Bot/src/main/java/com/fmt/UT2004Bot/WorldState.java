@@ -120,12 +120,19 @@ public class WorldState {
      * @return a new simulated world state
      */
     public TruthStates[] applyPostConditionOfAction(TruthStates[] currentWorldState, TruthStates[] postConditionizedFixedArray) {
+        TruthStates[] temp = new TruthStates[currentWorldState.length];
+        
+        for(int i=0; i<currentWorldState.length;i++)
+        {
+            temp[i] = currentWorldState[i];
+        }
+        
         for (int i = 0; i < currentWorldState.length; i++) {
             if (postConditionizedFixedArray[i] != TruthStates.Uninstantiated) {
-                currentWorldState[i] = postConditionizedFixedArray[i];
+                 temp[i] = postConditionizedFixedArray[i];
             }
         }
-        return currentWorldState;
+        return  temp;
     }
 
     /**
@@ -154,8 +161,8 @@ public class WorldState {
         boolean value_to_return = true;
 
         for (int i = 0; i < goalState.length; i++) {
-            if (!(goalState[i] == TruthStates.Uninstantiated)) {
-                if (goalState[i] == TruthStates.True) {
+            if (!(worldState[i] == TruthStates.Uninstantiated)) {
+                if (goalState[i] == TruthStates.True  ) {
                     if (worldState[i] == TruthStates.False) {
                         value_to_return = false;
                     }

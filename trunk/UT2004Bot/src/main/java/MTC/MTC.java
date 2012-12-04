@@ -12,7 +12,7 @@ import Actions.Action;
 import Actions.ActionManager;
 import com.fmt.UT2004Bot.BotLogic;
 import com.fmt.UT2004Bot.WorldState;
-import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Game;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -64,14 +64,14 @@ public class MTC{
            
 		
                
-              BotLogic.getInstance().writeToLog_HackCosIMNoob(" asdas " );
+         
 		float delta = 0;
 		//create the root node
 		Node root = new Node();	
             
 		root.init(null,number_of_simulations, state,goal);
 		//root.setState();
-                 
+                 root.setListOfActions(actions);
 		//time when i start to make the calculations
 		long start_time = System.currentTimeMillis();
 		long temp_time=System.currentTimeMillis();
@@ -79,23 +79,24 @@ public class MTC{
 		//while i have time to perform my calculations
 		while(temp_time - start_time < delay)
 		{
+                      
 			Node node = treePolicy(root);
-                            BotLogic.getInstance().writeToLog_HackCosIMNoob(" asdas");
+                           
 			delta = defaultPolicy(node);	
-                             BotLogic.getInstance().writeToLog_HackCosIMNoob(" asdas1");
+                           
 			backup(node,delta);
 			
-                          BotLogic.getInstance().writeToLog_HackCosIMNoob(" asdas2");
+                         
 			//update the time
 			temp_time=System.currentTimeMillis();
 		}
 	
                 Node best_child = root;
-                List<Action> final_list = null;
+                List<Action> final_list = new LinkedList<Action>();
                 
                 while(best_child.getChildrenSize() != 0)
                 {
-                    final_list.add(best_child.getAction());
+                    final_list.add(best_child.getBestChild().getAction());
                     best_child = best_child.getBestChild();
                 }
 		
@@ -114,7 +115,7 @@ public class MTC{
 		do
 		{
 			//if the node isn't all expanded
-			if(actual_node.getChildrenSize()<actual_node.getNumberOfPostConditions() || actual_node.getNumberOfPostConditions() == -1)
+			if(actual_node.getChildrenSize()<actual_node.getNumberOfPossibleActions())
 			{
 				return expand(actual_node);
 			}
@@ -150,8 +151,13 @@ public class MTC{
 		{
 			node.increaseN();
 			node.setQ(delta);
-                        node.setBestChild(node,node.getQ(),node.getN());
-			node = node.getParent();
+                        
+                        if(node.getParent() != null)
+                        {
+                            node.setBestChild(node,node.getQ(),node.getN());
+                        }
+                        
+                        node = node.getParent();
 		}
 	}
 	
@@ -195,9 +201,9 @@ public class MTC{
 		Node new_child = null;
               
 		WorldState.TruthStates[] state = node.getNodeState();
-
+                
 		Action new_action = node.getNewAction(state);
-           
+         
                 
                 //if there is no available action in this moment where the pre conditions are satisfied
                 if(new_action == null)
@@ -207,15 +213,18 @@ public class MTC{
                 //apply to the state of the parent node the postconditions that the action 
                 //selected have
                 state = WorldState.getInstance().applyPostConditionOfAction(state, new_action.GetPostCondtionsArray());
-                
+                   
 		if(new_action != null)
 		{
+                   
 			new_child = new Node();
 			new_child.init(new_action,number_of_simulations,state,node.getNodeGoal());
+                 
 			new_child.setParent(node);
                         new_child.setListOfActions(actions);
 			node.setChildren(new_child);
 		}
+                 
 		return new_child;
 	}
 	

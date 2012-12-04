@@ -11,7 +11,7 @@ package MTC;
 import Actions.Action;
 import com.fmt.UT2004Bot.BotLogic;
 import com.fmt.UT2004Bot.WorldState;
-import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Game;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
@@ -24,6 +24,8 @@ public class Node {
 	private Vector<Node> children;
 	private float q;
 	private int n;	
+        private int number_of_possible_actions;
+        private LinkedList<Action> possible_actions;
 	private WorldState.TruthStates[] node_state;
         private int number_of_post_conditions;
 	private int number_of_simulations;	
@@ -41,17 +43,18 @@ public class Node {
 	{
 		q = 0;
 		n = 0;
+                possible_actions = new LinkedList<Action>();
 		parent = null;
 		node_state = initial_state;
 		this.number_of_simulations = number_of_simulations;
 		final_condition_reached = false;
+                list_of_actions = new LinkedList<Action>();
 		children = new Vector<Node>();	
                 this.number_of_post_conditions = -1;
                 this.action_choose = action;
                 //update the goal of the node applying the action
                 
                this.node_goal  = updateGoalState(goal);
-              
                this.best_child = null;
                this.best_child_score = 0;
 	}
@@ -162,7 +165,12 @@ public class Node {
 	
         public void setListOfActions(List<Action> action)
         {
-            this.list_of_actions = action;
+            for(int i=0;i<action.size();i++)
+            {
+                this.list_of_actions.add(action.get(i));
+            }
+            
+            setNumberOfPossibleActions();
         }
 	
         /**
@@ -176,7 +184,7 @@ public class Node {
             //if the score of the actual node is bigger i update it
             if(score > this.parent.best_child_score)
             {
-                 this.best_child = node;
+                 this.parent.best_child = node;
             }
         }
         
@@ -206,6 +214,32 @@ public class Node {
            return action_choose;
 	}
         
+        private void setNumberOfPossibleActions()
+        {
+          
+            
+            //check which action satisfied the passed goal state
+            for(int i=0; i<list_of_actions.size();i++)
+            {
+                WorldState.TruthStates[] worldStateSim =
+                        WorldState.getInstance().applyPostConditionOfAction(this.node_state, list_of_actions.get(i).GetPostCondtionsArray());
+                   
+                if(WorldState.getInstance().IsWorldStateAGoal(worldStateSim, node_goal))
+                {
+                    possible_actions.add(list_of_actions.get(i));
+                    //index = i;
+                   // break;
+                }
+            }
+            
+            number_of_possible_actions = possible_actions.size();                  
+        }
+        
+        protected int getNumberOfPossibleActions()
+        {
+            return number_of_possible_actions;
+        }
+        
         /**
          * Return the new action that have to be applied to the actual world state
          * @param state world state of the parent node
@@ -213,15 +247,14 @@ public class Node {
          */
         protected Action getNewAction(WorldState.TruthStates[] state)
 	{
-            int index = -1;
-            
+         
+            /*
             //check which action satisfied the passed goal state
             for(int i=0; i<list_of_actions.size();i++)
             {
-                 
                 WorldState.TruthStates[] worldStateSim =
                         WorldState.getInstance().applyPostConditionOfAction(state, list_of_actions.get(i).GetPostCondtionsArray());
-                
+                   
                 if(WorldState.getInstance().IsWorldStateAGoal(worldStateSim, node_goal))
                 {
                     index = i;
@@ -241,6 +274,17 @@ public class Node {
             list_of_actions.remove(index);
             //return the first action available
             return temp;
+            * 
+            */
+            Action temp;
+            if(possible_actions.size()!=0)
+            {
+                temp = possible_actions.getFirst();
+                possible_actions.removeFirst();
+                return temp;
+            }
+         
+            return null;
 	}
         
         /**
@@ -250,7 +294,7 @@ public class Node {
          */
         private WorldState.TruthStates[] updateGoalState(WorldState.TruthStates[] previous_goal)
         {
-            WorldState.TruthStates[] new_goal;
+           
             
             //if there is no action used for the root node i return the previous goal
             if(action_choose == null)
@@ -258,17 +302,28 @@ public class Node {
                 return previous_goal;
             }
             
-            //if the pre conditions are all met i have finished i have satisfied my goal
-            if(action_choose.arePreConditionsMet())
+            WorldState.TruthStates[] pre_consitions_applied = WorldState.getInstance().applyPreConditionOfAction(previous_goal, this.action_choose.getPreConditionArray());
+           
+            boolean preconsditions_met = true;
+            for(int i=0; i<pre_consitions_applied.length;i++)
             {
-                new_goal = null;
+                if(previous_goal[i] == WorldState.TruthStates.True)
+                    if(pre_consitions_applied[i] == WorldState.TruthStates.False)
+                    {
+                        preconsditions_met = false;
+                        break;
+                    }
+                
+                if(previous_goal[i] == WorldState.TruthStates.False)
+                    if(pre_consitions_applied[i] == WorldState.TruthStates.True)
+                    {
+                        preconsditions_met = false;
+                        break;
+                    }
             }
-            else
-            {
-                new_goal = WorldState.getInstance().applyPreConditionOfAction(previous_goal, action_choose.getPreConditionArray());
-            }
+            
                     
-            return new_goal;
+            return pre_consitions_applied;
         }
 	/**
 	 * simluate the game and give the delta value to the node
@@ -282,11 +337,17 @@ public class Node {
                 Action simulate_action = null;
                 WorldState.TruthStates[] simulate_goal = this.node_goal;
                 WorldState.TruthStates[] simulate_state = this.node_state;
+                // BotLogic.getInstance().getLog().info(" simulation");
 		//continue until i don't reach  a final condition or the number of simulations decided previously
 		while(!final_condition_reached && temp<number_of_simulations)
 		{
+                                   
                     //get the action to simulate from the actual workd state of this node
                     simulate_action = getNewAction(simulate_state);
+                    if(simulate_action == null)
+                    {
+                        return score;
+                    }
                     simulate_state = WorldState.getInstance().applyPostConditionOfAction(simulate_state, simulate_action.GetPostCondtionsArray());
                     simulate_goal = updateGoalState(simulate_goal);
                     
@@ -295,6 +356,7 @@ public class Node {
                     if(number_of_preconditions_not_met == 0)
                     {
 			score += 1;
+                        break;
 		    }
 		    //or add to the score the number of unsutisfied conditions
 		    else

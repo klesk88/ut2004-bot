@@ -30,6 +30,7 @@ public class GOAPPlanner {
         
         // get world state
         world_state = WorldState.getInstance();
+        finalPlan = new Stack<Action>();
         
     }
     
@@ -41,16 +42,20 @@ public class GOAPPlanner {
     // check whether goal is achieved
     // if not, apply other action or go back        
         List<Action> final_plan;
-        
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("inside mtc");
+        finalPlan.clear();
+       
         final_plan = MTC.getInstance().MTC(world_state.getWorldState(), world_state.getActualGoal());
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("outside mtc");
-        for(int i=final_plan.size()-1; i>0; i--)
+      
+        for(int i=final_plan.size()-1; i>=0; i--)
         {
             finalPlan.push(final_plan.get(i));
         }
         //write planb to blackboard
         bb.currentPlan = finalPlan;
-        
+         BotLogic.getInstance().writeToLog_HackCosIMNoob("final plan: ");
+         for(int i=0; i<finalPlan.size();i++)
+         {
+             BotLogic.getInstance().writeToLog_HackCosIMNoob(finalPlan.get(i).getClass().getName());
+         }
     }
 }
