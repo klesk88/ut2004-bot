@@ -8,8 +8,9 @@ package MTC;
  *
  * @author klesk
  */
-import com.fmt.UT2004Bot.Action;
-import com.fmt.UT2004Bot.ActionManager;
+import Actions.Action;
+import Actions.ActionManager;
+import com.fmt.UT2004Bot.BotLogic;
 import com.fmt.UT2004Bot.WorldState;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Game;
 import java.util.List;
@@ -46,7 +47,7 @@ public class MTC{
 	 * @param number_of_simulations number of simulations to perform at most during the simulation
 	 * @param delay how much time has ms pac-man to take a decision
 	 */
-	public void init(float constant,List<Action> actions, int number_of_simulations, int delay)
+	public void init(float constant, int number_of_simulations, int delay)
 	{
            
             this.actions =  ActionManager.getInstance().getActionsAvailable();
@@ -60,24 +61,17 @@ public class MTC{
 	 */
 	public List<Action> MTC(WorldState.TruthStates[] state, WorldState.TruthStates[] goal)
 	{
-		WorldState.TruthStates[] min_state = state;
-                int h_min = 0;
+           
+		
                
-                //calculat ethe initial cost
-                for(int i=0; i<goal.length; i++)
-                {
-                    if(state[i] != goal[i])
-                    {
-                        h_min++;
-                    }
-                }
-              
+              BotLogic.getInstance().writeToLog_HackCosIMNoob(" asdas " );
 		float delta = 0;
 		//create the root node
 		Node root = new Node();	
+            
 		root.init(null,number_of_simulations, state,goal);
 		//root.setState();
-		
+                 
 		//time when i start to make the calculations
 		long start_time = System.currentTimeMillis();
 		long temp_time=System.currentTimeMillis();
@@ -86,13 +80,16 @@ public class MTC{
 		while(temp_time - start_time < delay)
 		{
 			Node node = treePolicy(root);
-			delta = defaultPolicy(node);			
+                            BotLogic.getInstance().writeToLog_HackCosIMNoob(" asdas");
+			delta = defaultPolicy(node);	
+                             BotLogic.getInstance().writeToLog_HackCosIMNoob(" asdas1");
 			backup(node,delta);
 			
+                          BotLogic.getInstance().writeToLog_HackCosIMNoob(" asdas2");
 			//update the time
 			temp_time=System.currentTimeMillis();
 		}
-		
+	
                 Node best_child = root;
                 List<Action> final_list = null;
                 
@@ -117,7 +114,7 @@ public class MTC{
 		do
 		{
 			//if the node isn't all expanded
-			if(actual_node.getChildrenSize()<actual_node.getNumberOfPostConditions())
+			if(actual_node.getChildrenSize()<actual_node.getNumberOfPostConditions() || actual_node.getNumberOfPostConditions() == -1)
 			{
 				return expand(actual_node);
 			}
@@ -196,8 +193,11 @@ public class MTC{
 	private Node expand(Node node)
 	{
 		Node new_child = null;
+              
 		WorldState.TruthStates[] state = node.getNodeState();
+
 		Action new_action = node.getNewAction(state);
+           
                 
                 //if there is no available action in this moment where the pre conditions are satisfied
                 if(new_action == null)
@@ -206,7 +206,7 @@ public class MTC{
                 }
                 //apply to the state of the parent node the postconditions that the action 
                 //selected have
-                state = new_action.ApplyPostCondtions(state);
+                state = WorldState.getInstance().applyPostConditionOfAction(state, new_action.GetPostCondtionsArray());
                 
 		if(new_action != null)
 		{

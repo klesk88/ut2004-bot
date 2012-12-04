@@ -4,6 +4,7 @@
  */
 package com.fmt.UT2004Bot;
 
+import MTC.MTC;
 import java.util.logging.Level;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
@@ -140,6 +141,8 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         ml.init();
         sensor.init();
         navigation.getLog().setLevel(Level.OFF);
+        WorldState.getInstance().init();
+      
     }
 
     /**
@@ -188,11 +191,12 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
 
         log.info("Enter Logic");
        
+        this.sensor.update();
+        
+        this.bb.updateCurrentWorldState();
+        
         this.decisionMaking.update();
         
-        this.sensor.update();
-       
-        this.bb.updateCurrentWorldState();
         
         // this.targetManager.update();
         // target manager also calls GOAPPlanner
@@ -205,6 +209,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         //for use the raycast part (bugged for the moment) call the 
         //method this.ml.raycast(); instead of this one
         this.ml.raycast();
+        BotLogic.getInstance().writeToLog_HackCosIMNoob("raycast done");
         
         ActorSystem.getInstance().update();
         

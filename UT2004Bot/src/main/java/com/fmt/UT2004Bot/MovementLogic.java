@@ -159,7 +159,7 @@ public class MovementLogic {
       if(BotLogic.getInstance().getNavigation().isTryingToGetBackToNav())
       {
           // TODO: solve this problem
-          //BotLogic.getInstance().getNavigation().navigate(bb.targetPos);
+          //BotLogic.getInstance().getNavigation().navigate(???);
       }
       
       BotLogic.getInstance().getNavigation().navigate(bb.targetPos);

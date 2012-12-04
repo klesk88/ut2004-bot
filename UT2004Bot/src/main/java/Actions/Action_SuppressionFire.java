@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.fmt.UT2004Bot;
+package Actions;
 
+import com.fmt.UT2004Bot.BotLogic;
+import com.fmt.UT2004Bot.WorldState;
 import com.fmt.UT2004Bot.WorldState.TruthStates;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
 
@@ -20,18 +22,34 @@ public class Action_SuppressionFire implements Action{
     }
 
     @Override
-    public TruthStates[] ApplyPostCondtions(TruthStates[] worls_state) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public TruthStates[] GetPostCondtionsArray() {
+        TruthStates[] postConditionArray = new TruthStates[WorldState.Symbols.values().length];
+        for (int i = 0; i < postConditionArray.length; i++)
+        {postConditionArray[i] = TruthStates.Uninstantiated;
+        }
+            
+        postConditionArray[WorldState.Symbols.IsTargetDead.ordinal()] = TruthStates.True;
+        
+        return postConditionArray;
     }
 
     @Override
     public void update() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    @Override
-    public TruthStates[] applyPreConditions(TruthStates[] goal_state) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+        @Override
+    public TruthStates[] getPreConditionArray() {
+            
+        TruthStates[] preConditionArray = new TruthStates[WorldState.Symbols.values().length];
+        for (int i = 0; i < preConditionArray.length; i++)
+        {preConditionArray[i] = TruthStates.Uninstantiated;
+        }
+            
+        preConditionArray[WorldState.Symbols.HasSuppressionAmmunition.ordinal()] = TruthStates.True;
+        preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
+        
+        return preConditionArray;
     }
 
     @Override
