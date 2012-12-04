@@ -75,6 +75,7 @@ public class Action_SuppressionFire implements Action{
             BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting because there is ammo");
             BotLogic.getInstance().getShoot().changeWeapon(ItemType.FLAK_CANNON);
             BotLogic.getInstance().getShoot().shoot();
+            
             return ActionResult.Success;
         }
 

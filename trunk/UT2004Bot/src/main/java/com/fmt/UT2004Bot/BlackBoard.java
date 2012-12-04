@@ -26,6 +26,8 @@ public class BlackBoard {
     public boolean nav_point_navigation = false;
     public boolean bot_killed = false;
     public boolean player_visible = false;
+    
+    // TODO: this shoudl be private, and only be set by a target selection!!!
     public Player player = null;
     int lastKnownDeathValue = 0;
     public double player_distance = Double.MAX_VALUE;
@@ -86,7 +88,7 @@ public class BlackBoard {
 
         if (player != null)
         {
-                if (! BotLogic.getInstance().getGame().isPlayerDeathsKnown(player.getId())) {
+        if (! BotLogic.getInstance().getGame().isPlayerDeathsKnown(player.getId())) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
         } else if (BotLogic.getInstance().getGame().getPlayerDeaths(player.getId())
                 > lastKnownDeathValue){
