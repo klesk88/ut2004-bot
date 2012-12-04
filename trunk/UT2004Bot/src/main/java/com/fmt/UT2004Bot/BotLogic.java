@@ -141,7 +141,6 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         ml.init();
         sensor.init();
         navigation.getLog().setLevel(Level.OFF);
-        WorldState.getInstance().init();
       
     }
 
@@ -193,7 +192,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
        
         this.sensor.update();
         
-        this.bb.updateCurrentWorldState();
+        this.bb.update();
         
         this.decisionMaking.update();
         
