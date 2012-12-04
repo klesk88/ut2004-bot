@@ -17,9 +17,9 @@ import java.util.*;
  */
 public class BlackBoard {
 
-    // TODO:
-    //public enum WeaponsUsed {Bla = 0, Nsdfa}
-    
+    //The Weapons our bot might use
+    public enum WeaponsUsed {ASSAULT_RIFLE_Prim, FLAK_CANNON_Prim,MINIGUN_Prim }
+   
     private static BlackBoard instance = null;
     public boolean follow_player = false;
     public boolean nav_point_navigation = false;
@@ -58,47 +58,53 @@ public class BlackBoard {
     }
 
     // update the current world state
-    public void updateCurrentWorldState() {
-        //Worldstate bla
+    public void update() {
 
         updateAmmoPriorities();
 
-        if(player_visible) 
-            WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, true);
-        else 
-            WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, false);
-        
-        if(hasSuppressionAmmo())
-            WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, true);
-        else
-            WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, false);
-        
-        if (player != null)
-             WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
-        else
-            WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, true);
+        updateWorldState();
+        BotLogic.getInstance().writeToLog_HackCosIMNoob("world state updated");
         
         WorldState.getInstance().setGoalState(WorldState.GoalStates.KillEnemy);
-        
-            
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("world states calculated");
-        
     }
 
-    private boolean hasSuppressionAmmo()
+    private void updateWorldState()
     {
-        boolean result = false;
-        
-        if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.ASSAULT_RIFLE).getPriMaxAmount() > 10)
-            result = true;
-                if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.FLAK_CANNON).getPriMaxAmount() > 10)
-            result = true;
-                        if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.MINIGUN).getPriMaxAmount() > 10)
-            result = true;
-        
-        return result;
+        if (player_visible) {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, true);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, false);
+        }
+
+        if (hasSuppressionAmmo()) {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, true);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, false);
+        }
+
+        if (player != null) {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, true);
+        }
     }
     
+    private boolean hasSuppressionAmmo() {
+        boolean result = false;
+
+        if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.ASSAULT_RIFLE).getPriMaxAmount() > 10) {
+            result = true;
+        }
+        if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.FLAK_CANNON).getPriMaxAmount() > 10) {
+            result = true;
+        }
+        if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.MINIGUN).getPriMaxAmount() > 10) {
+            result = true;
+        }
+
+        return result;
+    }
+
     /**
      * Attempt to priorize ammo based on current ammo and weaponery
      */
@@ -117,9 +123,9 @@ public class BlackBoard {
 
         float priority_MINIGUN = calculatePriorityForWeapon(priorityRatio_MINIGUN, ItemType.MINIGUN);
         priorities.put(priority_MINIGUN, ItemType.MINIGUN);
-   
+
         Map.Entry<Float, ItemType> maxEntry = null;
-        
+
         for (int i = 0; i < mostDesiredAmmunition.length; i++) {
 
             for (Map.Entry<Float, ItemType> entry : priorities.entrySet()) {
@@ -131,18 +137,16 @@ public class BlackBoard {
             mostDesiredAmmunition[i] = maxEntry.getValue();
             priorities.remove(maxEntry.getKey());
         }
-
     }
 
     /**
-     * Use only for weapons. Returns (max - current ammo) * priorityRatio
-     *
+     * Use only for weapons! Returns (max - current ammo) * priorityRatio
      * @param priorityRatio
      * @param item
      * @return
      */
     private float calculatePriorityForWeapon(float priorityRatio, ItemType item) {
-        float calculatedPriority =  BotLogic.getInstance().getWeaponry().getWeaponDescriptor(item).getPriMaxAmount();
+        float calculatedPriority = BotLogic.getInstance().getWeaponry().getWeaponDescriptor(item).getPriMaxAmount();
 
         if (BotLogic.getInstance().getWeaponry().hasWeapon(item)) {
             calculatedPriority =
@@ -157,11 +161,9 @@ public class BlackBoard {
         return calculatedPriority;
     }
 
-    public Location predictLocationForWeapon(ItemType desiredWeapon)
-    {
+    public Location predictLocationForWeapon(WeaponsUsed desiredWeapon) {
         //call francescos method here
-        
+
         return null;
     }
-
 }

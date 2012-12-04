@@ -23,11 +23,11 @@ import java.util.logging.Level;
 
 /**
  *
- * @author klesk
+ * @author klesk, Tilman
  */
 public class MovementLogic {
 
-    private static MovementLogic instance;
+    private static MovementLogic instance = null;
 
     public static MovementLogic getInstance() {
         if (instance == null) {
