@@ -18,6 +18,8 @@ import cz.cuni.amis.utils.collections.MyCollections;
  */
 public class Action_RandomWalk implements Action{
 
+    boolean newRun = true;
+    
     @Override
     public boolean arePreConditionsMet() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -56,9 +58,26 @@ public class Action_RandomWalk implements Action{
 
     @Override
     public ActionResult executeAction() {
-        BlackBoard.getInstance().targetPos = getRandomNavPoint().getLocation();
-        return ActionResult.Success;
+        
+        BlackBoard bb = BlackBoard.getInstance();
+        
+        if (newRun){
+            bb.targetPos = getRandomNavPoint().getLocation();
+            BotLogic.getInstance().getBody().getLocomotion().setRun();
+            newRun = false;
+        }
+        if (( BotLogic.getInstance().getBot().getVelocity().isZero())){
+            newRun = true;
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("RandomWalk success");
+            return ActionResult.Success;
+        } 
+        
+
+        BotLogic.getInstance().writeToLog_HackCosIMNoob("RandomWalk Running");
+        return ActionResult.Running;
     }
+        
+    
     
         /**
      * Randomly picks some navigation point to head to.
