@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.fmt.UT2004Bot;
+package Actions;
 
+import com.fmt.UT2004Bot.BotLogic;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,7 +17,16 @@ public class ActionManager {
     private List<Action> actions_available;
     private static ActionManager instance = null;
     
-    private ActionManager(){}
+    private ActionManager(){
+        actions_available = new LinkedList<Action>();
+        BotLogic.getInstance().writeToLog_HackCosIMNoob("sdhfujlks");
+          actions_available.add(new Action_SuppressionFire()); 
+          actions_available.add(new Action_GoToAmmunition());
+          actions_available.add(new Action_FollowVisiblePlayer());
+          actions_available.add(new Action_RandomWalk());
+         
+    BotLogic.getInstance().writeToLog_HackCosIMNoob("dsfasdf");
+    }
 
     
     public static ActionManager getInstance() {

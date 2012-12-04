@@ -2,8 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.fmt.UT2004Bot;
+package Actions;
 
+import com.fmt.UT2004Bot.BlackBoard;
+import com.fmt.UT2004Bot.BotLogic;
+import com.fmt.UT2004Bot.WorldState;
 import com.fmt.UT2004Bot.WorldState.TruthStates;
 
 /**
@@ -18,8 +21,16 @@ public class Action_FollowVisiblePlayer implements Action{
     }
 
     @Override
-    public TruthStates[] ApplyPostCondtions(TruthStates[] worls_state) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public TruthStates[] GetPostCondtionsArray() {
+        
+        TruthStates[] postConditionArray = new TruthStates[WorldState.Symbols.values().length];
+        for (int i = 0; i < postConditionArray.length; i++)
+        {postConditionArray[i] = TruthStates.Uninstantiated;
+        }
+            
+        postConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
+        
+        return postConditionArray;
     }
 
     @Override
@@ -28,8 +39,15 @@ public class Action_FollowVisiblePlayer implements Action{
     }
 
     @Override
-    public TruthStates[] applyPreConditions(TruthStates[] goal_state) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public TruthStates[] getPreConditionArray() {
+                        TruthStates[] preConditionArray = new TruthStates[WorldState.Symbols.values().length];
+        for (int i = 0; i < preConditionArray.length; i++)
+        {preConditionArray[i] = TruthStates.Uninstantiated;
+        }
+            
+        preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
+        
+        return preConditionArray;
     }
 
     @Override
@@ -48,5 +66,7 @@ public class Action_FollowVisiblePlayer implements Action{
         return ActionResult.Running;
                 
     }
+
+
     
 }

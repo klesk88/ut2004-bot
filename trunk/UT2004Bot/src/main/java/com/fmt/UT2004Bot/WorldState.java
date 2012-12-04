@@ -11,7 +11,7 @@ package com.fmt.UT2004Bot;
 public class WorldState {
 
     private static WorldState instance = null;
-    public enum Symbols{AtTargetPos, IsWeaponLoaded, IsTargetDead}  
+    public enum Symbols{PlayerIsVisible, HasSuppressionAmmunition, IsTargetDead}  
     public enum TruthStates {Uninstantiated, True, False}
     public enum GoalStates {KillEnemy, SearchRandomly}
     
@@ -28,6 +28,7 @@ public class WorldState {
     
 
      private WorldState() {
+         init();
         // Exists only to defeat instantiation.
     }
 
@@ -55,6 +56,7 @@ public class WorldState {
     
     public void setWSValue(Symbols worldStateSymbol, boolean value )
     {
+        BotLogic.getInstance().writeToLog_HackCosIMNoob("set value");
         fixedSizeArray[worldStateSymbol.ordinal()] = value;
     }
     
@@ -104,6 +106,16 @@ public class WorldState {
     //return current world state
     public WorldState.TruthStates[] getWorldState()
     {
+        world_state = new TruthStates[fixedSizeArray.length];
+        
+        for (int i = 0; i < fixedSizeArray.length; i++)
+        {
+            if (fixedSizeArray[i])
+                world_state[i] = TruthStates.True;
+            else
+                world_state[i] = TruthStates.False;
+        }
+        //TODO: get copy
         return world_state;
     }
     
@@ -111,6 +123,53 @@ public class WorldState {
     public TruthStates[] getActualGoal()
     {
         return goal_current;
+    }
+    
+        public TruthStates[] applyPostConditionOfAction(TruthStates[] currentWorldState, TruthStates[] postConditionizedFixedArray)
+    {
+        for(int i =0; i<currentWorldState.length; i++)
+        {
+            if(postConditionizedFixedArray[i]!= TruthStates.Uninstantiated)
+            {
+                currentWorldState[i] = postConditionizedFixedArray[i];
+            }
+        }
+        return currentWorldState;
+    }
+    
+    public TruthStates[] applyPreConditionOfAction(TruthStates[] currentGoal, TruthStates[] preConditionizedFixedArray)
+    {
+        for(int i =0; i<currentGoal.length; i++)
+        {
+            if(preConditionizedFixedArray[i]!= TruthStates.Uninstantiated)
+            {
+                currentGoal[i] = preConditionizedFixedArray[i];
+            }
+        }
+        return currentGoal;
+    }
+
+    public boolean IsWorldStateAGoal(TruthStates[] worldState, TruthStates[] goalState)
+    {
+        boolean value_to_return = true;
+        
+        for (int i = 0; i < goalState.length; i++)
+        {
+            if (!(goalState[i] == TruthStates.Uninstantiated))
+            {
+                if (goalState[i] == TruthStates.True) {
+                    if (worldState[i] == TruthStates.False) {
+                        value_to_return = false;
+                    }
+                } else if (goalState[i] == TruthStates.False) {
+                    if (worldState[i] == TruthStates.True) {
+                        value_to_return = false;
+                    }
+                }
+            }     
+        }
+
+        return value_to_return;
     }
 }
 

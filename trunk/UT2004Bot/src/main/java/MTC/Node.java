@@ -8,7 +8,8 @@ package MTC;
  *
  * @author klesk
  */
-import com.fmt.UT2004Bot.Action;
+import Actions.Action;
+import com.fmt.UT2004Bot.BotLogic;
 import com.fmt.UT2004Bot.WorldState;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Game;
 import java.util.List;
@@ -45,10 +46,12 @@ public class Node {
 		this.number_of_simulations = number_of_simulations;
 		final_condition_reached = false;
 		children = new Vector<Node>();	
-                this.number_of_post_conditions = 0;
+                this.number_of_post_conditions = -1;
                 this.action_choose = action;
                 //update the goal of the node applying the action
+                
                this.node_goal  = updateGoalState(goal);
+              
                this.best_child = null;
                this.best_child_score = 0;
 	}
@@ -215,7 +218,11 @@ public class Node {
             //check which action satisfied the passed goal state
             for(int i=0; i<list_of_actions.size();i++)
             {
-                if(list_of_actions.get(i).ApplyPostCondtions(state) == node_goal)
+                 
+                WorldState.TruthStates[] worldStateSim =
+                        WorldState.getInstance().applyPostConditionOfAction(state, list_of_actions.get(i).GetPostCondtionsArray());
+                
+                if(WorldState.getInstance().IsWorldStateAGoal(worldStateSim, node_goal))
                 {
                     index = i;
                     break;
@@ -246,7 +253,7 @@ public class Node {
             WorldState.TruthStates[] new_goal;
             
             //if there is no action used for the root node i return the previous goal
-            if(action_choose != null)
+            if(action_choose == null)
             {
                 return previous_goal;
             }
@@ -258,7 +265,7 @@ public class Node {
             }
             else
             {
-                new_goal = action_choose.applyPreConditions(previous_goal);
+                new_goal = WorldState.getInstance().applyPreConditionOfAction(previous_goal, action_choose.getPreConditionArray());
             }
                     
             return new_goal;
@@ -280,7 +287,7 @@ public class Node {
 		{
                     //get the action to simulate from the actual workd state of this node
                     simulate_action = getNewAction(simulate_state);
-                    simulate_state = simulate_action.ApplyPostCondtions(simulate_state);
+                    simulate_state = WorldState.getInstance().applyPostConditionOfAction(simulate_state, simulate_action.GetPostCondtionsArray());
                     simulate_goal = updateGoalState(simulate_goal);
                     
                     //if the final condition is reached, subtract 1 to the toal amount of score
@@ -292,7 +299,7 @@ public class Node {
 		    //or add to the score the number of unsutisfied conditions
 		    else
 		    {
-			score -= number_of_preconditions_not_met;
+			score += 1/number_of_preconditions_not_met;
 		    }
 			
 		    temp++;

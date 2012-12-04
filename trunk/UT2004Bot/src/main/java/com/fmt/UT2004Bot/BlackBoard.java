@@ -4,6 +4,7 @@
  */
 package com.fmt.UT2004Bot;
 
+import Actions.Action;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.*;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
@@ -16,6 +17,9 @@ import java.util.*;
  */
 public class BlackBoard {
 
+    // TODO:
+    //public enum WeaponsUsed {Bla = 0, Nsdfa}
+    
     private static BlackBoard instance = null;
     public boolean follow_player = false;
     public boolean nav_point_navigation = false;
@@ -24,6 +28,7 @@ public class BlackBoard {
     public Player player = null;
     public double player_distance = Double.MAX_VALUE;
     public Location targetPos;
+    public Location predictedEnemyPosition;
     public boolean isWallRight45 = false;
     public boolean isWallRight90 = false;
     public boolean isWallLeft45 = false;
@@ -58,8 +63,42 @@ public class BlackBoard {
 
         updateAmmoPriorities();
 
+        if(player_visible) 
+            WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, true);
+        else 
+            WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, false);
+        
+        if(hasSuppressionAmmo())
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, true);
+        else
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, false);
+        
+        if (player != null)
+             WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
+        else
+            WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, true);
+        
+        WorldState.getInstance().setGoalState(WorldState.GoalStates.KillEnemy);
+        
+            
+        BotLogic.getInstance().writeToLog_HackCosIMNoob("world states calculated");
+        
     }
 
+    private boolean hasSuppressionAmmo()
+    {
+        boolean result = false;
+        
+        if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.ASSAULT_RIFLE).getPriMaxAmount() > 10)
+            result = true;
+                if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.FLAK_CANNON).getPriMaxAmount() > 10)
+            result = true;
+                        if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.MINIGUN).getPriMaxAmount() > 10)
+            result = true;
+        
+        return result;
+    }
+    
     /**
      * Attempt to priorize ammo based on current ammo and weaponery
      */
@@ -117,4 +156,12 @@ public class BlackBoard {
                 + " cur ammo: " + BotLogic.getInstance().getWeaponry().getAmmo(item));
         return calculatedPriority;
     }
+
+    public Location predictLocationForWeapon(ItemType desiredWeapon)
+    {
+        //call francescos method here
+        
+        return null;
+    }
+
 }

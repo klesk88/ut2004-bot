@@ -2,8 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.fmt.UT2004Bot;
+package Actions;
 
+import com.fmt.UT2004Bot.BlackBoard;
+import com.fmt.UT2004Bot.BotLogic;
+import com.fmt.UT2004Bot.MovementLogic;
+import com.fmt.UT2004Bot.WorldState;
 import com.fmt.UT2004Bot.WorldState.TruthStates;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.utils.collections.MyCollections;
@@ -20,8 +24,16 @@ public class Action_RandomWalk implements Action{
     }
 
     @Override
-    public TruthStates[] ApplyPostCondtions(TruthStates[] worls_state) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public TruthStates[] GetPostCondtionsArray() {
+        
+        TruthStates[] postConditionArray = new TruthStates[WorldState.Symbols.values().length];
+        for (int i = 0; i < postConditionArray.length; i++)
+        {postConditionArray[i] = TruthStates.Uninstantiated;
+        }
+            
+        postConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
+        
+        return postConditionArray;
     }
 
     @Override
@@ -29,9 +41,17 @@ public class Action_RandomWalk implements Action{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public TruthStates[] applyPreConditions(TruthStates[] goal_state) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+        @Override
+    public TruthStates[] getPreConditionArray() {
+                TruthStates[] preConditionArray = new TruthStates[WorldState.Symbols.values().length];
+        for (int i = 0; i < preConditionArray.length; i++)
+        {preConditionArray[i] = TruthStates.Uninstantiated;
+        }
+            
+        preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
+        
+        return preConditionArray;
     }
 
     @Override
@@ -62,5 +82,7 @@ public class Action_RandomWalk implements Action{
         // ok, all navpoints have been visited probably, try to pick one at random
         return MyCollections.getRandom(BotLogic.getInstance().getWorld().getAll(NavPoint.class).values());
     }
+
+
     
 }

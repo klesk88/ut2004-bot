@@ -4,6 +4,8 @@
  */
 package com.fmt.UT2004Bot;
 
+import Actions.ActionManager;
+import Actions.Action;
 import MTC.MTC;
 import java.util.List;
 import java.util.Stack;
@@ -39,8 +41,10 @@ public class GOAPPlanner {
     // check whether goal is achieved
     // if not, apply other action or go back        
         List<Action> final_plan;
-        final_plan = MTC.getInstance().MTC(world_state.getWorldState(), world_state.getActualGoal());
         
+        BotLogic.getInstance().writeToLog_HackCosIMNoob("inside mtc");
+        final_plan = MTC.getInstance().MTC(world_state.getWorldState(), world_state.getActualGoal());
+        BotLogic.getInstance().writeToLog_HackCosIMNoob("outside mtc");
         for(int i=final_plan.size()-1; i>0; i--)
         {
             finalPlan.push(final_plan.get(i));
