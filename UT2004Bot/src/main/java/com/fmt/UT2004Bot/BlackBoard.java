@@ -9,6 +9,7 @@ import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.*;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import java.util.*;
 
 /**
@@ -26,6 +27,7 @@ public class BlackBoard {
     public boolean bot_killed = false;
     public boolean player_visible = false;
     public Player player = null;
+    int lastKnownDeathValue = 0;
     public double player_distance = Double.MAX_VALUE;
     public Location targetPos;
     public Location predictedEnemyPosition;
@@ -82,11 +84,16 @@ public class BlackBoard {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, false);
         }
 
-        if (player != null) {
+        if (player != null)
+        {
+                if (! BotLogic.getInstance().getGame().isPlayerDeathsKnown(player.getId())) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
-        } else {
+        } else if (BotLogic.getInstance().getGame().getPlayerDeaths(player.getId())
+                > lastKnownDeathValue){
             WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, true);
         }
+        }
+
     }
     
     private boolean hasSuppressionAmmo() {
