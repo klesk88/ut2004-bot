@@ -28,6 +28,7 @@ public class ActorSystem {
     Actions.Action_ShockGunNuke action_schock;
     Actions.Action_FindShockGunAmmo action_schockAmmoFinding;
     Actions.Action_FindHealth action_findHealth;
+    Actions.Action_RetreatWithSuppressionFire  action_RetreatSuppressionFire;
     private GOAPPlanner planner;
     private static ActorSystem instance;
 
@@ -49,6 +50,7 @@ public class ActorSystem {
         action_schock = new Actions.Action_ShockGunNuke();
         action_schockAmmoFinding = new Actions.Action_FindShockGunAmmo();
         action_findHealth = new Actions.Action_FindHealth();
+        action_RetreatSuppressionFire = new Actions.Action_RetreatWithSuppressionFire();
 
         if (PLANNING_ENABLED) {
             MTC.getInstance().init(0.05f, 3, 20);
@@ -56,8 +58,7 @@ public class ActorSystem {
             planner.replan();
         } else {
             bb.currentPlan = new Stack<Actions.Action>();
-            bb.currentPlan.push(action_gotoammunition);
-            bb.currentPlan.push(action_suppressionFire);
+            testStack();
             BotLogic.getInstance().writeToLog_HackCosIMNoob(" !!! PLANNING DISABLED !!!");
         }
     }
@@ -67,8 +68,8 @@ public class ActorSystem {
      * false;
      */
     private void testStack() {
-        bb.currentPlan.push(action_gotoammunition);
-        bb.currentPlan.push(action_suppressionFire);
+
+        bb.currentPlan.push(action_RetreatSuppressionFire);
     }
 
     /**
