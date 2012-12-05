@@ -19,7 +19,7 @@ import java.util.Set;
 public class Action_FindShockGunAmmo implements Action {
 
     boolean currentlySearchingAmmo = false;
-    
+
     @Override
     public boolean arePreConditionsMet() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -42,39 +42,50 @@ public class Action_FindShockGunAmmo implements Action {
 
     @Override
     public ActionResult executeAction() {
-        
-        if (!currentlySearchingAmmo)
-        {
-        BlackBoard bb = BlackBoard.getInstance();
-        
-        //bb.targetPos = null;
-                
-        Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getAllItems(ItemType.SHOCK_RIFLE_AMMO).keySet();
-        
-        Iterator it = itemSet.iterator();
 
-        while(it.hasNext())
+        if(! BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE))
         {
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("found shock ammunition");
-            UnrealId value = (UnrealId)it.next();
-            bb.targetPos = BotLogic.getInstance().getItems().getAllItems(ItemType.SHOCK_RIFLE_AMMO).get(value).getLocation();
-            
-            //TODO: only for testing ! here we return the first value!!! not the closest one
-            currentlySearchingAmmo = true;
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("Shock ammo searhc running");
-            return ActionResult.Running;
+            BlackBoard bb = BlackBoard.getInstance();
+
+            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getAllItems(ItemType.SHOCK_RIFLE).keySet();
+
+            Iterator it = itemSet.iterator();
+
+            while (it.hasNext()) {
+                UnrealId value = (UnrealId) it.next();
+                bb.targetPos = BotLogic.getInstance().getItems().getAllItems(ItemType.SHOCK_RIFLE).get(value).getLocation();
+                BotLogic.getInstance().writeToLog_HackCosIMNoob("Shock RIFLE search running");
+                return ActionResult.Running;
+            }
         }
-        }
-        else if ( BotLogic.getInstance().getWeaponry().getAmmo(ItemType.SHOCK_RIFLE_AMMO) > 5)
-        {
-            currentlySearchingAmmo = false; 
+        
+        if (!currentlySearchingAmmo) {
+            BlackBoard bb = BlackBoard.getInstance();
+
+            //bb.targetPos = null;
+
+            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getAllItems(ItemType.SHOCK_RIFLE_AMMO).keySet();
+
+            Iterator it = itemSet.iterator();
+
+            while (it.hasNext()) {
+                BotLogic.getInstance().writeToLog_HackCosIMNoob("found shock ammunition");
+                UnrealId value = (UnrealId) it.next();
+                bb.targetPos = BotLogic.getInstance().getItems().getAllItems(ItemType.SHOCK_RIFLE_AMMO).get(value).getLocation();
+
+                //TODO: only for testing ! here we return the first value!!! not the closest one
+                currentlySearchingAmmo = true;
+                BotLogic.getInstance().writeToLog_HackCosIMNoob("Shock ammo searhc running");
+                return ActionResult.Running;
+            }
+        } else if (BotLogic.getInstance().getWeaponry().getAmmo(ItemType.SHOCK_RIFLE_AMMO) > 5) {
+            currentlySearchingAmmo = false;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("Shock ammo searhc success");
-                return ActionResult.Success;
-                   
+            return ActionResult.Success;
+
         }
         BotLogic.getInstance().writeToLog_HackCosIMNoob("Shock ammo searhc failure");
-        currentlySearchingAmmo = false;     
+        currentlySearchingAmmo = false;
         return ActionResult.Failed;
     }
-    
 }

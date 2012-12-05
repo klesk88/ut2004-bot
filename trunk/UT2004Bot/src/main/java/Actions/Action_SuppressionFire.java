@@ -8,6 +8,7 @@ import com.fmt.UT2004Bot.BotLogic;
 import com.fmt.UT2004Bot.WorldState;
 import com.fmt.UT2004Bot.WorldState.TruthStates;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 
 /**
  * Fires depending on ammo in the order Assault, Minigun, Flak
@@ -55,6 +56,22 @@ public class Action_SuppressionFire implements Action{
     @Override
     public ActionResult executeAction() {
         
+        Player playerEscapeFrom = BotLogic.getInstance().getInfo().getNearestVisiblePlayer();
+        
+                BotLogic.getInstance().getBody().getLocomotion().turnTo(playerEscapeFrom);
+        int avoidanceChoice = (int) (Math.random() * 7);
+        if (avoidanceChoice == 1) {
+            BotLogic.getInstance().getBody().getLocomotion().jump();
+        } else if (avoidanceChoice == 2) {
+            BotLogic.getInstance().getBody().getLocomotion().doubleJump();
+        } else if (avoidanceChoice == 3) {
+            int strafeLength = 50 +  ((int) (Math.random() * 200));
+            BotLogic.getInstance().getBody().getLocomotion().strafeLeft(strafeLength);
+        } else if (avoidanceChoice == 4) {
+            int strafeLength = 50 +  ((int) (Math.random() * 200));
+            BotLogic.getInstance().getBody().getLocomotion().strafeRight(strafeLength);
+        }
+        
         //log.info("Decision is: ENGAGE");
         if (BotLogic.getInstance().getWeaponry().hasPrimaryWeaponAmmo(ItemType.ASSAULT_RIFLE))
         {
@@ -65,6 +82,7 @@ public class Action_SuppressionFire implements Action{
         }
         if (BotLogic.getInstance().getWeaponry().hasPrimaryWeaponAmmo(ItemType.MINIGUN))
         {
+           
             BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting because there is ammo");
             BotLogic.getInstance().getShoot().changeWeapon(ItemType.MINIGUN);
             BotLogic.getInstance().getShoot().shoot();
