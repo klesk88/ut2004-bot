@@ -31,7 +31,7 @@ public class BlackBoard {
     public boolean player_visible = false;
     // this is a linked map to get the health packs in order of value when iterating the map
     private Map<UnrealId, Item> itemMapHealth = new LinkedHashMap<UnrealId, Item>();
-    // TODO: this shoudl be private, and only be set by a target selection!!!
+    // TODO: player shoudl be private, and only be set by a target selection!!!
     public Player player = null;
     int lastKnownDeathValue = 0;
     public double player_distance = Double.MAX_VALUE;
