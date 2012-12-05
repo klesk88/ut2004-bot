@@ -18,6 +18,8 @@ import java.util.Stack;
  */
 public class ActorSystem {
 
+    //SET TO TRUE IF YOU WANT TO USE PLANNING
+    boolean PLANNING_ENABLED = false;
     BlackBoard bb;
     Actions.Action_SuppressionFire action_suppressionFire;
     Actions.Action_GoToAmmunition action_gotoammunition;
@@ -26,7 +28,6 @@ public class ActorSystem {
     Actions.Action_ShockGunNuke action_schock;
     Actions.Action_FindShockGunAmmo action_schockAmmoFinding;
     Actions.Action_FindHealth action_findHealth;
-    
     private GOAPPlanner planner;
     private static ActorSystem instance;
 
@@ -48,28 +49,43 @@ public class ActorSystem {
         action_schock = new Actions.Action_ShockGunNuke();
         action_schockAmmoFinding = new Actions.Action_FindShockGunAmmo();
         action_findHealth = new Actions.Action_FindHealth();
-        
-        bb.currentPlan = new Stack<Actions.Action>();
-        bb.currentPlan.push(action_findHealth);
 
-
-
-
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("demoplan actorSystem");
-
-        //MTC.getInstance().init(0.05f , 3,20);
-
-        //planner = new GOAPPlanner();
-        //planner.replan();
-
+        if (PLANNING_ENABLED) {
+            MTC.getInstance().init(0.05f, 3, 20);
+            planner = new GOAPPlanner();
+            planner.replan();
+        } else {
+            bb.currentPlan = new Stack<Actions.Action>();
+            bb.currentPlan.push(action_gotoammunition);
+            bb.currentPlan.push(action_suppressionFire);
+            BotLogic.getInstance().writeToLog_HackCosIMNoob(" !!! PLANNING DISABLED !!!");
+        }
     }
 
-    private void testStackForShockGun()
-    {
+    /**
+     * Write your test stacks here. Will only be called if PLANNER_ENABLED =
+     * false;
+     */
+    private void testStack() {
+        bb.currentPlan.push(action_gotoammunition);
+        bb.currentPlan.push(action_suppressionFire);
+    }
+
+    /**
+     * Will execute actions from the current plan and ask for new plans upon
+     * failure or plan completion.
+     */
+    public void update() {
+
         if (bb.currentPlan.isEmpty()) {
-            bb.currentPlan.push(action_findHealth);
+            if (PLANNING_ENABLED) {
+                planner.replan();
+            } else {
+                testStack();
+            }
         }
 
+        //if running we will not deal with the result and just run
         Actions.Action.ActionResult result = bb.currentPlan.peek().executeAction();
 
         if (result == Actions.Action.ActionResult.Success) {
@@ -77,48 +93,9 @@ public class ActorSystem {
         }
         if (result == Actions.Action.ActionResult.Failed) {
             bb.currentPlan.pop();
+            if (PLANNING_ENABLED) {
+                planner.replan();
+            }
         }
-    }
-    
-    public void update() {
-        
-        testStackForShockGun();
-        
-        /*
-         * if(bb.currentPlan.isEmpty()) {
-         * BotLogic.getInstance().writeToLog_HackCosIMNoob("34254325");
-         * planner.replan();
-         * BotLogic.getInstance().writeToLog_HackCosIMNoob("8986786"); }
-         * Action.ActionResult result =
-         * bb.currentPlan.firstElement().executeAction();
-         *
-         * if (result == Action.ActionResult.Success) bb.currentPlan.pop(); if
-         * (result == Action.ActionResult.Failed) planner.replan();;
-         */
-
-
-        /*
-         *
-         * if (action_followVisiblePlayer.executeAction() ==
-         * Action.ActionResult.Running) {
-         * action_suppressionFire.executeAction(); } else if (
-         * !(action_gotoammunition.executeAction() ==
-         * Action.ActionResult.Success)) { action_randomWalk.executeAction(); }
-         */
-
-        //
-
-        //if (!bb.follow_player) action_gotoammunition.executeAction();
-
-        //ask current action about its status
-        //if action terminated ask blackboard which action is next in the goap plan
-
-        //low level action like navigation
-
-        //if(bb.currentPlan.IsEmpty) 
-        //  bb.replan = true;
-
-
-
     }
 }
