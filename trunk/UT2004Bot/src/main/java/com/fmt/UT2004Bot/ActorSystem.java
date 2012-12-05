@@ -25,6 +25,8 @@ public class ActorSystem {
     Actions.Action_RandomWalk action_randomWalk;
     Actions.Action_ShockGunNuke action_schock;
     Actions.Action_FindShockGunAmmo action_schockAmmoFinding;
+    Actions.Action_FindHealth action_findHealth;
+    
     private GOAPPlanner planner;
     private static ActorSystem instance;
 
@@ -45,11 +47,10 @@ public class ActorSystem {
         action_randomWalk = new Actions.Action_RandomWalk();
         action_schock = new Actions.Action_ShockGunNuke();
         action_schockAmmoFinding = new Actions.Action_FindShockGunAmmo();
-
+        action_findHealth = new Actions.Action_FindHealth();
+        
         bb.currentPlan = new Stack<Actions.Action>();
-        bb.currentPlan.push(action_schock);
-        bb.currentPlan.push(action_randomWalk);
-        bb.currentPlan.push(action_schockAmmoFinding);
+        bb.currentPlan.push(action_findHealth);
 
 
 
@@ -65,23 +66,14 @@ public class ActorSystem {
 
     private void testStackForShockGun()
     {
-    BotLogic.getInstance().writeToLog_HackCosIMNoob("start actorSystem");
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("plan length" + bb.currentPlan.size());
         if (bb.currentPlan.isEmpty()) {
-            
-            bb.currentPlan.push(action_schock);
-            
-            bb.currentPlan.push(action_schockAmmoFinding);
-            bb.currentPlan.push(action_randomWalk);
+            bb.currentPlan.push(action_findHealth);
         }
 
         Actions.Action.ActionResult result = bb.currentPlan.peek().executeAction();
 
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("action executed");
-
         if (result == Actions.Action.ActionResult.Success) {
             bb.currentPlan.pop();
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("plan length" + bb.currentPlan.size());
         }
         if (result == Actions.Action.ActionResult.Failed) {
             bb.currentPlan.pop();

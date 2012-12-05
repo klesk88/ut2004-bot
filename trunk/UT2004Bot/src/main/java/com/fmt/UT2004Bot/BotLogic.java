@@ -47,7 +47,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
    
     private MovementLogic ml = null;
     private Decision_simpleExamples decisionMaking = null;
-    private BlackBoard bb = BlackBoard.getInstance();
+    private BlackBoard bb;
     private Sensors sensor = null;
     public static BotLogic instance;
   
@@ -70,6 +70,8 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         ml = MovementLogic.getInstance();
 
         decisionMaking = new Decision_simpleExamples(bot);
+        
+         bb = BlackBoard.getInstance();
         
         /*
          * sensors initialization

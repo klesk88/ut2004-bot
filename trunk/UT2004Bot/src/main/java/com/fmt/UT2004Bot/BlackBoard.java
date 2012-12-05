@@ -10,6 +10,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.*;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
 import java.util.*;
 
 /**
@@ -19,14 +20,17 @@ import java.util.*;
 public class BlackBoard {
 
     //The Weapons our bot might use
-    public enum WeaponsUsed {ASSAULT_RIFLE_Prim, FLAK_CANNON_Prim,MINIGUN_Prim }
-   
+    public enum WeaponsUsed {
+
+        ASSAULT_RIFLE_Prim, FLAK_CANNON_Prim, MINIGUN_Prim
+    }
     private static BlackBoard instance = null;
     public boolean follow_player = false;
     public boolean nav_point_navigation = false;
     public boolean bot_killed = false;
     public boolean player_visible = false;
-    
+    // this is a linked map to get the health packs in order of value when iterating the map
+    private Map<UnrealId, Item> itemMapHealth = new LinkedHashMap<UnrealId, Item>();
     // TODO: this shoudl be private, and only be set by a target selection!!!
     public Player player = null;
     int lastKnownDeathValue = 0;
@@ -51,7 +55,6 @@ public class BlackBoard {
     public boolean sensor = false;
 
     private BlackBoard() {
-        // Exists only to defeat instantiation.
     }
 
     public static BlackBoard getInstance() {
@@ -64,16 +67,24 @@ public class BlackBoard {
     // update the current world state
     public void update() {
 
+        if (BotLogic.getInstance().getSenses().hasDied()) {
+            cleanUpBlackBoardAfterDeath();
+        }
+
         updateAmmoPriorities();
 
         updateWorldState();
         BotLogic.getInstance().writeToLog_HackCosIMNoob("world state updated");
-        
+
         WorldState.getInstance().setGoalState(WorldState.GoalStates.KillEnemy);
     }
 
-    private void updateWorldState()
-    {
+    private void cleanUpBlackBoardAfterDeath() {
+        targetPos = null;
+        predictedEnemyPosition = null;
+    }
+
+    private void updateWorldState() {
         if (player_visible) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, true);
         } else {
@@ -86,18 +97,17 @@ public class BlackBoard {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, false);
         }
 
-        if (player != null)
-        {
-        if (! BotLogic.getInstance().getGame().isPlayerDeathsKnown(player.getId())) {
-            WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
-        } else if (BotLogic.getInstance().getGame().getPlayerDeaths(player.getId())
-                > lastKnownDeathValue){
-            WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, true);
-        }
+        if (player != null) {
+            if (!BotLogic.getInstance().getGame().isPlayerDeathsKnown(player.getId())) {
+                WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
+            } else if (BotLogic.getInstance().getGame().getPlayerDeaths(player.getId())
+                    > lastKnownDeathValue) {
+                WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, true);
+            }
         }
 
     }
-    
+
     private boolean hasSuppressionAmmo() {
         boolean result = false;
 
@@ -150,6 +160,7 @@ public class BlackBoard {
 
     /**
      * Use only for weapons! Returns (max - current ammo) * priorityRatio
+     *
      * @param priorityRatio
      * @param item
      * @return
@@ -168,6 +179,61 @@ public class BlackBoard {
                 + " Max ammo: " + BotLogic.getInstance().getWeaponry().getWeaponDescriptor(item).getPriMaxAmount()
                 + " cur ammo: " + BotLogic.getInstance().getWeaponry().getAmmo(item));
         return calculatedPriority;
+    }
+
+    /**
+     * Find best health pack location. 
+     * 
+     * Preference with 1 being most important:
+     * (1) Prefers spawned over not spawned
+     * (2) Prefers visible over invisible
+     * (3) Prefers strong over weak
+     *
+     * @return location of a health pack. null if there is no health pack on the map
+     */
+    public Location getBestHealthPackLocation() {
+
+        Location bestLocation = null;
+
+        itemMapHealth.clear();
+        itemMapHealth.putAll(BotLogic.getInstance().getItems().getSpawnedItems(ItemType.SUPER_HEALTH_PACK));
+        itemMapHealth.putAll(BotLogic.getInstance().getItems().getSpawnedItems(ItemType.HEALTH_PACK));
+        itemMapHealth.putAll(BotLogic.getInstance().getItems().getSpawnedItems(ItemType.MINI_HEALTH_PACK));
+
+        // if no health pack was spawned simply look up all potential health packs
+        if (itemMapHealth.isEmpty()) {
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("No Health Pack in black board health item map");
+            itemMapHealth.putAll(BotLogic.getInstance().getItems().getAllItems(ItemType.SUPER_HEALTH_PACK));
+            itemMapHealth.putAll(BotLogic.getInstance().getItems().getAllItems(ItemType.HEALTH_PACK));
+            itemMapHealth.putAll(BotLogic.getInstance().getItems().getAllItems(ItemType.MINI_HEALTH_PACK));
+            if (itemMapHealth.isEmpty()) {
+                BotLogic.getInstance().writeToLog_HackCosIMNoob("No Health Pack in map?");
+                return null;
+            }
+        }
+
+        Iterator it = itemMapHealth.keySet().iterator();
+
+        BotLogic.getInstance().writeToLog_HackCosIMNoob("itemmaphealth length" + itemMapHealth.size());
+
+        while (it.hasNext()) {
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("iterated");
+            UnrealId value = (UnrealId) it.next();
+            if (itemMapHealth.get(value).isVisible()) {
+                return itemMapHealth.get(value).getLocation();
+            }
+        }
+        // if no health pack is visible look for another one
+        it = itemMapHealth.keySet().iterator();
+        while (it.hasNext()) {
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("iterated 3 ");
+            UnrealId value = (UnrealId) it.next();
+            return itemMapHealth.get(value).getLocation();
+
+        }
+
+        // this will be null if no health pack has been dropped
+        return bestLocation;
     }
 
     public Location predictLocationForWeapon(WeaponsUsed desiredWeapon) {
