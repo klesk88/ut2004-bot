@@ -46,10 +46,10 @@ public class ActorSystem {
         action_schock = new Actions.Action_ShockGunNuke();
         action_schockAmmoFinding = new Actions.Action_FindShockGunAmmo();
 
-        //bb.currentPlan = new Stack<Actions.Action>();
-        //bb.currentPlan.push(action_schock);
-        //bb.currentPlan.push(action_randomWalk);
-        //bb.currentPlan.push(action_schockAmmoFinding);
+        bb.currentPlan = new Stack<Actions.Action>();
+        bb.currentPlan.push(action_schock);
+        bb.currentPlan.push(action_randomWalk);
+        bb.currentPlan.push(action_schockAmmoFinding);
 
 
 
@@ -90,7 +90,8 @@ public class ActorSystem {
     
     public void update() {
         
-        //testStackForShockGun();
+        testStackForShockGun();
+        
         /*
          * if(bb.currentPlan.isEmpty()) {
          * BotLogic.getInstance().writeToLog_HackCosIMNoob("34254325");

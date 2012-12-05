@@ -22,6 +22,7 @@ public class Action_ShockGunNuke implements Action {
     double time_estimatedTimeForShooting = 0.5;
     boolean waitingToShootPrimary = false;
     Location secondaryWasShootAt;
+    boolean hasChangedToShockRifle = false;
 
     @Override
     public boolean arePreConditionsMet() {
@@ -46,55 +47,58 @@ public class Action_ShockGunNuke implements Action {
     @Override
     public ActionResult executeAction() {
 
-        if (!waitingToShootPrimary) {
+        // fail if no weapon is available
+        if (!(BotLogic.getInstance().getWeaponry().hasAmmoForWeapon(ItemType.SHOCK_RIFLE)
+                && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE))) {
+
+            waitingToShootPrimary = false;
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke failure");
+            return ActionResult.Failed;
+        }
+
+        if (BotLogic.getInstance().getWeaponry().getCurrentWeapon().getType() == ItemType.SHOCK_RIFLE) {
+            hasChangedToShockRifle = true;
+        } else {
+            hasChangedToShockRifle = false;
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("changing to shock rifle");
+            BotLogic.getInstance().getShoot().changeWeapon(ItemType.SHOCK_RIFLE);
+        }
+
+        if ((!waitingToShootPrimary) && hasChangedToShockRifle) {
             //Shoot secondary
-            if (BotLogic.getInstance().getWeaponry().hasSecondaryWeaponAmmo(ItemType.SHOCK_RIFLE)) {
-                BotLogic.getInstance().writeToLog_HackCosIMNoob("changing to shock rifle");
-                BotLogic.getInstance().getShoot().changeWeapon(ItemType.SHOCK_RIFLE);
-
-                if (BotLogic.getInstance().getInfo().getNearestPlayer() != null) {
-                    BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
-                    secondaryWasShootAt = BlackBoard.getInstance().player.getLocation();
-                } else if (BotLogic.getInstance().getInfo().getNearestVisibleItem() != null) {
-                    secondaryWasShootAt = BotLogic.getInstance().getInfo().getNearestVisibleItem().getLocation();
-                } else {
-                    return ActionResult.Failed;
-                }
-
-                BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting secondary shock rifle");
-                BotLogic.getInstance().getShoot().shootSecondary(secondaryWasShootAt);
-                waitingToShootPrimary = true;
-                timeStamp_EnergyBallShootBeShot = BotLogic.getInstance().getGame().getTime();
-                
-                BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
-                return ActionResult.Running;
+            if (BotLogic.getInstance().getInfo().getNearestPlayer() != null) {
+                BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
+                secondaryWasShootAt = BlackBoard.getInstance().player.getLocation();
+            } else if (BotLogic.getInstance().getInfo().getNearestVisibleItem() != null) {
+                secondaryWasShootAt = BotLogic.getInstance().getInfo().getNearestVisibleItem().getLocation();
             } else {
-                waitingToShootPrimary = false;
-                BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke failure");
                 return ActionResult.Failed;
             }
 
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting secondary shock rifle");
+            BotLogic.getInstance().getShoot().shootSecondary(secondaryWasShootAt);
+            waitingToShootPrimary = true;
+            timeStamp_EnergyBallShootBeShot = BotLogic.getInstance().getGame().getTime();
+
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
+            return ActionResult.Running;
         }
 
-        if (waitingToShootPrimary) {
+        if (waitingToShootPrimary && hasChangedToShockRifle) {
             if ((timeStamp_EnergyBallShootBeShot + time_estimatedTimeForShooting)
                     < BotLogic.getInstance().getGame().getTime()) {
 
-                if (BotLogic.getInstance().getWeaponry().hasPrimaryWeaponAmmo(ItemType.SHOCK_RIFLE)) {
+                {
                     BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting primary shock rifle");
-                    BotLogic.getInstance().getShoot().changeWeapon(ItemType.SHOCK_RIFLE);
                     BotLogic.getInstance().getShoot().shootPrimary(secondaryWasShootAt);
 
                     BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke success");
                     waitingToShootPrimary = false;
                     return ActionResult.Success;
-                } else {
-                    waitingToShootPrimary = false;
-                    BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke failure");
-                    return ActionResult.Failed;
                 }
             }
         }
+
         BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
         return ActionResult.Running;
     }
