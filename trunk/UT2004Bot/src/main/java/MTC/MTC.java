@@ -91,7 +91,7 @@ public class MTC{
 			temp_time=System.currentTimeMillis();
 		}
 	
-                Node best_child = root;
+                 Node best_child = root;
                 List<Action> final_list = new LinkedList<Action>();
                 
                 while(best_child.getChildrenSize() != 0)
@@ -125,7 +125,7 @@ public class MTC{
 			}
 			
 			
-		}while(actual_node.getChildrenSize() != 0);
+		}while(actual_node != null && actual_node.getChildrenSize() != 0);
 		
 		return actual_node;
 	}
@@ -136,8 +136,12 @@ public class MTC{
 	 * @return the delta value
 	 */
 	private int defaultPolicy(Node node)
-	{		
+	{
+            //node = null when there are not actions that satisfied the goal
+            if(node!=null)
 		return node.simulation();	
+            else
+                return 0;
 	}
 	
 	/**
@@ -154,7 +158,7 @@ public class MTC{
                         
                         if(node.getParent() != null)
                         {
-                            node.setBestChild(node,node.getQ(),node.getN());
+                            node.getParent().setBestChild(node,node.getQ(),node.getN());
                         }
                         
                         node = node.getParent();
@@ -188,6 +192,11 @@ public class MTC{
 			}
 		}
 		
+                if(node.getChildrenSize() == 0)
+                {
+                    return null;
+                }
+                
 		return node.getChildren(index_best_children);
 	}
 	

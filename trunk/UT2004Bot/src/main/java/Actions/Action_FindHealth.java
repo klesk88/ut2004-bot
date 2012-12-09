@@ -21,6 +21,10 @@ public class Action_FindHealth implements Action {
 
     boolean currentlySearchingHealth = false;
 
+     public Action_FindHealth() {
+       // ActionManager.getInstance().addAction(this);
+    }
+     
     @Override
     public boolean arePreConditionsMet() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -65,4 +69,7 @@ public class Action_FindHealth implements Action {
             }
         }
     }
+
+    
+   
 }

@@ -24,6 +24,12 @@ public class Action_ShockGunNuke implements Action {
     Location secondaryWasShootAt;
     boolean hasChangedToShockRifle = false;
 
+    
+      
+    public Action_ShockGunNuke() {
+        //ActionManager.getInstance().addAction(this);
+    }
+    
     @Override
     public boolean arePreConditionsMet() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -102,4 +108,6 @@ public class Action_ShockGunNuke implements Action {
         BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
         return ActionResult.Running;
     }
+
+  
 }

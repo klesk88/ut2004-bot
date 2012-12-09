@@ -29,7 +29,7 @@ public class ActorSystem {
     Actions.Action_FindShockGunAmmo action_schockAmmoFinding;
     Actions.Action_FindHealth action_findHealth;
     Actions.Action_RetreatWithSuppressionFire  action_RetreatSuppressionFire;
-    private GOAPPlanner planner;
+    private GOAPPlanner planner = new GOAPPlanner();
     private static ActorSystem instance;
 
     public static ActorSystem getInstance() {
@@ -51,10 +51,9 @@ public class ActorSystem {
         action_schockAmmoFinding = new Actions.Action_FindShockGunAmmo();
         action_findHealth = new Actions.Action_FindHealth();
         action_RetreatSuppressionFire = new Actions.Action_RetreatWithSuppressionFire();
-
+           
         if (PLANNING_ENABLED) {
             MTC.getInstance().init(0.05f, 3, 20);
-            planner = new GOAPPlanner();
             planner.replan();
         } else {
             bb.currentPlan = new Stack<Actions.Action>();
@@ -85,18 +84,24 @@ public class ActorSystem {
                 testStack();
             }
         }
+        
+        //when there are  actions taht satisfied the goal
+        if(bb.currentPlan.size() != 0)
+        {
+                //if running we will not deal with the result and just run
+            Actions.Action.ActionResult result = bb.currentPlan.peek().executeAction();
 
-        //if running we will not deal with the result and just run
-        Actions.Action.ActionResult result = bb.currentPlan.peek().executeAction();
-
-        if (result == Actions.Action.ActionResult.Success) {
-            bb.currentPlan.pop();
-        }
-        if (result == Actions.Action.ActionResult.Failed) {
-            bb.currentPlan.pop();
-            if (PLANNING_ENABLED) {
-                planner.replan();
+            if (result == Actions.Action.ActionResult.Success) {
+                bb.currentPlan.pop();
+            }
+            if (result == Actions.Action.ActionResult.Failed) {
+                bb.currentPlan.pop();
+                if (PLANNING_ENABLED) {
+                    planner.replan();
+                }
             }
         }
+        
+      
     }
 }

@@ -149,12 +149,20 @@ public class WorldState {
      *         which preconditions would have to be met to apply the action that gave the preConditionizedFixedArray
      */
     public TruthStates[] applyPreConditionOfAction(TruthStates[] currentGoal, TruthStates[] preConditionizedFixedArray) {
-        for (int i = 0; i < currentGoal.length; i++) {
+       
+        TruthStates[] copy_cg = new TruthStates[currentGoal.length];
+        
+        for(int i=0; i<currentGoal.length;i++)
+        {
+            copy_cg[i]=currentGoal[i];
+        }
+        
+        for (int i = 0; i < copy_cg.length; i++) {
             if (preConditionizedFixedArray[i] != TruthStates.Uninstantiated) {
-                currentGoal[i] = preConditionizedFixedArray[i];
+                copy_cg[i] = preConditionizedFixedArray[i];
             }
         }
-        return currentGoal;
+        return copy_cg;
     }
 
     /**

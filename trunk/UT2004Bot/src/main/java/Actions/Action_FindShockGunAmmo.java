@@ -20,6 +20,10 @@ public class Action_FindShockGunAmmo implements Action {
 
     boolean currentlySearchingAmmo = false;
 
+    public Action_FindShockGunAmmo() {
+        //ActionManager.getInstance().addAction(this);
+    }
+    
     @Override
     public boolean arePreConditionsMet() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -88,4 +92,7 @@ public class Action_FindShockGunAmmo implements Action {
         currentlySearchingAmmo = false;
         return ActionResult.Failed;
     }
+
+    
+    
 }
