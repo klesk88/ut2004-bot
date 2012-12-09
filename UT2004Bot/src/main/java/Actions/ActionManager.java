@@ -19,13 +19,7 @@ public class ActionManager {
     
     private ActionManager(){
         actions_available = new LinkedList<Action>();
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("sdhfujlks");
-          actions_available.add(new Action_SuppressionFire()); 
-          actions_available.add(new Action_GoToAmmunition());
-          actions_available.add(new Action_FollowVisiblePlayer());
-          actions_available.add(new Action_RandomWalk());
-         
-    BotLogic.getInstance().writeToLog_HackCosIMNoob("dsfasdf");
+
     }
 
     

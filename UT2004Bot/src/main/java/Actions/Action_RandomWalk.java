@@ -20,6 +20,11 @@ public class Action_RandomWalk implements Action{
 
     boolean newRun = true;
     
+    
+    public Action_RandomWalk() {
+       //ActionManager.getInstance().addAction(this);
+    }
+    
     @Override
     public boolean arePreConditionsMet() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -101,6 +106,8 @@ public class Action_RandomWalk implements Action{
         // ok, all navpoints have been visited probably, try to pick one at random
         return MyCollections.getRandom(BotLogic.getInstance().getWorld().getAll(NavPoint.class).values());
     }
+
+   
 
 
     

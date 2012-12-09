@@ -19,6 +19,12 @@ import java.util.*;
  */
 public class Action_GoToAmmunition implements Action {
 
+    
+     
+    public  Action_GoToAmmunition() {
+        //ActionManager.getInstance().addAction(this);
+    }
+    
     @Override
     public boolean arePreConditionsMet() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -94,5 +100,7 @@ public class Action_GoToAmmunition implements Action {
         
         //throw new UnsupportedOperationException("Not supported yet.");
     }
+
+   
     
 }

@@ -39,7 +39,7 @@ public class Node {
 	 * 
 
 	 */
-	protected void init(Action action,int number_of_simulations, WorldState.TruthStates[] initial_state,WorldState.TruthStates[] goal)
+	protected void init(Action action,int number_of_simulations, WorldState.TruthStates[] initial_state,WorldState.TruthStates[] original_goal)
 	{
 		q = 0;
 		n = 0;
@@ -54,6 +54,11 @@ public class Node {
                 this.action_choose = action;
                 //update the goal of the node applying the action
                 
+                WorldState.TruthStates[] goal = new WorldState.TruthStates[original_goal.length];
+                for(int i=0; i<original_goal.length;i++)
+                {
+                    goal[i] = original_goal[i];
+                }
                this.node_goal  = updateGoalState(goal);
                this.best_child = null;
                this.best_child_score = 0;
@@ -181,10 +186,11 @@ public class Node {
         {
             double score = (q/n) + 0 * (Math.sqrt((2*Math.log(n))/n));
             
-            //if the score of the actual node is bigger i update it
-            if(score > this.parent.best_child_score)
+            //if the score of the actual node is bigger i update it. The second condition
+            //is check for when there are the nodes that have q = 0.
+            if(score > this.best_child_score || this.best_child == null)
             {
-                 this.parent.best_child = node;
+                 this.best_child = node;
             }
         }
         

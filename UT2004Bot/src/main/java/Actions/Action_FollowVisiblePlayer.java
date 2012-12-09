@@ -15,6 +15,10 @@ import com.fmt.UT2004Bot.WorldState.TruthStates;
  */
 public class Action_FollowVisiblePlayer implements Action{
 
+     public void Action_FollowVisiblePlayer() {
+        ActionManager.getInstance().addAction(this);
+    }
+    
     @Override
     public boolean arePreConditionsMet() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -66,6 +70,9 @@ public class Action_FollowVisiblePlayer implements Action{
         return ActionResult.Running;
                 
     }
+
+   
+   
 
 
     

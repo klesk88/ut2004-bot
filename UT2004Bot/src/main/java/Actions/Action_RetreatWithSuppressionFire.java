@@ -19,6 +19,12 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
  */
 public class Action_RetreatWithSuppressionFire implements Action {
 
+    
+      
+    public Action_RetreatWithSuppressionFire() {
+       ActionManager.getInstance().addAction(this);
+    }
+    
     @Override
     public boolean arePreConditionsMet() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -125,4 +131,6 @@ public class Action_RetreatWithSuppressionFire implements Action {
             BotLogic.getInstance().getBody().getLocomotion().strafeRight(strafeLength);
         }
     }
+
+  
 }
