@@ -36,11 +36,27 @@ public class Sensors{
     public void init()
     {
         ray_cast_system = new Sensor_RayCastSystem();
+        
     }
     
     public void update()
     {
         ray_cast_system.update();
+        
+        
+        /*if(BlackBoard.getInstance().player != null){
+            if (BlackBoard.getInstance().player.isVisible()){
+                System.out.println("visible");
+            }
+            else{
+                System.out.println("noooooooooooooo");
+            }
+        }
+        else{
+            System.out.println("nullll");
+        }*/
+        
+        
     }
     
     

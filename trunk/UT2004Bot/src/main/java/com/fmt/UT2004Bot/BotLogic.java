@@ -8,6 +8,7 @@ import MTC.MTC;
 import java.util.logging.Level;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004PathAutoFixer;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
@@ -176,5 +177,6 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     {
         log.info(string);
     }
+    
 
 }
