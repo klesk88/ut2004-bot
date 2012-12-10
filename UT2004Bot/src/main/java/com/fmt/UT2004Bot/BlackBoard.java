@@ -45,6 +45,8 @@ public class BlackBoard {
     public boolean isWallFrontUp = false;
     public boolean isWallFrontDown = false;
     public ItemType[] mostDesiredAmmunition = new ItemType[3];
+    private Predictor predictor = null;
+    
     // GOAP
     boolean replan = false;
     Stack<Action> currentPlan;
@@ -55,6 +57,10 @@ public class BlackBoard {
     public boolean sensor = false;
 
     private BlackBoard() {
+        
+        predictor = new Predictor();
+        predictor.init();
+        
     }
 
     public static BlackBoard getInstance() {
@@ -70,13 +76,17 @@ public class BlackBoard {
         if (BotLogic.getInstance().getSenses().hasDied()) {
             cleanUpBlackBoardAfterDeath();
         }
-
+        
         updateAmmoPriorities();
 
         updateWorldState();
         BotLogic.getInstance().writeToLog_HackCosIMNoob("world state updated");
 
         WorldState.getInstance().setGoalState(WorldState.GoalStates.KillEnemy);
+        
+        predictor.calculatePosition(player);
+        //System.out.println("noooooooooooooo");
+        
     }
 
     private void cleanUpBlackBoardAfterDeath() {
@@ -238,7 +248,21 @@ public class BlackBoard {
 
     public Location predictLocationForWeapon(WeaponsUsed desiredWeapon) {
         //call francescos method here
-
-        return null;
+    
+        
+        return predictor.getPredictedLocation();
     }
+    
+    public Location lerp(Location first_location, Location second_location, float weight){
+        
+        Location returend_location = new Location(0,0,0);
+        
+        returend_location.setX(first_location.getX() + weight*(second_location.getX() - first_location.getX()));
+        returend_location.setY(first_location.getY() + weight*(second_location.getY() - first_location.getY()));
+        returend_location.setZ(first_location.getZ() + weight*(second_location.getZ() - first_location.getZ()));
+        
+        
+        return returend_location;
+    }
+    
 }
