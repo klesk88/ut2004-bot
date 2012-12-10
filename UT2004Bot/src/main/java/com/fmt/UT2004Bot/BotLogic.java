@@ -72,54 +72,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         decisionMaking = new Decision_simpleExamples(bot);
         
          bb = BlackBoard.getInstance();
-        
-        /*
-         * sensors initialization
-         
-        this.sensor.navigation = navigation;
-        this.sensor.config = config;
-        this.sensor.log = log;
-        this.sensor.world = world;
-        this.sensor.info = info;
-        this.sensor.players = players;
-        this.sensor.act = act;
-        this.sensor.body = body;
-        this.sensor.combo = combo;
-        this.sensor.ctf = ctf;
-        this.sensor.descriptors = descriptors;
-        this.sensor.game = game;
-        this.sensor.items = items;
-        this.sensor.listenerRegistrator = listenerRegistrator;
-        this.sensor.navBuilder = navBuilder;
-        this.sensor.random = random;
-        this.sensor.senses = senses;
-        this.sensor.shoot =shoot;
-        this.sensor.stats = stats;
-        this.sensor.visibility = visibility;
-        this.sensor.weaponPrefs = weaponPrefs;
-        this.sensor.weaponry = weaponry;
-        */
-        /*
-         * movement initialization
-         
-        this.ml.pathExecutor = pathExecutor;
-        this.ml.navigation = navigation;
-        this.ml.world = world;
-        this.ml.pathPlanner = pathPlanner;
-        this.ml.fwMap = fwMap;
-        this.ml.log = log;
-        
-        this.ml.runStraight = runStraight;
-        this.ml.getBackToNavGraph = getBackToNavGraph;
-        this.ml.move = move;
-        */
-        /*
-         * 
-         */
-        //this.sensor.ray_cast_system.raycasting = getRaycasting();
-        //this.sensor.ray_cast_system.log = log;
-        
-        
+
         log.info("bot Initialize");
           
     }

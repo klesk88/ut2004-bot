@@ -186,9 +186,8 @@ public class Node {
         {
             double score = (q/n) + 0 * (Math.sqrt((2*Math.log(n))/n));
             
-            //if the score of the actual node is bigger i update it. The second condition
-            //is check for when there are the nodes that have q = 0.
-            if(score > this.best_child_score || this.best_child == null)
+            //if the score of the actual node is bigger i update it. 
+            if(score > this.best_child_score)
             {
                  this.best_child = node;
             }

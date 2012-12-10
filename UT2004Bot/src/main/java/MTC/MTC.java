@@ -96,8 +96,17 @@ public class MTC{
                 
                 while(best_child.getChildrenSize() != 0)
                 {
-                    final_list.add(best_child.getBestChild().getAction());
-                    best_child = best_child.getBestChild();
+                    //check if tehre is a best child. if there are no actions that can be completed,
+                    //for reach the current goal, this is gonna be null
+                    if(best_child.getBestChild() != null)
+                    {
+                        final_list.add(best_child.getBestChild().getAction());
+                        best_child = best_child.getBestChild();
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
 		
               
