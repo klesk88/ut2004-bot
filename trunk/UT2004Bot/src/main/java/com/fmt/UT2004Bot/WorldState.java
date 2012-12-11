@@ -12,7 +12,7 @@ public class WorldState {
     private static WorldState instance = null;
 
     public enum Symbols {
-        PlayerIsVisible, HasSuppressionAmmunition, IsTargetDead
+        PlayerIsVisible, HasSuppressionAmmunition, IsTargetDead, ShockGunAmmunition, HasLowHealth, 
     }
 
     public enum TruthStates {
@@ -20,13 +20,13 @@ public class WorldState {
     }
 
     public enum GoalStates {
-        KillEnemy, SearchRandomly
+        KillEnemy, SearchRandomly, EmptyAmmunition, Survive
     }
     private boolean[] fixedSizeArray;
     private TruthStates[] goal_current;
 
     private WorldState() {
-        goal_current = new TruthStates[]{TruthStates.Uninstantiated, TruthStates.Uninstantiated, TruthStates.True};
+        goal_current = new TruthStates[]{TruthStates.Uninstantiated, TruthStates.Uninstantiated, TruthStates.True,TruthStates.Uninstantiated, TruthStates.Uninstantiated};
         setGoalState(GoalStates.KillEnemy);
         
         fixedSizeArray = new boolean[Symbols.values().length];
@@ -86,6 +86,20 @@ public class WorldState {
         switch (goal) {
             case KillEnemy:
                 goal_current[Symbols.IsTargetDead.ordinal()] = TruthStates.True;
+                break;
+            case SearchRandomly:
+                goal_current[Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
+                break;
+            case Survive:
+                goal_current[Symbols.HasLowHealth.ordinal()] = TruthStates.False;
+                break;
+            case EmptyAmmunition:
+                // A goal for fun!
+                goal_current[Symbols.IsTargetDead.ordinal()] = TruthStates.False;
+                goal_current[Symbols.HasSuppressionAmmunition.ordinal()] = TruthStates.False;
+                goal_current[Symbols.ShockGunAmmunition.ordinal()] = TruthStates.False;
+                break;
+                
         }
     }
 

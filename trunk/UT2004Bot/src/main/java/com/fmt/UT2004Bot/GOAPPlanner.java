@@ -21,7 +21,9 @@ public class GOAPPlanner {
     private WorldState world_state;
     private final List<Action> actions;
     
-    public GOAPPlanner()
+    private static GOAPPlanner instance;
+    
+    private GOAPPlanner()
     {
         bb = BlackBoard.getInstance();
         
@@ -33,6 +35,16 @@ public class GOAPPlanner {
         finalPlan = new Stack<Action>();
         
     }
+    
+    
+
+    public static GOAPPlanner getInstance() {
+        if (instance == null) {
+            instance = new GOAPPlanner();
+        }
+        return instance;
+    }
+    //SINGLETON END
     
     public void replan()
     {
@@ -46,7 +58,7 @@ public class GOAPPlanner {
        
         final_plan = MTC.getInstance().MTC(world_state.getWorldState(), world_state.getActualGoal());
       
-        for(int i=final_plan.size()-1; i>=0; i--)
+        for(int i=0; i<final_plan.size(); i++)
         {
             finalPlan.push(final_plan.get(i));
         }

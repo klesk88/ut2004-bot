@@ -33,7 +33,7 @@ public class Node {
 	private Action action_choose;
         private List<Action> list_of_actions;
         private WorldState.TruthStates[] node_goal;
-        
+        private boolean simulation = false;
 	/**
 	 * initialize the class
 	 * 
@@ -237,6 +237,17 @@ public class Node {
                 }
             }
             
+            if(possible_actions.size() == 0)
+            {
+                for(int i=0;i<list_of_actions.size();i++)
+                {
+                    if(list_of_actions.get(i) != this.action_choose)
+                    {
+                        possible_actions.add(list_of_actions.get(i));
+                    }
+                }
+            }
+            
             number_of_possible_actions = possible_actions.size();                  
         }
         
@@ -253,43 +264,23 @@ public class Node {
         protected Action getNewAction(WorldState.TruthStates[] state)
 	{
          
-            /*
-            //check which action satisfied the passed goal state
-            for(int i=0; i<list_of_actions.size();i++)
-            {
-                WorldState.TruthStates[] worldStateSim =
-                        WorldState.getInstance().applyPostConditionOfAction(state, list_of_actions.get(i).GetPostCondtionsArray());
-                   
-                if(WorldState.getInstance().IsWorldStateAGoal(worldStateSim, node_goal))
-                {
-                    index = i;
-                    break;
-                }
-            }
-            
-            //if there is no valid action i return null
-            if(index == -1)
-            {
-                return null;
-            }
-            
-            Action temp = list_of_actions.get(index);
-            
-            //remove the action take in consideration from the list
-            list_of_actions.remove(index);
-            //return the first action available
-            return temp;
-            * 
-            */
-            Action temp;
+           
+            Action temp = null;
             if(possible_actions.size()!=0)
             {
                 temp = possible_actions.getFirst();
-                possible_actions.removeFirst();
-                return temp;
+                
+                
             }
-         
-            return null;
+            
+            if(!this.simulation)
+            {
+                possible_actions.removeFirst();
+                
+            }
+            
+           
+            return temp;
 	}
         
         /**
@@ -339,27 +330,42 @@ public class Node {
 		int temp = 0;
 		int score = 0;
 		
+                
+                this.simulation =  true;
                 Action simulate_action = null;
                 WorldState.TruthStates[] simulate_goal = this.node_goal;
                 WorldState.TruthStates[] simulate_state = this.node_state;
-                // BotLogic.getInstance().getLog().info(" simulation");
+                
+                 //check if the precondtions was alerady met with the state of the world of the parent node
+                    int number_of_preconditions_not_met = finalConditions(this.getParent().node_state,simulate_goal);
+                    if(number_of_preconditions_not_met == 0)
+                    {
+			score += 1;
+                         this.simulation =  false;
+                        return score;
+		    }
+                // BotLogic.getInstance().getLog().info(" simulation");this.getParent()
 		//continue until i don't reach  a final condition or the number of simulations decided previously
 		while(!final_condition_reached && temp<number_of_simulations)
 		{
-                                   
+                        
+                   
+                    
                     //get the action to simulate from the actual workd state of this node
                     simulate_action = getNewAction(simulate_state);
                     if(simulate_action == null)
                     {
+                        this.simulation =  false;
                         return score;
                     }
                     simulate_state = WorldState.getInstance().applyPostConditionOfAction(simulate_state, simulate_action.GetPostCondtionsArray());
                     simulate_goal = updateGoalState(simulate_goal);
                     
                     //if the final condition is reached, subtract 1 to the toal amount of score
-                    int number_of_preconditions_not_met = finalConditions(simulate_state, simulate_goal);
+                     number_of_preconditions_not_met = finalConditions(simulate_state, simulate_goal);
                     if(number_of_preconditions_not_met == 0)
                     {
+                        
 			score += 1;
                         break;
 		    }
@@ -372,7 +378,7 @@ public class Node {
 		    temp++;
 		}		
 		
-               
+             this.simulation =  false;  
             return (score);
 		
 	}	
@@ -386,9 +392,9 @@ public class Node {
 	private int finalConditions(WorldState.TruthStates[] simulate_state, WorldState.TruthStates[] simulate_goal)
 	{
             int number_of_preconditions_not_met = 0;
-            for(int i=0; i<simulate_state.length; i++)
+            for(int i=0; i<simulate_goal.length; i++)
             {
-              
+              if(simulate_goal[i]!= WorldState.TruthStates.Uninstantiated)
                 if(simulate_state[i] != simulate_goal[i])
                 {
                     number_of_preconditions_not_met++;

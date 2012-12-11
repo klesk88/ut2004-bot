@@ -75,9 +75,9 @@ public class MTC{
 		//time when i start to make the calculations
 		long start_time = System.currentTimeMillis();
 		long temp_time=System.currentTimeMillis();
-		
+		int i = 1;
 		//while i have time to perform my calculations
-		while(temp_time - start_time < delay)
+		while(i<20)//(temp_time - start_time < delay)
 		{
                       
 			Node node = treePolicy(root);
@@ -86,7 +86,7 @@ public class MTC{
                            
 			backup(node,delta);
 			
-                         
+                         i++;
 			//update the time
 			temp_time=System.currentTimeMillis();
 		}
@@ -134,7 +134,7 @@ public class MTC{
 			}
 			
 			
-		}while(actual_node != null && actual_node.getChildrenSize() != 0);
+		}while(actual_node != null && actual_node.getChildrenSize()<actual_node.getNumberOfPossibleActions());
 		
 		return actual_node;
 	}

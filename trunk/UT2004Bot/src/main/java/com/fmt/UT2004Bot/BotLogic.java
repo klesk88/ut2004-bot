@@ -47,7 +47,6 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Self;
 public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
    
     private MovementLogic ml = null;
-    private Decision_simpleExamples decisionMaking = null;
     private BlackBoard bb;
     private Sensors sensor = null;
     public static BotLogic instance;
@@ -69,8 +68,6 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         
         sensor = new Sensors();
         ml = MovementLogic.getInstance();
-
-        decisionMaking = new Decision_simpleExamples(bot);
         
          bb = BlackBoard.getInstance();
 
@@ -147,10 +144,10 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         log.info("Enter Logic");
        
         this.sensor.update();
-        
+
         this.bb.update();
         
-        this.decisionMaking.update();
+         TargetManager.getInstance().update();
         
         
         // this.targetManager.update();

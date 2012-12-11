@@ -37,7 +37,8 @@ public class Action_RetreatWithSuppressionFire implements Action {
             postConditionArray[i] = TruthStates.Uninstantiated;
         }
 
-        postConditionArray[WorldState.Symbols.IsTargetDead.ordinal()] = TruthStates.True;
+        postConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.False;
+        postConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
 
         return postConditionArray;
     }
@@ -69,6 +70,11 @@ public class Action_RetreatWithSuppressionFire implements Action {
         if (playerEscapeFrom == null) {
             BotLogic.getInstance().writeToLog_HackCosIMNoob("Action_RetreatWithSuppressionFire successful");
             return ActionResult.Success;
+        }
+                if (BotLogic.getInstance().getBot().getSelf().getHealth() > 50) {
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("health search success");
+            return ActionResult.Success;
+
         }
 
         randomDodging(playerEscapeFrom);
@@ -117,7 +123,7 @@ public class Action_RetreatWithSuppressionFire implements Action {
     
     private void randomDodging(Player playerEscapeFrom)
     {
-            BotLogic.getInstance().getBody().getLocomotion().turnTo(playerEscapeFrom);
+        BotLogic.getInstance().getBody().getLocomotion().turnTo(playerEscapeFrom);
         int avoidanceChoice = (int) (Math.random() * 7);
         if (avoidanceChoice == 1) {
             BotLogic.getInstance().getBody().getLocomotion().jump();

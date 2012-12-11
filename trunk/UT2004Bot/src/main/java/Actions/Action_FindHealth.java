@@ -6,6 +6,7 @@ package Actions;
 
 import com.fmt.UT2004Bot.BlackBoard;
 import com.fmt.UT2004Bot.BotLogic;
+import com.fmt.UT2004Bot.WorldState;
 import com.fmt.UT2004Bot.WorldState.TruthStates;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
@@ -22,7 +23,7 @@ public class Action_FindHealth implements Action {
     boolean currentlySearchingHealth = false;
 
      public Action_FindHealth() {
-       // ActionManager.getInstance().addAction(this);
+        ActionManager.getInstance().addAction(this);
     }
      
     @Override
@@ -32,7 +33,14 @@ public class Action_FindHealth implements Action {
 
     @Override
     public TruthStates[] GetPostCondtionsArray() {
-        throw new UnsupportedOperationException("Not supported yet.");
+                        TruthStates[] postConditionArray = new TruthStates[WorldState.Symbols.values().length];
+        for (int i = 0; i < postConditionArray.length; i++)
+        {postConditionArray[i] = TruthStates.Uninstantiated;
+        }
+            
+        postConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.False;
+        
+        return postConditionArray;
     }
 
     @Override
@@ -42,7 +50,14 @@ public class Action_FindHealth implements Action {
 
     @Override
     public TruthStates[] getPreConditionArray() {
-        throw new UnsupportedOperationException("Not supported yet.");
+                                        TruthStates[] preConditionArray = new TruthStates[WorldState.Symbols.values().length];
+        for (int i = 0; i < preConditionArray.length; i++)
+        {preConditionArray[i] = TruthStates.Uninstantiated;
+        }
+            
+        preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.True;
+        
+        return preConditionArray;
     }
 
     @Override
@@ -61,10 +76,10 @@ public class Action_FindHealth implements Action {
 
             if (attempt != null) {
                 bb.targetPos = attempt;
-                BotLogic.getInstance().writeToLog_HackCosIMNoob("health search running");
+                //BotLogic.getInstance().writeToLog_HackCosIMNoob("health search running");
                 return ActionResult.Running;
             } else {
-                BotLogic.getInstance().writeToLog_HackCosIMNoob("no health pack dropped");
+                //BotLogic.getInstance().writeToLog_HackCosIMNoob("no health pack dropped");
                 return ActionResult.Failed;
             }
         }
