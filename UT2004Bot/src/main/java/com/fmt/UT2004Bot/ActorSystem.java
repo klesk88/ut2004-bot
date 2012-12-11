@@ -53,7 +53,7 @@ public class ActorSystem {
         action_RetreatSuppressionFire = new Actions.Action_RetreatWithSuppressionFire();
            
         if (PLANNING_ENABLED) {
-            MTC.getInstance().init(0.05f, 3, 20);
+            MTC.getInstance().init(0.05f, 10, 20);
             planner.replan();
         } else {
             bb.currentPlan = new Stack<Actions.Action>();
