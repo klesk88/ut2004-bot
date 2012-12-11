@@ -72,13 +72,18 @@ public class Action_RandomWalk implements Action{
             BotLogic.getInstance().getBody().getLocomotion().setRun();
             newRun = false;
         }
-        if (( BotLogic.getInstance().getBot().getVelocity().isZero())){
+        if (( BotLogic.getInstance().getBot().getVelocity().isZero()) && bb.player_visible){
             newRun = true;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("RandomWalk success");
             return ActionResult.Success;
         } 
         
-
+        //@Michele: if the target is close and the enxt target is not specified
+        if(BotLogic.getInstance().getNavigation().getContinueTo() == null && BotLogic.getInstance().getNavigation().getRemainingDistance() < 400)
+        {
+            newRun=true;
+        }
+            
         BotLogic.getInstance().writeToLog_HackCosIMNoob("RandomWalk Running");
         return ActionResult.Running;
     }

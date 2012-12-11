@@ -9,8 +9,8 @@ package MTC;
  * @author klesk
  */
 import Actions.Action;
-import com.fmt.UT2004Bot.BotLogic;
 import com.fmt.UT2004Bot.WorldState;
+import com.fmt.UT2004Bot.WorldState.TruthStates;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -22,7 +22,7 @@ public class Node {
         private Node best_child;
         private double best_child_score;
 	private Vector<Node> children;
-	private float q;
+	private double q;
 	private int n;	
         private int number_of_possible_actions;
         private LinkedList<Action> possible_actions;
@@ -90,7 +90,7 @@ public class Node {
 	 * modify the total rewarding value
 	 * @param delta 
 	 */
-	protected void setQ(float delta)
+	protected void setQ(double delta)
 	{
 		this.q += delta;
 	}
@@ -108,7 +108,7 @@ public class Node {
 	 * 
 	 * @return the total rewarding of the node
 	 */
-	protected float getQ()
+	protected double getQ()
 	{
 		return q;
 	}
@@ -183,9 +183,9 @@ public class Node {
          * set the best child
          * @param node 
          */
-        protected void setBestChild(Node node, float q, int n)
+        protected void setBestChild(Node node, double q, int n)
         {
-            double score = (q/n) + 0 * (Math.sqrt((2*Math.log(n))/n));
+            double score = (q/(double)n) + 0 * (Math.sqrt((2*Math.log((double)n))/(double)n));
             
             //if the score of the actual node is bigger i update it. 
             if(score > this.best_child_score)
@@ -262,7 +262,7 @@ public class Node {
          * @param state world state of the parent node
          * @return new action that the child performs
          */
-        protected Action getNewAction(WorldState.TruthStates[] state)
+        protected Action getNewAction()
 	{
          
            
@@ -270,19 +270,51 @@ public class Node {
             if(possible_actions.size()!=0)
             {
                 temp = possible_actions.getFirst();
-                
-                
-            }
-            
-            if(!this.simulation)
-            {
                 possible_actions.removeFirst();
                 
             }
             
+               
            
             return temp;
 	}
+        
+        
+          protected Action getNewSimulatedAction( WorldState.TruthStates[] simulate_state,  WorldState.TruthStates[] simulate_goal)
+	{
+         
+            int j = -1;
+            
+            LinkedList<Action> possible_actions = new LinkedList<Action>();
+              //check which action satisfied the passed goal state
+            for(int i=0; i<list_of_actions.size();i++)
+            {
+                WorldState.TruthStates[] worldStateSim =
+                        WorldState.getInstance().applyPostConditionOfAction(simulate_state, list_of_actions.get(i).GetPostCondtionsArray());
+                   
+                if(WorldState.getInstance().IsWorldStateAGoal(worldStateSim, simulate_goal))
+                {
+                    possible_actions.add(list_of_actions.get(i));
+                   
+                }
+            }
+            
+            if(possible_actions.size() == 0)
+            {
+                for(int i=0;i<list_of_actions.size();i++)
+                {
+                    
+                        possible_actions.add(list_of_actions.get(i));
+                    
+                }
+            }
+            
+            j= (int)(Math.random() * (possible_actions.size()-1));
+            
+
+            return possible_actions.get(j);
+	}
+        
         
         /**
          * update the goal state of the node when created it
@@ -301,27 +333,29 @@ public class Node {
             
             WorldState.TruthStates[] pre_consitions_applied = WorldState.getInstance().applyPreConditionOfAction(previous_goal, this.action_choose.getPreConditionArray());
            
-            boolean preconsditions_met = true;
-            for(int i=0; i<pre_consitions_applied.length;i++)
-            {
-                if(previous_goal[i] == WorldState.TruthStates.True)
-                    if(pre_consitions_applied[i] == WorldState.TruthStates.False)
-                    {
-                        preconsditions_met = false;
-                        break;
-                    }
-                
-                if(previous_goal[i] == WorldState.TruthStates.False)
-                    if(pre_consitions_applied[i] == WorldState.TruthStates.True)
-                    {
-                        preconsditions_met = false;
-                        break;
-                    }
-            }
-            
+           // boolean preconsditions_met = true;
+//            for(int i=0; i<pre_consitions_applied.length;i++)
+//            {
+//                if(previous_goal[i] == WorldState.TruthStates.True)
+//                    if(pre_consitions_applied[i] == WorldState.TruthStates.False)
+//                    {
+//                        preconsditions_met = false;
+//                        break;
+//                    }
+//                
+//                if(previous_goal[i] == WorldState.TruthStates.False)
+//                    if(pre_consitions_applied[i] == WorldState.TruthStates.True)
+//                    {
+//                        preconsditions_met = false;
+//                        break;
+//                    }
+//            }
+//            
                     
             return pre_consitions_applied;
         }
+        
+        
         
         protected boolean isTerminal()
         {
@@ -332,11 +366,11 @@ public class Node {
 	 * simluate the game and give the delta value to the node
 	 * @return the delta value
 	 */
-	protected int simulation()
+	protected double simulation()
 	{
 		int temp = 0;
-		int score = 0;
-		
+		double score = 0;
+	
                 
                 this.simulation =  true;
                 Action simulate_action = null;
@@ -358,31 +392,38 @@ public class Node {
 		{
                         
                    
-                    
-                    //get the action to simulate from the actual workd state of this node
-                    simulate_action = getNewAction(simulate_state);
-                    if(simulate_action == null)
+                    if(number_of_preconditions_not_met !=0 )
                     {
-                        this.simulation =  false;
-                        return score;
+                        //get the action to simulate from the actual workd state of this node
+                        simulate_action = getNewSimulatedAction(simulate_state,simulate_goal);
+
+                        if(simulate_action == null)
+                        {
+                            this.simulation =  false;
+                            return score;
+                        }
+
+                        simulate_goal = WorldState.getInstance().applyPreConditionOfAction( simulate_goal,simulate_action.getPreConditionArray());
+
+                        //if the final condition is reached, subtract 1 to the toal amount of score
+                        number_of_preconditions_not_met = finalConditions(simulate_state, simulate_goal);
+                        if(number_of_preconditions_not_met == 0)
+                        {
+
+                            score += 1;
+
+                        }
+                        //or add to the score the number of unsutisfied conditions
+                        else
+                        {
+                            score += 1/(double)number_of_preconditions_not_met;
+                        }
+                    }
+                    else
+                    {
+                       score += 1;  
                     }
                     simulate_state = WorldState.getInstance().applyPostConditionOfAction(simulate_state, simulate_action.GetPostCondtionsArray());
-                    simulate_goal = updateGoalState(simulate_goal);
-                    
-                    //if the final condition is reached, subtract 1 to the toal amount of score
-                     number_of_preconditions_not_met = finalConditions(simulate_state, simulate_goal);
-                    if(number_of_preconditions_not_met == 0)
-                    {
-                        
-			score += 1;
-                        break;
-		    }
-		    //or add to the score the number of unsutisfied conditions
-		    else
-		    {
-			score += 1/number_of_preconditions_not_met;
-		    }
-			
 		    temp++;
 		}		
 		
