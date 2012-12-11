@@ -67,22 +67,26 @@ public class Action_RandomWalk implements Action{
         
         BlackBoard bb = BlackBoard.getInstance();
         
-        if (newRun){
-            bb.targetPos = getRandomNavPoint().getLocation();
-            BotLogic.getInstance().getBody().getLocomotion().setRun();
-            newRun = false;
+//        if (newRun){
+//            bb.targetPos = getRandomNavPoint().getLocation();
+//            BotLogic.getInstance().getBody().getLocomotion().setRun();
+//            newRun = false;
+//        }
+        //@Michele. fix navigation system
+        NavPoint temp_navpoint = MovementLogic.getInstance().handleNavPointNavigation();
+        
+        if(MovementLogic.getInstance().handleNavPointNavigation() != null)
+        {
+             bb.targetPos = temp_navpoint.getLocation();
         }
+        
         if (( BotLogic.getInstance().getBot().getVelocity().isZero()) && bb.player_visible){
             newRun = true;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("RandomWalk success");
             return ActionResult.Success;
         } 
         
-        //@Michele: if the target is close and the enxt target is not specified
-        if(BotLogic.getInstance().getNavigation().getContinueTo() == null && BotLogic.getInstance().getNavigation().getRemainingDistance() < 400)
-        {
-            newRun=true;
-        }
+        
             
         BotLogic.getInstance().writeToLog_HackCosIMNoob("RandomWalk Running");
         return ActionResult.Running;

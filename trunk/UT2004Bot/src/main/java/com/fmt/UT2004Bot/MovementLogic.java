@@ -212,19 +212,19 @@ public class MovementLogic {
         //logNavigation();
     }
 
-    private void handleNavPointNavigation() {
+    public NavPoint handleNavPointNavigation() {
         
         if (BotLogic.getInstance().getNavigation().isNavigating()) {
             // IS TARGET CLOSE & NEXT TARGET NOT SPECIFIED?
             while (BotLogic.getInstance().getNavigation().getContinueTo() == null && BotLogic.getInstance().getNavigation().getRemainingDistance() < 400) {
                 // YES, THERE IS NO "next-target" SET AND WE'RE ABOUT TO REACH OUR TARGET!
-                BotLogic.getInstance().getNavigation().setContinueTo(getRandomNavPoint());
+                return getRandomNavPoint();
                 // note that it is WHILE because navigation may immediately eat up "next target" and next target may be actually still too close!
             }
 
             // WE'RE NAVIGATING TO SOME NAVPOINT
             //logNavigation();
-            return;
+            return null;
         }
 
 
@@ -240,12 +240,12 @@ public class MovementLogic {
                BotLogic.getInstance().getLog().info("world.getAll(NavPoint.class).size() == 0, there are no navigation ponits to choose from! Is exporting of nav points enabled in GameBots2004.ini inside UT2004?");
             }
 
-            return;
+            return null;
         }
 
 
-
-       BotLogic.getInstance().getNavigation().navigate(targetNavPoint);
+        return targetNavPoint;
+       //BotLogic.getInstance().getNavigation().navigate(targetNavPoint);
         //logNavigation();
     }
 
