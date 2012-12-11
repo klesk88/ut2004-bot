@@ -34,6 +34,7 @@ public class Node {
         private List<Action> list_of_actions;
         private WorldState.TruthStates[] node_goal;
         private boolean simulation = false;
+        private boolean terminal_node = false;
 	/**
 	 * initialize the class
 	 * 
@@ -321,6 +322,12 @@ public class Node {
                     
             return pre_consitions_applied;
         }
+        
+        protected boolean isTerminal()
+        {
+            return terminal_node;
+        }
+        
 	/**
 	 * simluate the game and give the delta value to the node
 	 * @return the delta value
@@ -340,6 +347,7 @@ public class Node {
                     int number_of_preconditions_not_met = finalConditions(this.getParent().node_state,simulate_goal);
                     if(number_of_preconditions_not_met == 0)
                     {
+                        this.terminal_node = true;
 			score += 1;
                          this.simulation =  false;
                         return score;
