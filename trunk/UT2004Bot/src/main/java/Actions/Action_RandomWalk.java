@@ -80,7 +80,7 @@ public class Action_RandomWalk implements Action{
              bb.targetPos = temp_navpoint.getLocation();
         }
         
-        if (( BotLogic.getInstance().getBot().getVelocity().isZero()) && bb.player_visible){
+        if (/*( BotLogic.getInstance().getBot().getVelocity().isZero()) &&*/ bb.player_visible){
             newRun = true;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("RandomWalk success");
             return ActionResult.Success;
