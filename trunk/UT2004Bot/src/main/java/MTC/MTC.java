@@ -65,7 +65,7 @@ public class MTC{
 		
                
          
-		float delta = 0;
+		double delta = 0;
 		//create the root node
 		Node root = new Node();	
             
@@ -144,7 +144,7 @@ public class MTC{
 	 * @param node the node to where start the simulation
 	 * @return the delta value
 	 */
-	private int defaultPolicy(Node node)
+	private double defaultPolicy(Node node)
 	{
             //node = null when there are not actions that satisfied the goal
             if(node!=null)
@@ -158,7 +158,7 @@ public class MTC{
 	 * @param node 
 	 * @param delta
 	 */
-	private void backup(Node node, float delta)
+	private void backup(Node node, double delta)
 	{
 		while(node!=null)
 		{
@@ -191,7 +191,7 @@ public class MTC{
 		for(int i=0;i<children_size;i++)
 		{
 			Node children = node.getChildren(i);
-			temp_value = (children.getQ()/children.getN()) + constant * (Math.sqrt((2*Math.log(node.getN()))/children.getN()));
+			temp_value = (children.getQ()/(double)children.getN()) + constant * (Math.sqrt((2*Math.log((double)node.getN()))/(double)children.getN()));
 			
 			//if the value just calculated is bigger than the one i had before i update the index and the best value
 			if(temp_value>best_child_value)
@@ -220,7 +220,7 @@ public class MTC{
               
 		WorldState.TruthStates[] state = node.getNodeState();
                 
-		Action new_action = node.getNewAction(state);
+		Action new_action = node.getNewAction();
          
                 
                 //if there is no available action in this moment where the pre conditions are satisfied

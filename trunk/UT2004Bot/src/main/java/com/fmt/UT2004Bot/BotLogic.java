@@ -129,6 +129,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     @Override
     public void botKilled(BotKilled event) {
         bb.bot_killed = true;
+        bb.currentPlan.clear();
     }
     
     /**
