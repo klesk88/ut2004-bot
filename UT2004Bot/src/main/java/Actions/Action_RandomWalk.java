@@ -22,7 +22,7 @@ public class Action_RandomWalk implements Action{
     
     
     public Action_RandomWalk() {
-       //ActionManager.getInstance().addAction(this);
+       ActionManager.getInstance().addAction(this);
     }
     
     @Override
@@ -57,6 +57,7 @@ public class Action_RandomWalk implements Action{
         }
             
         preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
+        preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.False;
         
         return preConditionArray;
     }
@@ -90,7 +91,7 @@ public class Action_RandomWalk implements Action{
      * @return randomly choosed navpoint
      */
     private NavPoint getRandomNavPoint() {
-        BotLogic.getInstance().getLog().info("Picking new target navpoint.");
+        //BotLogic.getInstance().getLog().info("Picking new target navpoint.");
 
         // choose one feasible navpoint (== not belonging to tabooNavPoints) randomly
         NavPoint chosen 
@@ -101,7 +102,7 @@ public class Action_RandomWalk implements Action{
             return chosen;
         }
 
-        BotLogic.getInstance().getLog().warning("All navpoints are tabooized at this moment, choosing navpoint randomly!");
+        //BotLogic.getInstance().getLog().warning("All navpoints are tabooized at this moment, choosing navpoint randomly!");
 
         // ok, all navpoints have been visited probably, try to pick one at random
         return MyCollections.getRandom(BotLogic.getInstance().getWorld().getAll(NavPoint.class).values());

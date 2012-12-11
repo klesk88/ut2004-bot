@@ -6,6 +6,7 @@ package Actions;
 
 import com.fmt.UT2004Bot.BlackBoard;
 import com.fmt.UT2004Bot.BotLogic;
+import com.fmt.UT2004Bot.WorldState;
 import com.fmt.UT2004Bot.WorldState.TruthStates;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
@@ -27,7 +28,7 @@ public class Action_ShockGunNuke implements Action {
     
       
     public Action_ShockGunNuke() {
-        //ActionManager.getInstance().addAction(this);
+        ActionManager.getInstance().addAction(this);
     }
     
     @Override
@@ -37,7 +38,14 @@ public class Action_ShockGunNuke implements Action {
 
     @Override
     public TruthStates[] GetPostCondtionsArray() {
-        throw new UnsupportedOperationException("Not supported yet.");
+                TruthStates[] postConditionArray = new TruthStates[WorldState.Symbols.values().length];
+        for (int i = 0; i < postConditionArray.length; i++)
+        {postConditionArray[i] = TruthStates.Uninstantiated;
+        }
+            
+        postConditionArray[WorldState.Symbols.IsTargetDead.ordinal()] = TruthStates.True;
+        
+        return postConditionArray;
     }
 
     @Override
@@ -47,7 +55,15 @@ public class Action_ShockGunNuke implements Action {
 
     @Override
     public TruthStates[] getPreConditionArray() {
-        throw new UnsupportedOperationException("Not supported yet.");
+                                TruthStates[] preConditionArray = new TruthStates[WorldState.Symbols.values().length];
+        for (int i = 0; i < preConditionArray.length; i++)
+        {preConditionArray[i] = TruthStates.Uninstantiated;
+        }
+            
+        preConditionArray[WorldState.Symbols.ShockGunAmmunition.ordinal()] = TruthStates.True;
+        preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
+        
+        return preConditionArray;
     }
 
     @Override
@@ -86,7 +102,7 @@ public class Action_ShockGunNuke implements Action {
             waitingToShootPrimary = true;
             timeStamp_EnergyBallShootBeShot = BotLogic.getInstance().getGame().getTime();
 
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
+            //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
             return ActionResult.Running;
         }
 
@@ -95,7 +111,7 @@ public class Action_ShockGunNuke implements Action {
                     < BotLogic.getInstance().getGame().getTime()) {
 
                 {
-                    BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting primary shock rifle");
+                    //BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting primary shock rifle");
                     BotLogic.getInstance().getShoot().shootPrimary(secondaryWasShootAt);
 
                     BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke success");
@@ -105,7 +121,7 @@ public class Action_ShockGunNuke implements Action {
             }
         }
 
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
+        //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
         return ActionResult.Running;
     }
 

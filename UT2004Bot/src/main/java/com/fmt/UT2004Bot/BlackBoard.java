@@ -45,7 +45,7 @@ public class BlackBoard {
     public boolean isWallFrontUp = false;
     public boolean isWallFrontDown = false;
     public ItemType[] mostDesiredAmmunition = new ItemType[3];
-    private Predictor predictor = null;
+    //private Predictor predictor = null;
     
     // GOAP
     boolean replan = false;
@@ -58,8 +58,8 @@ public class BlackBoard {
 
     private BlackBoard() {
         
-        predictor = new Predictor();
-        predictor.init();
+        //predictor = new Predictor();
+        //predictor.init();
         
     }
 
@@ -78,61 +78,23 @@ public class BlackBoard {
         }
         
         updateAmmoPriorities();
-
-        updateWorldState();
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("world state updated");
-
-        WorldState.getInstance().setGoalState(WorldState.GoalStates.KillEnemy);
         
-        predictor.calculatePosition(player);
+        //predictor.calculatePosition(player);
         //System.out.println("noooooooooooooo");
         
     }
 
+    private void targetManaging()
+    {
+    
+    }
+    
     private void cleanUpBlackBoardAfterDeath() {
         targetPos = null;
         predictedEnemyPosition = null;
     }
 
-    private void updateWorldState() {
-        if (player_visible) {
-            WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, true);
-        } else {
-            WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, false);
-        }
 
-        if (hasSuppressionAmmo()) {
-            WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, true);
-        } else {
-            WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, false);
-        }
-
-        if (player != null) {
-            if (!BotLogic.getInstance().getGame().isPlayerDeathsKnown(player.getId())) {
-                WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
-            } else if (BotLogic.getInstance().getGame().getPlayerDeaths(player.getId())
-                    > lastKnownDeathValue) {
-                WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, true);
-            }
-        }
-
-    }
-
-    private boolean hasSuppressionAmmo() {
-        boolean result = false;
-
-        if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.ASSAULT_RIFLE).getPriMaxAmount() > 10) {
-            result = true;
-        }
-        if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.FLAK_CANNON).getPriMaxAmount() > 10) {
-            result = true;
-        }
-        if (BotLogic.getInstance().getWeaponry().getWeaponDescriptor(ItemType.MINIGUN).getPriMaxAmount() > 10) {
-            result = true;
-        }
-
-        return result;
-    }
 
     /**
      * Attempt to priorize ammo based on current ammo and weaponery
@@ -224,10 +186,7 @@ public class BlackBoard {
 
         Iterator it = itemMapHealth.keySet().iterator();
 
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("itemmaphealth length" + itemMapHealth.size());
-
         while (it.hasNext()) {
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("iterated");
             UnrealId value = (UnrealId) it.next();
             if (itemMapHealth.get(value).isVisible()) {
                 return itemMapHealth.get(value).getLocation();
@@ -236,7 +195,6 @@ public class BlackBoard {
         // if no health pack is visible look for another one
         it = itemMapHealth.keySet().iterator();
         while (it.hasNext()) {
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("iterated 3 ");
             UnrealId value = (UnrealId) it.next();
             return itemMapHealth.get(value).getLocation();
 
@@ -246,12 +204,12 @@ public class BlackBoard {
         return bestLocation;
     }
 
-    public Location predictLocationForWeapon(WeaponsUsed desiredWeapon) {
-        //call francescos method here
-    
-        
-        return predictor.getPredictedLocation();
-    }
+//    public Location predictLocationForWeapon(WeaponsUsed desiredWeapon) {
+//        //call francescos method here
+//    
+//        
+//return predictor.getPredictedLocation();
+//    }
     
     public Location lerp(Location first_location, Location second_location, float weight){
         

@@ -19,7 +19,7 @@ import java.util.Stack;
 public class ActorSystem {
 
     //SET TO TRUE IF YOU WANT TO USE PLANNING
-    boolean PLANNING_ENABLED = false;
+    boolean PLANNING_ENABLED = true;
     BlackBoard bb;
     Actions.Action_SuppressionFire action_suppressionFire;
     Actions.Action_GoToAmmunition action_gotoammunition;
@@ -29,7 +29,7 @@ public class ActorSystem {
     Actions.Action_FindShockGunAmmo action_schockAmmoFinding;
     Actions.Action_FindHealth action_findHealth;
     Actions.Action_RetreatWithSuppressionFire  action_RetreatSuppressionFire;
-    private GOAPPlanner planner = new GOAPPlanner();
+    private GOAPPlanner planner = GOAPPlanner.getInstance();
     private static ActorSystem instance;
 
     public static ActorSystem getInstance() {

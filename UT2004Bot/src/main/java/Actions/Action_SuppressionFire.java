@@ -17,10 +17,8 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
  */
 public class Action_SuppressionFire implements Action{
 
-    
-    
     public Action_SuppressionFire() {
-        ActionManager.getInstance().addAction(this);
+        //ActionManager.getInstance().addAction(this);
     }
     
     
