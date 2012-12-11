@@ -45,7 +45,7 @@ public class BlackBoard {
     public boolean isWallFrontUp = false;
     public boolean isWallFrontDown = false;
     public ItemType[] mostDesiredAmmunition = new ItemType[3];
-    //private Predictor predictor = null;
+    private Predictor predictor = null;
     
     // GOAP
     boolean replan = false;
@@ -58,8 +58,8 @@ public class BlackBoard {
 
     private BlackBoard() {
         
-        //predictor = new Predictor();
-        //predictor.init();
+        predictor = new Predictor();
+        predictor.init();
         
     }
 
@@ -79,7 +79,7 @@ public class BlackBoard {
         
         updateAmmoPriorities();
         
-        //predictor.calculatePosition(player);
+        predictor.calculatePosition(player);
         //System.out.println("noooooooooooooo");
         
     }
@@ -204,12 +204,12 @@ public class BlackBoard {
         return bestLocation;
     }
 
-//    public Location predictLocationForWeapon(WeaponsUsed desiredWeapon) {
-//        //call francescos method here
-//    
-//        
-//return predictor.getPredictedLocation();
-//    }
+    public Location predictLocationForWeapon(WeaponsUsed desiredWeapon) {
+        //call francescos method here
+    
+        
+        return predictor.getPredictedLocation();
+    }
     
     public Location lerp(Location first_location, Location second_location, float weight){
         
