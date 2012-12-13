@@ -85,7 +85,8 @@ public class Action_GrenadeThrowing implements Action {
             BotLogic.getInstance().getShoot().changeWeapon(ItemType.ASSAULT_RIFLE);
         }
 
-        if (hasChangedToShockRifle) {
+        if (hasChangedToShockRifle
+                && BlackBoard.getInstance().predictionIsReady_Tilman) {
             //Shoot secondary
             if (BotLogic.getInstance().getInfo().getNearestPlayer() != null) {
                 
@@ -93,7 +94,7 @@ public class Action_GrenadeThrowing implements Action {
                 BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting grenade assault rifle");
                 //BotLogic.getInstance().getShoot().shootSecondary(BlackBoard.getInstance().player.getLocation());
                 BotLogic.getInstance().getShoot().shootSecondaryCharged(
-                        BlackBoard.getInstance().player.getLocation(), 
+                        BlackBoard.getInstance().predictLocationForWeapon(null),
                         0);
                 return ActionResult.Success;
             

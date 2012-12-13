@@ -37,6 +37,7 @@ public class BlackBoard {
     public double player_distance = Double.MAX_VALUE;
     public Location targetPos;
     public Location predictedEnemyPosition;
+    public boolean predictionIsReady_Tilman = false;
     public boolean isWallRight45 = false;
     public boolean isWallRight90 = false;
     public boolean isWallLeft45 = false;
@@ -79,7 +80,9 @@ public class BlackBoard {
         
         updateAmmoPriorities();
         
+        predictionIsReady_Tilman = false;
         predictor.calculatePosition(player);
+        predictionIsReady_Tilman = predictor.isPredictionAvailable();
         //System.out.println("noooooooooooooo");
         
     }
@@ -206,8 +209,7 @@ public class BlackBoard {
 
     public Location predictLocationForWeapon(WeaponsUsed desiredWeapon) {
         //call francescos method here
-    
-        
+
         return predictor.getPredictedLocation();
     }
     
