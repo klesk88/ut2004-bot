@@ -54,7 +54,7 @@ figs-within-sections
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine natbib_authoryear
+\cite_engine basic
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -130,11 +130,103 @@ maketitle
 \end_layout
 
 \begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Aim
+\end_layout
+
+\begin_layout Standard
+Our main goal with this project was to experiment with techniques, to learn
+ from implementing them and to have fun.
+ We were interested in prediction with neural networks and GOAP.
+ Whilst thinking about how to implement GOAP we decided that it would be
+ interesting to use Monte Carlo Tree Search instead of A*.
+ Our agent architecture also uses GOAP as a starting point.
+ 
+\end_layout
+
+\begin_layout Standard
+We would not use these solutions if we were writing actual Unreal bots as
+ AI Programmers for Epic, and would have focused other techniques, for example
+ mirroring of the opponents actions, if we were serious about participating
+ in the 2K BotPrize.
+\end_layout
+
+\begin_layout Standard
+A secondary goal was to create a bot that would be able to navigate the
+ map in a reasonable fashion.
+ Furthermore, in a competitive sense, the bot should be interesting to play
+ against for the best Unreal player in the team, Michele, and at the same
+ time the bot should be defeatable by the worst player, Tilman.
+ 
+\end_layout
+
+\begin_layout Section
 Overall Design of the Bot
 \end_layout
 
 \begin_layout Subsection
-GOAP Agent Architecture
+Adaption of GOAP to Unreal 2004
+\end_layout
+
+\begin_layout Standard
+Unreal 2004 is different from F.E.A.R.
+ in many ways.
+ Game play is less tactical and there are no cover and no smart objects
+ in the environment.
+ Champandard 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Champandard_2007_FearAi"
+
+\end_inset
+
+ quotes Orkin on the matter which complexity GOAP is set out to solve: 
+\end_layout
+
+\begin_layout Quotation
+“In F.E.A.R., A.I.
+ use cover more tactically, coordinating with squad members to lay suppression
+ fire while others advance.
+ A.I.
+ only leave cover when threatened, and blind fire if they have no better
+ position.” 
+\end_layout
+
+\begin_layout Standard
+Thus we found it difficult to translate the abstraction level Orkin uses
+ for his actions to the simpler single player game play in Unreal.
+ For instance weapon changing can be done instantly in Unreal, but is a
+ major tactical element as cover or squad behaviors are less relevant.
+ We thus decided not to solve weapon selection in the Target Manager as
+ it is done in GOAP, but to let our planning system solve the weapon problem.
+ For example the bot can retreat to a health point whilst firing minigun,
+ flak cannon or assault rifles - all weapons which fire many bullets with
+ spread and low accuracy.
+ If the bot has high health he can however decide to kill the player by
+ engaging him using the potentially more powerful shock gun nuke action.
+\end_layout
+
+\begin_layout Subsection
+Setting and Performance
+\end_layout
+
+\begin_layout Standard
+We only worked with 2-3 players at a time - usually testing with a 1-1 scenario
+ and sometimes adding a second bot to test whether everything would work
+ fine.
+ This also reduced the significance of the working memory, for example target
+ selection in such a simple scenario is not a highly interesting problem.
+ Furthermore we do not need to care about detailed optimizations - we are
+ using pogamut and gamebots, which is not an efficient solution compared
+ to implementing bots inside a game, Unreal 2004 is an old game with low
+ system requirements and we have only few agents at a time.
+\end_layout
+
+\begin_layout Subsection
+Architecture comparison
 \end_layout
 
 \begin_layout Standard
@@ -142,31 +234,31 @@ GOAP Agent Architecture
 \shape smallcaps
 GOAP 
 \shape default
-uses an architecture based on the C4 architecture by 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Burke01creaturesmarts:"
-
-\end_inset
-
-, shown in figure 
+uses an architecture - shown in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:GOAP-agent-architecture"
 
 \end_inset
 
+ - based on the C4 architecture by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Burke01creaturesmarts:"
+
+\end_inset
+
 .
- A variety of sensors pass perceptions, including internal and external
- ones, to the working memory.
+ Sensors pass perceptions, including internal and external ones, to the
+ working memory.
  The information in the working memory is used for planning once a goal
- has been selected - a the key difference to the C4 architecture being the
- real time planner .
+ has been selected - a key difference to the C4 architecture being the real
+ time planner .
  If the facts in the working memory change the highest priority goal is
  re-evaluated.
- Subsystems such as navigation or which animations to play are instructed
- via the blackboard, which stores information from these systems and the
- planning system.
+ Subsystems such as navigation or the animation system are instructed via
+ the blackboard, which stores information from these systems and the planning
+ system.
  
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -223,19 +315,138 @@ key "Long_MasterThesisGOAP"
 
 \end_layout
 
-\begin_layout Subsection
-Our Agent Architecture
-\end_layout
-
 \begin_layout Standard
 Our architecture is similar.
  We did however not get to implement a proper working memory and use the
  blackboard instead.
 \end_layout
 
+\begin_layout Subsection
+World state
+\end_layout
+
+\begin_layout Standard
+Orkin uses fixed sized arrays for maintaining variables about a world state.
+ Our world state is realized as a fixed size data structure by basing our
+ world state boolean array on an enumeration of the symbols.
+ As symbols in the goal state can be irrelevant in addition to being true
+ or false, like uninstantiated variables in logic, we created an enum expressing
+ true, false and uninstantiated.
+ A third enumeration describes the possible goal, and a switch case in the
+ world state class can safely create goal states based on this enumeration.
+\end_layout
+
+\begin_layout Itemize
+World State:
+\end_layout
+
+\begin_layout Itemize
+Goals:
+\end_layout
+
+\begin_layout Subsection
+Actions
+\end_layout
+
+\begin_layout Standard
+We implemented various actions that can be used by the planner.
+ 
+\end_layout
+
+\begin_layout Itemize
+Random Walk: Randomly run around on the map, trying to find a player.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+preconditions:
+\end_layout
+
+\begin_layout Itemize
+postconditions
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Retreat with suppression fire: Try to find a health pack, and shoot at the
+ player with minigun, flak cannon or assault rifle.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+preconditions:
+\end_layout
+
+\begin_layout Itemize
+postconditions:
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Find shock gun ammuntion: If there is shock gun ammunition on the map go
+ there.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+preconditions:
+\end_layout
+
+\begin_layout Itemize
+postconditions:
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Shock gun nuke: Fire the secondary mode of the shock gun, and after some
+ time shoot the primary mode.
+ If the primary mode hits the secondary projectile a huge explosion will
+ happen.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+preconditions:
+\end_layout
+
+\begin_layout Itemize
+postconditions:
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Find health pack: Look for health packs.
+ Which health pack to go to depends on various factors (TODO: FINISH THIS
+ TEXT)
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+preconditions:
+\end_layout
+
+\begin_layout Itemize
+postconditions:
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Shoot grenade: Will fire a grenade at a player position.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+preconditions:
+\end_layout
+
+\begin_layout Itemize
+postconditions:
+\end_layout
+
+\end_deeper
 \begin_layout Subsubsection*
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Subsubsection*
 CERA-CRANIUM architecture
@@ -352,12 +563,12 @@ In 2010 the winning bot was Conscious-Robots, a bot based on the CERA-CRANIUM
 
 \end_inset
 
-
+ 
 \end_layout
 
-\begin_layout Section
+\begin_layout Subsubsection*
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Section
 Planners in Computer Game AI
@@ -1024,7 +1235,7 @@ key "HowAIinGamesWork09"
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 bibfiles "lit"
-options "plainnat"
+options "aaai"
 
 \end_inset
 
