@@ -22,7 +22,7 @@ public class Action_FindShockGunAmmo implements Action {
     boolean currentlySearchingAmmo = false;
 
     public Action_FindShockGunAmmo() {
-       ActionManager.getInstance().addAction(this);
+       //ActionManager.getInstance().addAction(this);
     }
     
     @Override

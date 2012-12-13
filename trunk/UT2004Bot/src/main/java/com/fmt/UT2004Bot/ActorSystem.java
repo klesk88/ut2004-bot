@@ -29,6 +29,7 @@ public class ActorSystem {
     Actions.Action_FindShockGunAmmo action_schockAmmoFinding;
     Actions.Action_FindHealth action_findHealth;
     Actions.Action_RetreatWithSuppressionFire  action_RetreatSuppressionFire;
+    Actions.Action_GrenadeThrowing gt;
     private GOAPPlanner planner = GOAPPlanner.getInstance();
     private static ActorSystem instance;
 
@@ -51,7 +52,7 @@ public class ActorSystem {
         action_schockAmmoFinding = new Actions.Action_FindShockGunAmmo();
         action_findHealth = new Actions.Action_FindHealth();
         action_RetreatSuppressionFire = new Actions.Action_RetreatWithSuppressionFire();
-           
+        gt = new Actions.Action_GrenadeThrowing(); 
         if (PLANNING_ENABLED) {
             MTC.getInstance().init(0.05f, 10, 20);
             planner.replan();

@@ -26,7 +26,7 @@ public class MTC{
 	private int delay;
         List<Action> actions;
         private static MTC instance = null;
-       
+      
         
           private MTC() {
                 // Exists only to defeat instantiation.
@@ -69,7 +69,8 @@ public class MTC{
 		//create the root node
 		Node root = new Node();	
             
-		root.init(null,number_of_simulations, state,goal);
+		
+                root.init(null,number_of_simulations, state,goal);
 		//root.setState();
                  root.setListOfActions(actions);
 		//time when i start to make the calculations
@@ -160,12 +161,15 @@ public class MTC{
 	 */
 	private void backup(Node node, double delta)
 	{
+            boolean is_node_terminal = false;
+            is_node_terminal = node.isTerminal();
+            
 		while(node!=null)
 		{
 			node.increaseN();
 			node.setQ(delta);
                         
-                        if(node.getParent() != null)
+                        if(node.getParent() != null && is_node_terminal)
                         {
                             node.getParent().setBestChild(node,node.getQ(),node.getN());
                         }
@@ -230,14 +234,14 @@ public class MTC{
                 }
                 //apply to the state of the parent node the postconditions that the action 
                 //selected have
-                state = WorldState.getInstance().applyPostConditionOfAction(state, new_action.GetPostCondtionsArray());
+                //state = WorldState.getInstance().applyPostConditionOfAction(state, new_action.GetPostCondtionsArray());
                    
 		if(new_action != null)
 		{
                    
 			new_child = new Node();
 			new_child.init(new_action,number_of_simulations,state,node.getNodeGoal());
-                 
+                        
 			new_child.setParent(node);
                         new_child.setListOfActions(actions);
 			node.setChildren(new_child);

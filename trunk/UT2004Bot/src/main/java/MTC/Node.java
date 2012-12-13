@@ -18,7 +18,7 @@ import java.util.Vector;
 public class Node {
 	
 	private Node parent;
-        //variable used for reetrieve tyhe best childs after the MTC have finished
+      
         private Node best_child;
         private double best_child_score;
 	private Vector<Node> children;
@@ -185,12 +185,15 @@ public class Node {
          */
         protected void setBestChild(Node node, double q, int n)
         {
-            double score = (q/(double)n) + 0 * (Math.sqrt((2*Math.log((double)n))/(double)n));
+            double score = (node.getQ()/(double)node.getN()) + 0 * (Math.sqrt((2*Math.log((double)node.getN()))/(double)node.getN()));
             
             //if the score of the actual node is bigger i update it. 
             if(score > this.best_child_score)
             {
-                 this.best_child = node;
+                
+                    this.best_child = node;
+                    this.best_child_score = score;
+                
             }
         }
         
@@ -333,25 +336,16 @@ public class Node {
             
             WorldState.TruthStates[] pre_consitions_applied = WorldState.getInstance().applyPreConditionOfAction(previous_goal, this.action_choose.getPreConditionArray());
            
-           // boolean preconsditions_met = true;
-//            for(int i=0; i<pre_consitions_applied.length;i++)
-//            {
-//                if(previous_goal[i] == WorldState.TruthStates.True)
-//                    if(pre_consitions_applied[i] == WorldState.TruthStates.False)
-//                    {
-//                        preconsditions_met = false;
-//                        break;
-//                    }
-//                
-//                if(previous_goal[i] == WorldState.TruthStates.False)
-//                    if(pre_consitions_applied[i] == WorldState.TruthStates.True)
-//                    {
-//                        preconsditions_met = false;
-//                        break;
-//                    }
-//            }
-//            
-                    
+            //boolean preconsditions_met = true;
+           for(int i=0; i<pre_consitions_applied.length;i++)
+            {
+                if(pre_consitions_applied[i] == this.node_state[i])
+                {
+                    //pre_consitions_applied[i] = WorldState.TruthStates.Uninstantiated;
+                }
+            }
+            
+            this.node_state = WorldState.getInstance().applyPostConditionOfAction(this.node_state, this.action_choose.GetPostCondtionsArray());
             return pre_consitions_applied;
         }
         
@@ -361,6 +355,8 @@ public class Node {
         {
             return terminal_node;
         }
+        
+        
         
 	/**
 	 * simluate the game and give the delta value to the node
@@ -381,8 +377,10 @@ public class Node {
                     int number_of_preconditions_not_met = finalConditions(this.getParent().node_state,simulate_goal);
                     if(number_of_preconditions_not_met == 0)
                     {
+                        score += 10;
+                    
                         this.terminal_node = true;
-			score += 1;
+			
                          this.simulation =  false;
                         return score;
 		    }
