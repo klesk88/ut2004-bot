@@ -1,0 +1,1035 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass paper
+\begin_preamble
+\usepackage{aaai}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage{url} 
+\end_preamble
+\use_default_options true
+\begin_modules
+theorems-ams
+eqs-within-sections
+figs-within-sections
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing onehalf
+\use_hyperref false
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine natbib_authoryear
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+title{Hand In for MAIfG 2012}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+author{{
+\backslash
+bf Michele Ermacora, Tilman Geishauser and Francesco Guerra}  
+\backslash
+
+\backslash
+ {
+\backslash
+bf Games (Technology)} 
+\backslash
+
+\backslash
+ {
+\backslash
+bf IT University Copenhagen}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+maketitle
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Overall Design of the Bot
+\end_layout
+
+\begin_layout Subsection
+GOAP Agent Architecture
+\end_layout
+
+\begin_layout Standard
+
+\shape smallcaps
+GOAP 
+\shape default
+uses an architecture based on the C4 architecture by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Burke01creaturesmarts:"
+
+\end_inset
+
+, shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:GOAP-agent-architecture"
+
+\end_inset
+
+.
+ A variety of sensors pass perceptions, including internal and external
+ ones, to the working memory.
+ The information in the working memory is used for planning once a goal
+ has been selected - a the key difference to the C4 architecture being the
+ real time planner .
+ If the facts in the working memory change the highest priority goal is
+ re-evaluated.
+ Subsystems such as navigation or which animations to play are instructed
+ via the blackboard, which stores information from these systems and the
+ planning system.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Orkin2005"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename GOAP-architecture.png
+	lyxscale 50
+	scale 30
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:GOAP-agent-architecture"
+
+\end_inset
+
+GOAP agent architecture, taken from 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Long_MasterThesisGOAP"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Our Agent Architecture
+\end_layout
+
+\begin_layout Standard
+Our architecture is similar.
+ We did however not get to implement a proper working memory and use the
+ blackboard instead.
+\end_layout
+
+\begin_layout Subsubsection*
+\begin_inset Note Note
+status open
+
+\begin_layout Subsubsection*
+CERA-CRANIUM architecture
+\end_layout
+
+\begin_layout Paragraph*
+2K BotPrize
+\end_layout
+
+\begin_layout Plain Layout
+The 2K BotPrize is an annual contest in which the task is to create a computer
+ game bot which is indistinguishable from a human player.
+ Testbed for the competition is the first person shooter Unreal Tournament
+ 2004.
+ Human players and bots play against each other and are judged on their
+ 'humanness'.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+introduce footnote by linking to 'humaness'
+\end_layout
+
+\end_inset
+
+In 2010 a new automated judging system was used which we found interesting:
+ A weapon called Link Gun can be used.
+ If this is fired on a player and this player is human, the opponent will
+ die and the attacker gets 10 kills instead of 1.
+ If the victim of the gun is however a bot, then the attacker will die from
+ the attack and lose 10 kills.
+ There is a similar gun for attacking bots, rewarding the player with 10
+ kills if the gun is used to hit a bot and vice versa.
+ Instead of the score of the games, which is constituted by the amount of
+ kills, the BotPrize is awarded to the bot which has the best ratio of being
+ judged as human instead of bot.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+CITE WEBPAGE
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+We do not know the full data set, but unless the Link Gun was used by every
+ player on every player it might also be interesting to consider the total
+ amount of how often a bot was judged as human and how often as bot, since
+ if a player is uncertain about the nature of another player he might not
+ use the Link Gun, but confidence about the bot or human nature of other
+ players might be an interesting criterion.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ A question asked on the front page of the 2010 homepage is 
+\begin_inset Quotes eld
+\end_inset
+
+Can a computer be programmed to seem to have personality, fallibility and
+ cunning?
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+CITE!!
+\end_layout
+
+\end_inset
+
+ Apparently personality is considered amongst the main criteria, 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Are there any remarks on personality in any of the papers by the participants?
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph*
+The CERA-CRANIUM Architecture
+\end_layout
+
+\begin_layout Plain Layout
+In 2010 the winning bot was Conscious-Robots, a bot based on the CERA-CRANIUM
+ architecture by the team from the Computer Science Department, Carlos III
+ University of Madrid.
+  
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset Note Note
+status open
+
+\begin_layout Section
+Planners in Computer Game AI
+\end_layout
+
+\begin_layout Plain Layout
+The first person shooter F.E.A.R.
+ introduced planning systems to game A.I.
+ in the year 2005 and this being written is ranked as second most influential
+ game A.I.
+ by aigamedev.com 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "aigamedev.comTOP10"
+
+\end_inset
+
+.
+ The planning system in F.E.A.R., called Goal Oriented Action Planning (GOAP
+ in the following), is a game specific adaption of the academic planning
+ system STRIPS
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+STRIPS stands for STanford Research Institute Problem Solver
+\end_layout
+
+\end_inset
+
+ by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "fikes71strips"
+
+\end_inset
+
+.
+ Instead of STRIPS we introduce an equivalent planning approach in propositional
+ notation.
+ We then discuss how GOAP differs from propositional planning, followed
+ by discussions of advantages and applicability of GOAP.
+\end_layout
+
+\begin_layout Subsection
+Propositional Planning
+\end_layout
+
+\begin_layout Plain Layout
+We have chosen to introduce planning in propositional notation as we think
+ that this notation allows to get a precise and comparably approachable
+ idea of the concept of planning.
+ It will help to stress features of GOAP that are special and not general
+ in planning.
+\end_layout
+
+\begin_layout Plain Layout
+Planning is searching a sequence of actions to satisfy a goal.
+ A goal is some desired state of the world - a state is a description of
+ the world rather than a procedural state as in the context of FSMs.
+ Each action can only be chosen by the planner when its preconditions are
+ met and executing the action will have effects on the state of the world.
+ A plan, the thing we want to produce, then is the ordered list of actions
+ that will transform the given state into the state that is desired.
+\end_layout
+
+\begin_layout Plain Layout
+Our notation of propositional planning is based on the adaption by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "bylander1991"
+
+\end_inset
+
+ of the notation introduced by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "DeanBoddy1988"
+
+\end_inset
+
+.
+ Before formulating an algorithm which will produce a plan we need a language
+ which will represent states, goals and actions.
+ The language of a propositional planer is a 4-tuple 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+
+\begin_inset Formula $(P,O,I,G)$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $P$
+\end_inset
+
+ is a set of conditions, these are propositional variables (they are either
+ true or false).
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $O$
+\end_inset
+
+ is a set of operators, each operator being a quadruple 
+\begin_inset Formula $O=(\alpha,\beta,\gamma,\delta)$
+\end_inset
+
+ with:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $\alpha\subseteq P$
+\end_inset
+
+ is a set of positive preconditions - conditions that have to be true for
+ the postconditions to take effect.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\beta\subseteq P$
+\end_inset
+
+ is a set of negative preconditions - conditions that have to be false for
+ the postconditions to take effect.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\gamma\subseteq P$
+\end_inset
+
+ is a set of positive postconditions - conditions that are made true by
+ the operator.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\delta\subseteq P$
+\end_inset
+
+ is a set of negative postconditions - conditions that are made false by
+ the operator.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+\begin_inset Formula $I$
+\end_inset
+
+ is a set of elements of 
+\begin_inset Formula $P$
+\end_inset
+
+ which are true initially, all other elements of 
+\begin_inset Formula $P$
+\end_inset
+
+ are assumed to be false.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $G$
+\end_inset
+
+ is a pair 
+\begin_inset Formula $\left(N,M\right)$
+\end_inset
+
+ with 
+\begin_inset Formula $N$
+\end_inset
+
+ denoting the elements which should be true and 
+\begin_inset Formula $M$
+\end_inset
+
+ denoting the elements of 
+\begin_inset Formula $P$
+\end_inset
+
+ which should be false, this is the goal state.
+\end_layout
+
+\begin_layout Plain Layout
+Operators can be applied to any state 
+\begin_inset Formula $S\subseteq P$
+\end_inset
+
+.
+ If 
+\begin_inset Formula $\alpha\subseteq S$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta\cap S=\emptyset$
+\end_inset
+
+ the new state is 
+\begin_inset Formula $S\cup\gamma$
+\end_inset
+
+ with all conditions in 
+\begin_inset Formula $\delta$
+\end_inset
+
+ set to false, otherwise the new state is the same as the old state.
+ A plan then is the sequence of operators 
+\begin_inset Formula $(o_{1},o_{2},...,o_{n})$
+\end_inset
+
+ which transforms the initial state 
+\begin_inset Formula $I$
+\end_inset
+
+ to the goal state 
+\begin_inset Formula $G$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "bylander1991"
+
+\end_inset
+
+ shows that planning quickly becomes an intractable problem.
+ The complexity of a planning problem is caused by the number of pre- and
+ postconditions.
+ Those are, however, theoretical results for general planning problems and
+ by using heuristics and other means efficient planning can be implemented,
+ as demonstrated for example by GOAP.
+\end_layout
+
+\begin_layout Subsection
+GOAP as Demonstrated by F.E.A.R.
+\end_layout
+
+\begin_layout Plain Layout
+The term GOAP is coined by Jeff Orkin, who also is the mind behind this
+ specific planning approach.
+ GOAP has been developed specifically for computer games and allows efficient
+ real time planning.
+ It was developed for the first person shooter F.E.A.R.
+ and has been used in a variety of other games 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "OrkinGOAPWebpage"
+
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+This website also offers a variety of useful material on GOAP including
+ source code and articles discussing GOAP.
+\end_layout
+
+\end_inset
+
+.
+ One particularly interesting part of the motivation to use planning is
+ mentioned in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "orkin2006"
+
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+[...] we had only one A.I.
+ programmer, but there are lots of A.I.
+ characters.
+ The thought was that if we can delegate some of the workload to these A.I.
+ guys, we'd be in good shape.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+What was called set of conditions in propositional planning is referred
+ to as state in F.E.A.R..
+ A state in F.E.A.R.
+ is an assignment to some set of variables, but it is noteworthy that the
+ data types of the variables can differ, so a state might be described partially
+ by booleans, partially by integers, partially by further data types 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Orkin2005"
+
+\end_inset
+
+.
+ One example by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "orkin2006"
+
+\end_inset
+
+ for describing the currently sunny weather of a world would be using a
+ state variable named weather to which one value from a set of enumerated
+ discrete values (rainy, sunny) is assigned, namely sunny.
+ 
+\end_layout
+
+\begin_layout Paragraph*
+Operators in GOAP
+\end_layout
+
+\begin_layout Plain Layout
+In a number of ways operators differ from propositional planning and STRIPS,
+ this is discussed in detail in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "orkin2006"
+
+\end_inset
+
+ and briefly in the following.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+In propositional planning each operator had a set 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ of positive postconditions and a set 
+\begin_inset Formula $\delta$
+\end_inset
+
+ of negative postconditions.
+ In STRIPS this would be achieved by two lists ordering all conditions that
+ should be set to true or set to false respectively.
+ GOAP however chooses a fixed sized array storing preconditions and the
+ postconditions as key-value pair.
+ This makes it easy to look up how a goal or precondition can be achieved
+ as Orkin illustrates with the attack and the reload actions, having 'weapon
+ is loaded' as precondition in the first case and as postcondition in the
+ reload case.
+ The fixed sized array comes with its own limitations, which are circumvented
+ by deciding some things outside the planner, for example one of three weapons
+ is selected by a subsystem and the planner just solves problems arising
+ with weapons in general (e.g.
+ the reloading as mentioned).
+ 
+\end_layout
+
+\begin_layout Plain Layout
+Furthermore procedural pre- and postconditions are used.
+ The case of procedural preconditions is illustrated by the behavior of
+ escaping.
+ In order to escape it would be preferable to run away, but as precondition
+ the search for a safe path has to come up with a valid result, and such
+ a search is only done when running away is considered.
+ This is cheaper than always keeping track of whether a safe escape route
+ is existent in the world description.
+ Procedural postconditions are used, as some actions, like running away,
+ should take some time and not be finished immediately.
+ Fleeing is mentioned as an example, as its postcondition will give the
+ orders necessary to move the NPC to a destination over some time (only
+ after arriving at this destination a consequent action should be executed).
+ 
+\end_layout
+
+\begin_layout Plain Layout
+Unlike operators defined in STRIPS or propositional planning, GOAP operators
+ have costs, for example fleeing might have a cost of 3 and crouching a
+ cost of 7, thus fleeing would be preferred.
+ This allows to search the graph consisting of the different sequences of
+ operators with an informed search algorithm.
+ GOAP uses A* 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "AStarOriginal"
+
+\end_inset
+
+, a breadth first search algorithm evaluating each path by assigning a value.
+ This value is the sum of a heuristic, estimating the distance to the goal,
+ and the cost information, which represents the costs already accumulated.
+\end_layout
+
+\begin_layout Subsubsection*
+GOAP is Efficient Enough for Computer Game AI
+\end_layout
+
+\begin_layout Plain Layout
+As mentioned in our discussion of Bylander's analysis of propositional planning
+ complexity can be an issue in planning.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Orkin2005"
+
+\end_inset
+
+ mentions that in order to make planning feasible in the domain of computer
+ games, GOAP minimizes search iterations and keeps evaluation of preconditions
+ light weight - processing of preconditions is distributed over many frames
+ and results for the planner are cached and can be queried on demand.
+ The previously mentioned fixed-sized array has a key role speeding up the
+ planning process.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+Eric Jacopin, defending GOAP against the considerable worries of game developers
+ concerning the efficiency and usefulness of planners mentioned in the panel
+ discussion 
+\begin_inset Quotes eld
+\end_inset
+
+The Future of Deliberative Decision Making
+\begin_inset Quotes erd
+\end_inset
+
+ at the Paris Game AI Conference 2011, that in 65% of the cases seen in
+ F.E.A.R.
+ a plan would only have 2 actions.
+\end_layout
+
+\begin_layout Plain Layout
+Due to the adjustments made to planning by Orkin, and as has been proven
+ by the use of GOAP in a number of games, GOAP is efficient enough to be
+ used in today's real time computer games.
+\end_layout
+
+\begin_layout Subsubsection*
+Advantages of GOAP
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "orkin2006"
+
+\end_inset
+
+ mentions three main advantages GOAP has in comparison to FSM:
+\end_layout
+
+\begin_layout Paragraph*
+
+\series bold
+Modularity of Goals and Actions:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename orkin_action_sets.png
+	width 69page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Three-different-action"
+
+\end_inset
+
+Three different action sets in F.E.A.R.
+ Picture taken from 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "orkin2006"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+This decoupling of goals and actions allows addition of new characters to
+ the game quickly.
+ Especially if the character reuses actions other NPCs use as well, action
+ sets as shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Three-different-action"
+
+\end_inset
+
+ can be put together easily and don't pose a threat to the stability of
+ other NPCs.
+ Furthermore goals are not blackboxes as they were in earlier games created
+ by Monolith, the company behind F.E.A.R..
+ This circumstance is illustrated by Orkin with the case of a NPC controlled
+ by a FSM being shot whilst following the goal to finish work at the desk.
+ The NPC would then finish the work at the desk so that the respective goal
+ is achieved before becoming aware of the next goal, which would be to fall
+ on the floor and be dead.
+ 
+\end_layout
+
+\begin_layout Paragraph*
+
+\series bold
+Transitions Between Behaviors are Created Procedurally:
+\series default
+ 
+\end_layout
+
+\begin_layout Plain Layout
+Or, as Richard Bull, who worked on a strategy game called Empires:Total
+ War, illustrates, planning is 
+\begin_inset Quotes eld
+\end_inset
+
+like a state machine that re-writes itself
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand citep
+key "HowAIinGamesWork09"
+
+\end_inset
+
+.
+ Orkin illustrates this with the example of adding late in development the
+ behavior that characters should turn on the light when entering a room.
+ Using a FSM this was a complicated task as changes everywhere in the FSM
+ were necessary, whereas in a planning system all that would have been needed
+ is an operator with the postcondition that light is turned on, and the
+ preconditions of the 
+\begin_inset Formula $GoTo$
+\end_inset
+
+ operator being extended by a 
+\begin_inset Formula $LightOn$
+\end_inset
+
+ precondition.
+\end_layout
+
+\begin_layout Paragraph*
+
+\series bold
+Problems are Solved Dynamically:
+\series default
+ 
+\end_layout
+
+\begin_layout Plain Layout
+Whilst the first two advantages make implementation easier, GOAP really
+ shines when goal-oriented and dynamic problem solving is favored as characteris
+tic for the behavior of the NPCs.
+ Orkin describes a scenario in which the player blocks a door with his body:
+ 
+\begin_inset Quotes eld
+\end_inset
+
+[...]we will see the A.I.
+ try to open the door and fail.
+ He then re-plans and decides to kick the door.
+ When this fails, he re-plans again and decides to dive through the window
+ and ends up close enough to use a melee attack!
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "orkin2006"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+Unpredictability is Better than Randomness
+\end_layout
+
+\begin_layout Plain Layout
+A game providing an open-world experience we found quite interesting is
+ Fallout 3, which is also using a planning approach in fight situations
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "HowAIinGamesWork09"
+
+\end_inset
+
+.
+ According to our game play experience the procedurally created encounters
+ in many corners of the large game world are challenging and interesting.
+ Situations which are not predictable by the player emerge when re-planning
+ and events in the game world come together.
+ Personally we spend roughly 100 hours in the game world provided by Fallout
+ 3 and others have played this game even longer.
+ Scripting encounters for such a long game time does not seem approachable.
+ Using FSMs has downsides discussed earlier.
+ Due to the dynamic problem solving capacity of GOAP unpredictable situations
+ are frequent.
+ Unlike in rule based systems or FSMs unpredictability is not created by
+ a careful use of randomness, but by artificial intelligence technology.
+ As mentioned in our discussion of randomness in behavior a frequent pattern
+ in development is what Kline coined as 
+\begin_inset Quotes eld
+\end_inset
+
+0, 1, Rand, AI
+\begin_inset Quotes erd
+\end_inset
+
+.
+ According to this pattern we believe that GOAP or similar planning approaches
+ are a promising option for current and near future NPC characters as they
+ allow the replacement of randomness with artificial intelligence.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "lit"
+options "plainnat"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
