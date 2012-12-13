@@ -55,7 +55,7 @@ public class Action_GoToAmmunition implements Action {
         {preConditionArray[i] = TruthStates.Uninstantiated;
         }
             
-        preConditionArray[WorldState.Symbols.HasSuppressionAmmunition.ordinal()] = TruthStates.True;
+        //preConditionArray[WorldState.Symbols.HasSuppressionAmmunition.ordinal()] = TruthStates.True;
         
         return preConditionArray;
     }

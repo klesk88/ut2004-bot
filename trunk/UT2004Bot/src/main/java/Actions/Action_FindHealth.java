@@ -55,7 +55,7 @@ public class Action_FindHealth implements Action {
         {preConditionArray[i] = TruthStates.Uninstantiated;
         }
             
-        preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.True;
+        //preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.True;
         
         return preConditionArray;
     }

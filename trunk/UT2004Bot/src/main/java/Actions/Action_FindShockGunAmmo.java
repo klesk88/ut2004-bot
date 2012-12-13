@@ -54,7 +54,7 @@ public class Action_FindShockGunAmmo implements Action {
         {preConditionArray[i] = TruthStates.Uninstantiated;
         }
             
-        preConditionArray[WorldState.Symbols.ShockGunAmmunition.ordinal()] = TruthStates.False;
+        //preConditionArray[WorldState.Symbols.ShockGunAmmunition.ordinal()] = TruthStates.False;
         preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.False;
         
         return preConditionArray;
