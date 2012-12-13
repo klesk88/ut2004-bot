@@ -49,7 +49,7 @@ public class Action_FollowVisiblePlayer implements Action{
         {preConditionArray[i] = TruthStates.Uninstantiated;
         }
             
-        preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
+        preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
         
         return preConditionArray;
     }
