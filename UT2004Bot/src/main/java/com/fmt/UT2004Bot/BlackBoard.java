@@ -45,6 +45,7 @@ public class BlackBoard {
     public boolean isWallFrontStraight = false;
     public boolean isWallFrontUp = false;
     public boolean isWallFrontDown = false;
+    public boolean randomWalk = false;
     public ItemType[] mostDesiredAmmunition = new ItemType[3];
     private Predictor predictor = null;
     
@@ -150,9 +151,9 @@ public class BlackBoard {
                     * priorityRatio;
         }
 
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("priority: " + calculatedPriority + " for " + item.getName()
-                + " Max ammo: " + BotLogic.getInstance().getWeaponry().getWeaponDescriptor(item).getPriMaxAmount()
-                + " cur ammo: " + BotLogic.getInstance().getWeaponry().getAmmo(item));
+//        BotLogic.getInstance().writeToLog_HackCosIMNoob("priority: " + calculatedPriority + " for " + item.getName()
+//                + " Max ammo: " + BotLogic.getInstance().getWeaponry().getWeaponDescriptor(item).getPriMaxAmount()
+//                + " cur ammo: " + BotLogic.getInstance().getWeaponry().getAmmo(item));
         return calculatedPriority;
     }
 

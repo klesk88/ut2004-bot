@@ -64,6 +64,9 @@ public class TargetManager {
     }
 
     private void updateWorldState() {
+        
+        boolean player_was_visible = bb.player_visible;
+        
         if (bb.player_visible) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, true);
         } else {
@@ -88,14 +91,25 @@ public class TargetManager {
         } else {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasLowHealth, true);
         }
-
-        if (bb.player != null) {
-            if (!BotLogic.getInstance().getGame().isPlayerDeathsKnown(bb.player.getId())) {
-                WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
-            } else if (BotLogic.getInstance().getGame().getPlayerDeaths(bb.player.getId())
-                    > bb.lastKnownDeathValue) {
-                WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, true);
-            }
+       
+//        if (bb.player != null) {
+//            if (!BotLogic.getInstance().getGame().isPlayerDeathsKnown(bb.player.getId())) {
+//                WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
+//            } else if (BotLogic.getInstance().getGame().getPlayerDeaths(bb.player.getId())
+//                    > bb.lastKnownDeathValue) {
+//                int c = BotLogic.getInstance().getGame().getPlayerDeaths(bb.player.getId());
+//                WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, true);
+//                bb.lastKnownDeathValue++;
+//            }
+//        }
+        
+        if(player_was_visible && !bb.player_visible)
+        {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, true);
+        }
+        else
+        {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.IsTargetDead, false);
         }
 
     }

@@ -225,7 +225,24 @@ public class Node {
         
         private void setNumberOfPossibleActions()
         {
-          
+          //this variable is used for compare the goal of this node with the state of the node. In this way
+            //i take in consideration only the actions that complete the pre conditions not
+            //still fulfilled. Or i take also the actions taht satisfied previous goals.
+            WorldState.TruthStates[] goal_to_achieve = new WorldState.TruthStates[this.node_goal.length];
+            
+            for(int i=0; i<goal_to_achieve.length;i++)
+            {
+                if(this.node_goal[i] != WorldState.TruthStates.Uninstantiated)
+                {
+                    if(this.node_goal[i] != this.node_state[i])
+                    {
+                        goal_to_achieve[i] = this.node_goal[i];
+                        continue;
+                    }
+                }
+                
+                goal_to_achieve[i] = WorldState.TruthStates.Uninstantiated;
+            }
             
             //check which action satisfied the passed goal state
             for(int i=0; i<list_of_actions.size();i++)
@@ -233,7 +250,7 @@ public class Node {
                 WorldState.TruthStates[] worldStateSim =
                         WorldState.getInstance().applyPostConditionOfAction(this.node_state, list_of_actions.get(i).GetPostCondtionsArray());
                    
-                if(WorldState.getInstance().IsWorldStateAGoal(worldStateSim, node_goal))
+                if(WorldState.getInstance().IsWorldStateAGoal(worldStateSim, goal_to_achieve))
                 {
                     possible_actions.add(list_of_actions.get(i));
                     //index = i;
@@ -288,6 +305,22 @@ public class Node {
          
             int j = -1;
             
+             WorldState.TruthStates[] goal_to_achieve = new WorldState.TruthStates[simulate_goal.length];
+            
+            for(int i=0; i<goal_to_achieve.length;i++)
+            {
+                if(simulate_goal[i] != WorldState.TruthStates.Uninstantiated)
+                {
+                    if(simulate_goal[i] != simulate_state[i])
+                    {
+                        goal_to_achieve[i] = simulate_goal[i];
+                        continue;
+                    }
+                }
+                
+                goal_to_achieve[i] = WorldState.TruthStates.Uninstantiated;
+            }
+            
             LinkedList<Action> possible_actions = new LinkedList<Action>();
               //check which action satisfied the passed goal state
             for(int i=0; i<list_of_actions.size();i++)
@@ -295,7 +328,7 @@ public class Node {
                 WorldState.TruthStates[] worldStateSim =
                         WorldState.getInstance().applyPostConditionOfAction(simulate_state, list_of_actions.get(i).GetPostCondtionsArray());
                    
-                if(WorldState.getInstance().IsWorldStateAGoal(worldStateSim, simulate_goal))
+                if(WorldState.getInstance().IsWorldStateAGoal(worldStateSim, goal_to_achieve))
                 {
                     possible_actions.add(list_of_actions.get(i));
                    
@@ -333,19 +366,19 @@ public class Node {
             {
                 return previous_goal;
             }
-            
+            this.node_state = WorldState.getInstance().applyPostConditionOfAction(this.node_state, this.action_choose.GetPostCondtionsArray());
             WorldState.TruthStates[] pre_consitions_applied = WorldState.getInstance().applyPreConditionOfAction(previous_goal, this.action_choose.getPreConditionArray());
            
-            //boolean preconsditions_met = true;
-           for(int i=0; i<pre_consitions_applied.length;i++)
-            {
-                if(pre_consitions_applied[i] == this.node_state[i])
-                {
-                    //pre_consitions_applied[i] = WorldState.TruthStates.Uninstantiated;
-                }
-            }
+//            //boolean preconsditions_met = true;
+//           for(int i=0; i<pre_consitions_applied.length;i++)
+//            {
+//                if(pre_consitions_applied[i] == this.node_state[i])
+//                {
+//                    //pre_consitions_applied[i] = WorldState.TruthStates.Uninstantiated;
+//                }
+//            }
+//            
             
-            this.node_state = WorldState.getInstance().applyPostConditionOfAction(this.node_state, this.action_choose.GetPostCondtionsArray());
             return pre_consitions_applied;
         }
         
@@ -373,8 +406,9 @@ public class Node {
                 WorldState.TruthStates[] simulate_goal = this.node_goal;
                 WorldState.TruthStates[] simulate_state = this.node_state;
                 
-                 //check if the precondtions was alerady met with the state of the world of the parent node
-                    int number_of_preconditions_not_met = finalConditions(this.getParent().node_state,simulate_goal);
+                 //check if the state of this node, after had applied the post condition, is the same as the goal of the parent node
+                //in that case it means that I have a complete plan
+                    int number_of_preconditions_not_met = finalConditions(this.node_state,this.node_goal);
                     if(number_of_preconditions_not_met == 0)
                     {
                         score += 10;
@@ -390,38 +424,36 @@ public class Node {
 		{
                         
                    
-                    if(number_of_preconditions_not_met !=0 )
-                    {
+                    
                         //get the action to simulate from the actual workd state of this node
                         simulate_action = getNewSimulatedAction(simulate_state,simulate_goal);
-
+                           
                         if(simulate_action == null)
                         {
                             this.simulation =  false;
                             return score;
                         }
 
-                        simulate_goal = WorldState.getInstance().applyPreConditionOfAction( simulate_goal,simulate_action.getPreConditionArray());
-
+                          simulate_state = WorldState.getInstance().applyPostConditionOfAction(simulate_state, simulate_action.GetPostCondtionsArray());
+                         simulate_goal = WorldState.getInstance().applyPreConditionOfAction( simulate_goal,simulate_action.getPreConditionArray());
                         //if the final condition is reached, subtract 1 to the toal amount of score
                         number_of_preconditions_not_met = finalConditions(simulate_state, simulate_goal);
                         if(number_of_preconditions_not_met == 0)
                         {
 
-                            score += 1;
+                            score += 10;
+                           break;
 
                         }
                         //or add to the score the number of unsutisfied conditions
                         else
                         {
                             score += 1/(double)number_of_preconditions_not_met;
+                            score %= 1;
                         }
-                    }
-                    else
-                    {
-                       score += 1;  
-                    }
-                    simulate_state = WorldState.getInstance().applyPostConditionOfAction(simulate_state, simulate_action.GetPostCondtionsArray());
+                    
+                 
+                    
 		    temp++;
 		}		
 		
