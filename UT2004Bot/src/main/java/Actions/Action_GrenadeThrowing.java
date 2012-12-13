@@ -16,7 +16,7 @@ import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
  *
  * @author Ado
  */
-public class Action_ShockGunNuke implements Action {
+public class Action_GrenadeThrowing implements Action {
 
     //use this for the timer
     double timeStamp_EnergyBallShootBeShot = 0;
@@ -27,7 +27,7 @@ public class Action_ShockGunNuke implements Action {
 
     
       
-    public Action_ShockGunNuke() {
+    public Action_GrenadeThrowing() {
         ActionManager.getInstance().addAction(this);
     }
     
@@ -59,8 +59,7 @@ public class Action_ShockGunNuke implements Action {
         for (int i = 0; i < preConditionArray.length; i++)
         {preConditionArray[i] = TruthStates.Uninstantiated;
         }
-            
-        preConditionArray[WorldState.Symbols.ShockGunAmmunition.ordinal()] = TruthStates.True;
+
         preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
         
         return preConditionArray;
@@ -70,20 +69,20 @@ public class Action_ShockGunNuke implements Action {
     public ActionResult executeAction() {
 
         // fail if no weapon is available
-        if (!(BotLogic.getInstance().getWeaponry().hasAmmoForWeapon(ItemType.SHOCK_RIFLE)
-                && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE))) {
+        if (!(BotLogic.getInstance().getWeaponry().hasAmmoForWeapon(ItemType.ASSAULT_RIFLE_GRENADE)
+                )) {
 
             waitingToShootPrimary = false;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke failure");
             return ActionResult.Failed;
         }
 
-        if (BotLogic.getInstance().getWeaponry().getCurrentWeapon().getType() == ItemType.SHOCK_RIFLE) {
+        if (BotLogic.getInstance().getWeaponry().getCurrentWeapon().getType() == ItemType.ASSAULT_RIFLE_GRENADE) {
             hasChangedToShockRifle = true;
         } else {
             hasChangedToShockRifle = false;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("changing to shock rifle");
-            BotLogic.getInstance().getShoot().changeWeapon(ItemType.SHOCK_RIFLE);
+            BotLogic.getInstance().getShoot().changeWeapon(ItemType.ASSAULT_RIFLE_GRENADE);
         }
 
         if ((!waitingToShootPrimary) && hasChangedToShockRifle) {
@@ -99,7 +98,7 @@ public class Action_ShockGunNuke implements Action {
                 return ActionResult.Failed;
             }
 
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting secondary shock rifle");
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting grenade assault rifle");
             BotLogic.getInstance().getShoot().shootSecondary(secondaryWasShootAt);
             waitingToShootPrimary = true;
             timeStamp_EnergyBallShootBeShot = BotLogic.getInstance().getGame().getTime();
@@ -114,9 +113,9 @@ public class Action_ShockGunNuke implements Action {
 
                 {
                     //BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting primary shock rifle");
-                    BotLogic.getInstance().getShoot().shootPrimary(secondaryWasShootAt);
+                    BotLogic.getInstance().getShoot().shootSecondary(secondaryWasShootAt);
 
-                    BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke success");
+                    BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade success");
                     waitingToShootPrimary = false;
                     return ActionResult.Success;
                 }
