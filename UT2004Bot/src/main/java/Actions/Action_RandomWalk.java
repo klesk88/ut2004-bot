@@ -56,7 +56,7 @@ public class Action_RandomWalk implements Action{
         {preConditionArray[i] = TruthStates.Uninstantiated;
         }
             
-        preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
+        //preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
         preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.False;
         
         return preConditionArray;
@@ -73,20 +73,21 @@ public class Action_RandomWalk implements Action{
 //            newRun = false;
 //        }
         //@Michele. fix navigation system
-        NavPoint temp_navpoint = MovementLogic.getInstance().handleNavPointNavigation();
-        
-        if(MovementLogic.getInstance().handleNavPointNavigation() != null)
-        {
-             bb.targetPos = temp_navpoint.getLocation();
-        }
+//        NavPoint temp_navpoint = MovementLogic.getInstance().handleNavPointNavigation();
+//        
+//        if(MovementLogic.getInstance().handleNavPointNavigation() != null)
+//        {
+//             bb.targetPos = temp_navpoint.getLocation();
+//        }
         
         if (/*( BotLogic.getInstance().getBot().getVelocity().isZero()) &&*/ bb.player_visible){
             newRun = true;
+             bb.randomWalk=false;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("RandomWalk success");
             return ActionResult.Success;
         } 
         
-        
+        bb.randomWalk=true;
             
         BotLogic.getInstance().writeToLog_HackCosIMNoob("RandomWalk Running");
         return ActionResult.Running;

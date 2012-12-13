@@ -19,11 +19,11 @@ import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
 public class Action_GrenadeThrowing implements Action {
 
     //use this for the timer
-    double timeStamp_EnergyBallShootBeShot = 0;
-    double time_estimatedTimeForShooting = 0.5;
-    boolean waitingToShootPrimary = false;
-    Location secondaryWasShootAt;
-    boolean hasChangedToShockRifle = false;
+  
+  
+  
+  
+    boolean hasChangedToAssaultRifle = false;
 
     
       
@@ -69,29 +69,30 @@ public class Action_GrenadeThrowing implements Action {
     public ActionResult executeAction() {
 
         // fail if no weapon is available
-        if (!(BotLogic.getInstance().getWeaponry().hasSecondaryAmmoType(ItemType.ASSAULT_RIFLE)
+        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_GRENADE)
                 )) {
 
-            waitingToShootPrimary = false;
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no ammo");
+            //BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no ammo");
             return ActionResult.Failed;
         }
 
         if (BotLogic.getInstance().getWeaponry().getCurrentWeapon().getType() == ItemType.ASSAULT_RIFLE) {
-            hasChangedToShockRifle = true;
+            hasChangedToAssaultRifle = true;
         } else {
-            hasChangedToShockRifle = false;
+            hasChangedToAssaultRifle = false;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("changing to assault rifle");
             BotLogic.getInstance().getShoot().changeWeapon(ItemType.ASSAULT_RIFLE);
         }
 
-        if (hasChangedToShockRifle
+
+        if (hasChangedToAssaultRifle
                 && BlackBoard.getInstance().predictionIsReady_Tilman) {
+
             //Shoot secondary
             if (BotLogic.getInstance().getInfo().getNearestPlayer() != null) {
                 
                 BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
-                BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting grenade assault rifle");
+                //BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting grenade assault rifle");
                 //BotLogic.getInstance().getShoot().shootSecondary(BlackBoard.getInstance().player.getLocation());
                 BotLogic.getInstance().getShoot().shootSecondaryCharged(
                         BlackBoard.getInstance().predictLocationForWeapon(null),

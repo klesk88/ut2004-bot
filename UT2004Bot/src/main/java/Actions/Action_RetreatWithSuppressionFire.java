@@ -57,7 +57,7 @@ public class Action_RetreatWithSuppressionFire implements Action {
         }
 
         preConditionArray[WorldState.Symbols.HasSuppressionAmmunition.ordinal()] = TruthStates.True;
-        preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
+        //preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
 
         return preConditionArray;
     }
