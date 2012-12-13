@@ -186,19 +186,21 @@ public class WorldState {
      * @return whether in the passed simulated world state the passed simulated goal would have been achieved
      */
     public boolean IsWorldStateAGoal(TruthStates[] worldState, TruthStates[] goalState) {
-        boolean value_to_return = true;
+        boolean value_to_return = false;
 
         for (int i = 0; i < goalState.length; i++) {
             if (!(worldState[i] == TruthStates.Uninstantiated)) {
-                if (goalState[i] == TruthStates.True  ) {
-                    if (worldState[i] == TruthStates.False) {
-                        value_to_return = false;
-                    }
-                } else if (goalState[i] == TruthStates.False) {
-                    if (worldState[i] == TruthStates.True) {
-                        value_to_return = false;
-                    }
+                if (goalState[i] == TruthStates.True && worldState[i] == TruthStates.True) {
+                 
+                        value_to_return = true;
+                        break;
+                    
+                } else if (goalState[i] == TruthStates.False && worldState[i] == TruthStates.False) {
+                   
+                        value_to_return = true;
+                        break;
                 }
+                
             }
         }
 
