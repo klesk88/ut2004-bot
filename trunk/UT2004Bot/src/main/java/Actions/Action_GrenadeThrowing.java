@@ -69,59 +69,40 @@ public class Action_GrenadeThrowing implements Action {
     public ActionResult executeAction() {
 
         // fail if no weapon is available
-        if (!(BotLogic.getInstance().getWeaponry().hasAmmoForWeapon(ItemType.ASSAULT_RIFLE_GRENADE)
+        if (!(BotLogic.getInstance().getWeaponry().hasSecondaryAmmoType(ItemType.ASSAULT_RIFLE)
                 )) {
 
             waitingToShootPrimary = false;
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke failure");
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no ammo");
             return ActionResult.Failed;
         }
 
-        if (BotLogic.getInstance().getWeaponry().getCurrentWeapon().getType() == ItemType.ASSAULT_RIFLE_GRENADE) {
+        if (BotLogic.getInstance().getWeaponry().getCurrentWeapon().getType() == ItemType.ASSAULT_RIFLE) {
             hasChangedToShockRifle = true;
         } else {
             hasChangedToShockRifle = false;
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("changing to shock rifle");
-            BotLogic.getInstance().getShoot().changeWeapon(ItemType.ASSAULT_RIFLE_GRENADE);
+            BotLogic.getInstance().writeToLog_HackCosIMNoob("changing to assault rifle");
+            BotLogic.getInstance().getShoot().changeWeapon(ItemType.ASSAULT_RIFLE);
         }
 
-        if ((!waitingToShootPrimary) && hasChangedToShockRifle) {
+        if (hasChangedToShockRifle) {
             //Shoot secondary
             if (BotLogic.getInstance().getInfo().getNearestPlayer() != null) {
+                
                 BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
-                secondaryWasShootAt = BlackBoard.getInstance().player.getLocation();
-            } 
-            //else if (BotLogic.getInstance().getInfo().getNearestVisibleItem() != null) {
-            //    secondaryWasShootAt = BotLogic.getInstance().getInfo().getNearestVisibleItem().getLocation();  
-        //} 
-        else {
+                BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting grenade assault rifle");
+                //BotLogic.getInstance().getShoot().shootSecondary(BlackBoard.getInstance().player.getLocation());
+                BotLogic.getInstance().getShoot().shootSecondaryCharged(
+                        BlackBoard.getInstance().player.getLocation(), 
+                        0);
+                return ActionResult.Success;
+            
+            } else {
+                
+                BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no player");
                 return ActionResult.Failed;
             }
-
-            BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting grenade assault rifle");
-            BotLogic.getInstance().getShoot().shootSecondary(secondaryWasShootAt);
-            waitingToShootPrimary = true;
-            timeStamp_EnergyBallShootBeShot = BotLogic.getInstance().getGame().getTime();
-
-            //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
-            return ActionResult.Running;
         }
-
-        if (waitingToShootPrimary && hasChangedToShockRifle) {
-            if ((timeStamp_EnergyBallShootBeShot + time_estimatedTimeForShooting)
-                    < BotLogic.getInstance().getGame().getTime()) {
-
-                {
-                    //BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting primary shock rifle");
-                    BotLogic.getInstance().getShoot().shootSecondary(secondaryWasShootAt);
-
-                    BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade success");
-                    waitingToShootPrimary = false;
-                    return ActionResult.Success;
-                }
-            }
-        }
-
         //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
         return ActionResult.Running;
     }
