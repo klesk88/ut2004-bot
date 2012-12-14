@@ -47,7 +47,7 @@ public class TargetManager {
 
         //
         
-         updateGoals();
+         goalSelection();
        
         
           if(this.previous_goal == null)
@@ -77,7 +77,7 @@ public class TargetManager {
 
     }
     
-    private void updateGoals()
+    private void goalSelection()
     {
          
         if((BotLogic.getInstance().getBot().getSelf().getHealth() > 50)
