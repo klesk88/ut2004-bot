@@ -107,9 +107,10 @@ public class Action_GrenadeThrowing implements Action {
             }
         }
         //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
-        BotLogic.getInstance().getShoot().shootSecondaryCharged(
-                        BlackBoard.getInstance().predictLocationForWeapon(null),
-                        0);
+//        BotLogic.getInstance().getShoot().shootSecondaryCharged(
+//                        BlackBoard.getInstance().predictLocationForWeapon(null),
+//                        0);
+          BotLogic.getInstance().getShoot().shootSecondary( BlackBoard.getInstance().predictLocationForWeapon(null));
         return ActionResult.Running;
     }
 
