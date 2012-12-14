@@ -92,7 +92,7 @@ public class Action_GrenadeThrowing implements Action {
             //Shoot secondary
             if (BotLogic.getInstance().getInfo().getNearestPlayer() != null) {
                 
-                BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
+                //BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
                 //BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting grenade assault rifle");
                 //BotLogic.getInstance().getShoot().shootSecondary(BlackBoard.getInstance().player.getLocation());
                 BotLogic.getInstance().getShoot().shootSecondaryCharged(
@@ -107,6 +107,9 @@ public class Action_GrenadeThrowing implements Action {
             }
         }
         //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
+        BotLogic.getInstance().getShoot().shootSecondaryCharged(
+                        BlackBoard.getInstance().predictLocationForWeapon(null),
+                        0);
         return ActionResult.Running;
     }
 
