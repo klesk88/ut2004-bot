@@ -16,7 +16,7 @@ import com.fmt.UT2004Bot.WorldState.TruthStates;
 public class Action_FollowVisiblePlayer implements Action{
 
      public void Action_FollowVisiblePlayer() {
-        ActionManager.getInstance().addAction(this);
+        //ActionManager.getInstance().addAction(this);
     }
     
     @Override
@@ -32,7 +32,7 @@ public class Action_FollowVisiblePlayer implements Action{
         {postConditionArray[i] = TruthStates.Uninstantiated;
         }
             
-        postConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
+        //postConditionArray[WorldState.Symbols.FollowPlayer.ordinal()] = TruthStates.True;
         
         return postConditionArray;
     }
@@ -50,7 +50,7 @@ public class Action_FollowVisiblePlayer implements Action{
         }
             
 
-        preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
+        //preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
 
         
         return preConditionArray;
