@@ -74,14 +74,14 @@ public class Action_FindHealth implements Action {
 
             Location attempt = bb.getBestHealthPackLocation();
 
-            if (attempt != null) {
+            //if (attempt != null) {
                 bb.targetPos = attempt;
                 //BotLogic.getInstance().writeToLog_HackCosIMNoob("health search running");
                 return ActionResult.Running;
-            } else {
+            //} else {
                 //BotLogic.getInstance().writeToLog_HackCosIMNoob("no health pack dropped");
-                return ActionResult.Failed;
-            }
+               // return ActionResult.Failed;
+            //}
         }
     }
 

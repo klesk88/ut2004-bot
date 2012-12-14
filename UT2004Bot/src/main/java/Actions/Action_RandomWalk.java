@@ -57,7 +57,7 @@ public class Action_RandomWalk implements Action{
         }
             
        // preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
-        preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.False;
+        //preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.False;
         
         return preConditionArray;
     }

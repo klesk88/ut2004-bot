@@ -67,11 +67,11 @@ public class Action_ShockGunNuke implements Action {
     @Override
     public ActionResult executeAction() {
         
-        boolean  c = BlackBoard.getInstance().player_visible;
+   
         // fail if no weapon is available
         if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO)
-                && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)) || !BlackBoard.getInstance().player_visible) {
-
+                && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE))) {
+           
             waitingToShootPrimary = false;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke failure");
             return ActionResult.Failed;
@@ -96,6 +96,7 @@ public class Action_ShockGunNuke implements Action {
             //    secondaryWasShootAt = BotLogic.getInstance().getInfo().getNearestVisibleItem().getLocation();  
             //} 
             else {
+             
                 return ActionResult.Failed;
             }
 
@@ -118,11 +119,12 @@ public class Action_ShockGunNuke implements Action {
                     BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke success");
                     waitingToShootPrimary = false;
                     timeStamp_EnergyBallShootBeShot = Double.POSITIVE_INFINITY;
+                     BlackBoard.getInstance().follow_player = false;
                     return ActionResult.Success;
                 }
             }
         }
-
+         
         //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
         return ActionResult.Running;
     }

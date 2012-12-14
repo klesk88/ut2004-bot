@@ -12,7 +12,7 @@ public class WorldState {
     private static WorldState instance = null;
 
     public enum Symbols {
-        PlayerIsVisible, HasSuppressionAmmunition, IsTargetDead, ShockGunAmmunition, HasLowHealth, HasGranadeAmmunition 
+        PlayerIsVisible, HasSuppressionAmmunition, IsTargetDead, ShockGunAmmunition, HasLowHealth, HasGranadeAmmunition
     }
 
     public enum TruthStates {
@@ -105,6 +105,7 @@ public class WorldState {
                 goal_current[Symbols.HasSuppressionAmmunition.ordinal()] = TruthStates.False;
                 goal_current[Symbols.ShockGunAmmunition.ordinal()] = TruthStates.False;
                 break;
+           
                 
         }
     }
