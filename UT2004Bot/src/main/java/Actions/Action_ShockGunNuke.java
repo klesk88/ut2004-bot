@@ -119,7 +119,7 @@ public class Action_ShockGunNuke implements Action {
                     BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke success");
                     waitingToShootPrimary = false;
                     timeStamp_EnergyBallShootBeShot = Double.POSITIVE_INFINITY;
-                     BlackBoard.getInstance().follow_player = false;
+                  
                     return ActionResult.Success;
                 }
             }
