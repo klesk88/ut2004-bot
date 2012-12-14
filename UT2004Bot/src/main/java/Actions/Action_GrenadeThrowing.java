@@ -61,6 +61,7 @@ public class Action_GrenadeThrowing implements Action {
         }
 
         preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
+        preConditionArray[WorldState.Symbols.HasGranadeAmmunition.ordinal()] = TruthStates.True;
         
         return preConditionArray;
     }
@@ -70,7 +71,7 @@ public class Action_GrenadeThrowing implements Action {
 
         // fail if no weapon is available
         if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_GRENADE)
-                )) {
+                ) || !BlackBoard.getInstance().player_visible ) {
 
             //BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no ammo");
             return ActionResult.Failed;

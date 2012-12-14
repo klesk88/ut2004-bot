@@ -328,7 +328,7 @@ public class MovementLogic {
        
         if (!bb.sensor) {
             // no sensor are signalizes - just proceed with forward movement
-            BotLogic.getInstance().getLog().info("MOVEMENT");
+           // BotLogic.getInstance().getLog().info("MOVEMENT");
             movementSelection();
             return;
         }

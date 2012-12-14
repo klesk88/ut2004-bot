@@ -78,7 +78,7 @@ public class ActorSystem {
      */
     public void update() {
 
-        if (bb.currentPlan.isEmpty()) {
+        if (bb.currentPlan.isEmpty() ) {
             if (PLANNING_ENABLED) {
                 planner.replan();
             } else {

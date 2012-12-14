@@ -12,7 +12,7 @@ public class WorldState {
     private static WorldState instance = null;
 
     public enum Symbols {
-        PlayerIsVisible, HasSuppressionAmmunition, IsTargetDead, ShockGunAmmunition, HasLowHealth, 
+        PlayerIsVisible, HasSuppressionAmmunition, IsTargetDead, ShockGunAmmunition, HasLowHealth, HasGranadeAmmunition 
     }
 
     public enum TruthStates {
@@ -26,7 +26,13 @@ public class WorldState {
     private TruthStates[] goal_current;
 
     private WorldState() {
-        goal_current = new TruthStates[]{TruthStates.Uninstantiated, TruthStates.Uninstantiated, TruthStates.True,TruthStates.Uninstantiated, TruthStates.Uninstantiated};
+        goal_current = new TruthStates[Symbols.values().length];
+        
+        for(int i=0; i<goal_current.length;i++)
+        {
+            goal_current[i] = TruthStates.Uninstantiated;
+        }
+        
         setGoalState(GoalStates.KillEnemy);
         
         fixedSizeArray = new boolean[Symbols.values().length];

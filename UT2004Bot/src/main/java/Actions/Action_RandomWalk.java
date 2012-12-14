@@ -56,7 +56,7 @@ public class Action_RandomWalk implements Action{
         {preConditionArray[i] = TruthStates.Uninstantiated;
         }
             
-        //preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
+       // preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
         preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.False;
         
         return preConditionArray;
