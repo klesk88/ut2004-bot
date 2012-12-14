@@ -62,6 +62,7 @@ public class GOAPPlanner {
         {
             finalPlan.push(final_plan.get(i));
         }
+        //bb.currentPlan.clear();
         //write planb to blackboard
         bb.currentPlan = finalPlan;
          BotLogic.getInstance().writeToLog_HackCosIMNoob("final plan: ");

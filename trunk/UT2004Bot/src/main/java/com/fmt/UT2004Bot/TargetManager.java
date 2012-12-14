@@ -62,6 +62,7 @@ public class TargetManager {
          {
              if(this.previous_goal[i] != temp[i])
              {
+                
                  goal_changed = true;
                  break;
              }
@@ -69,18 +70,18 @@ public class TargetManager {
           
          if(goal_changed)
          {
+              this.previous_goal = temp;
+             bb.currentPlan.clear();
              GOAPPlanner.getInstance().replan();
          }
-        // if goal achieved create new target and replan
-
-        // ask blackboard whether to replan
+        
 
     }
     
     private void goalSelection()
     {
          
-        if((BotLogic.getInstance().getBot().getSelf().getHealth() > 50)
+        if( bb.player_visible && (BotLogic.getInstance().getBot().getSelf().getHealth() > 50)
                 && (hasSuppressionAmmo() 
                 || (!(BotLogic.getInstance().getWeaponry().hasAmmoForWeapon(ItemType.SHOCK_RIFLE)
                 && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)))))
