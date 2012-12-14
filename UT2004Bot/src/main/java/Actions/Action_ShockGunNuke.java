@@ -124,7 +124,10 @@ public class Action_ShockGunNuke implements Action {
                 }
             }
         }
-         
+        if(BlackBoard.getInstance().player_visible)
+        {
+             BlackBoard.getInstance().targetPos =  BlackBoard.getInstance().player.getLocation();
+        }
         //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
         return ActionResult.Running;
     }
