@@ -66,10 +66,11 @@ public class Action_ShockGunNuke implements Action {
 
     @Override
     public ActionResult executeAction() {
-
+        
+        boolean  c = BlackBoard.getInstance().player_visible;
         // fail if no weapon is available
-        if (!(BotLogic.getInstance().getWeaponry().hasAmmoForWeapon(ItemType.SHOCK_RIFLE)
-                && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE))) {
+        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO)
+                && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)) || !BlackBoard.getInstance().player_visible) {
 
             waitingToShootPrimary = false;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke failure");

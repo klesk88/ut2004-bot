@@ -79,11 +79,18 @@ public class TargetManager {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasSuppressionAmmunition, false);
         }
 
-        if (!(BotLogic.getInstance().getWeaponry().hasAmmoForWeapon(ItemType.SHOCK_RIFLE)
+        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO)
                 && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE))) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.ShockGunAmmunition, false);
         } else {
             WorldState.getInstance().setWSValue(WorldState.Symbols.ShockGunAmmunition, true);
+        }
+        
+        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_GRENADE)
+                )) {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasGranadeAmmunition, false);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasGranadeAmmunition, true);
         }
 
         if (BotLogic.getInstance().getBot().getSelf().getHealth() > 50) {

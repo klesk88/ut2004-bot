@@ -142,7 +142,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
     @Override
     public void logic() {
 
-        log.info("Enter Logic");
+     
        
         this.sensor.update();
 
@@ -162,7 +162,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         //for use the raycast part (bugged for the moment) call the 
         //method this.ml.raycast(); instead of this one
         this.ml.raycast();
-        BotLogic.getInstance().writeToLog_HackCosIMNoob("raycast done");
+  
         
         ActorSystem.getInstance().update();
         
