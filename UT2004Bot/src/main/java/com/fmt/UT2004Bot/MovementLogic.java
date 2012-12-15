@@ -160,6 +160,7 @@ public class MovementLogic {
     {
         if(bb.randomWalk)
         {
+            BotLogic.getInstance().getMove().setSpeed(1.0);
              //getRandomFightingPoint();
            handleNavPointNavigation();
            return;
@@ -171,6 +172,7 @@ public class MovementLogic {
           handlePlayerNavigation();
       }
       //getRandomFightingPoint();
+      BotLogic.getInstance().getMove().setSpeed(1.0);
       BotLogic.getInstance().getNavigation().navigate(bb.targetPos);
     }
     
@@ -219,7 +221,7 @@ public class MovementLogic {
         // CHECK DISTANCE TO THE PLAYER ...
         if (BotLogic.getInstance().getInfo().getLocation().getDistance(player.getLocation()) < 90) {
              BotLogic.getInstance().getNavigation().stopNavigation();
-            int random_number = (int)Math.random()*100;
+            int random_number = (int)(Math.random()*100);
             if(random_number < 30)
                 BotLogic.getInstance().getMove().strafeRight(90, bb.player.getLocation());
             else
