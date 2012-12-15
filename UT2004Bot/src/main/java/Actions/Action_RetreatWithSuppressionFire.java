@@ -31,6 +31,11 @@ public class Action_RetreatWithSuppressionFire implements Action {
         return confidence;
     }
 
+   @Override
+    public void setConfidence(float confidence_value) {
+         confidence = confidence_value;
+    }
+  
     @Override
     public TruthStates[] GetPostCondtionsArray() {
         TruthStates[] postConditionArray = new TruthStates[WorldState.Symbols.values().length];
@@ -44,7 +49,12 @@ public class Action_RetreatWithSuppressionFire implements Action {
         return postConditionArray;
     }
 
-  
+  private TypeOfAction type_of_action = TypeOfAction.RetreatWithSuppressionFIre;
+    
+    @Override
+    public TypeOfAction getTypeOfAction() {
+         return type_of_action;
+    }
 
     @Override
     public TruthStates[] getPreConditionArray() {

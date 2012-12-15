@@ -31,8 +31,13 @@ public class Action_FindFlackCannonAmmo implements Action{
       }
     }
     
-  
-
+    private TypeOfAction type_of_action = TypeOfAction.FlackCannonAmmo;
+    
+    @Override
+    public TypeOfAction getTypeOfAction() {
+         return type_of_action;
+    }
+     
     @Override
     public WorldState.TruthStates[] GetPostCondtionsArray() {
         WorldState.TruthStates[] postConditionArray = new WorldState.TruthStates[WorldState.Symbols.values().length];
@@ -113,6 +118,13 @@ public class Action_FindFlackCannonAmmo implements Action{
     public float getConfidence() {
         return confidence;
     }
+
+    @Override
+    public void setConfidence(float confidence_value) {
+         confidence = confidence_value;
+    }
+
+   
     
     
     
