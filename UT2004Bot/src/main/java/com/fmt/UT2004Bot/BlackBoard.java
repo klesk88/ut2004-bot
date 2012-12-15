@@ -46,6 +46,11 @@ public class BlackBoard {
     public boolean isWallFrontUp = false;
     public boolean isWallFrontDown = false;
     public boolean randomWalk = false;
+    public boolean is_damaged = false;
+    public boolean see_incoming_projectile = false;
+    public boolean heard_player = false;
+    public boolean is_bumping = false;
+    public Location bumping_position;
     public ItemType[] mostDesiredAmmunition = new ItemType[3];
     private Predictor predictor = null;
     

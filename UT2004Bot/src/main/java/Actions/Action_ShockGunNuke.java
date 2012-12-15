@@ -74,6 +74,7 @@ public class Action_ShockGunNuke implements Action {
            
             waitingToShootPrimary = false;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke failure");
+            BlackBoard.getInstance().follow_player = false;
             return ActionResult.Failed;
         }
 
@@ -96,7 +97,7 @@ public class Action_ShockGunNuke implements Action {
             //    secondaryWasShootAt = BotLogic.getInstance().getInfo().getNearestVisibleItem().getLocation();  
             //} 
             else {
-             
+             BlackBoard.getInstance().follow_player = false;
                 return ActionResult.Failed;
             }
 
@@ -106,6 +107,7 @@ public class Action_ShockGunNuke implements Action {
             timeStamp_EnergyBallShootBeShot = BotLogic.getInstance().getGame().getTime() + time_estimatedTimeForShooting;
 
             //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
+            BlackBoard.getInstance().follow_player = true;
             return ActionResult.Running;
         }
 
@@ -119,15 +121,16 @@ public class Action_ShockGunNuke implements Action {
                     BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke success");
                     waitingToShootPrimary = false;
                     timeStamp_EnergyBallShootBeShot = Double.POSITIVE_INFINITY;
-                  
+                  BlackBoard.getInstance().follow_player = false;
                     return ActionResult.Success;
                 }
             }
         }
-        if(BlackBoard.getInstance().player_visible)
-        {
-             BlackBoard.getInstance().targetPos =  BlackBoard.getInstance().player.getLocation();
-        }
+//        if(BlackBoard.getInstance().player_visible)
+//        {
+//             BlackBoard.getInstance().targetPos =  BlackBoard.getInstance().player.getLocation();
+//        }
+         BlackBoard.getInstance().follow_player = true;      
         //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
         return ActionResult.Running;
     }

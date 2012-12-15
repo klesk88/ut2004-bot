@@ -150,7 +150,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         
          TargetManager.getInstance().update();
         
-        
+       
         // this.targetManager.update();
         // target manager also calls GOAPPlanner
         
