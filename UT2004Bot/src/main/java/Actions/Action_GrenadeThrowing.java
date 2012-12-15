@@ -89,6 +89,7 @@ public class Action_GrenadeThrowing implements Action {
 
          if(BlackBoard.getInstance().player==null)
         {
+              BlackBoard.getInstance().follow_player = false;
             BotLogic.getInstance().getShoot().stopShooting();
              return Action.ActionResult.Success;
         }
@@ -118,11 +119,11 @@ public class Action_GrenadeThrowing implements Action {
 //                        BlackBoard.getInstance().predictLocationForWeapon(null),
 //                        0);
         BlackBoard.getInstance().follow_player = true;
-       
-      
+     
         if( BotLogic.getInstance().getPlayers().canSeePlayers())
             {
-                  BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+                 // BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+                   
                  BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(null));
             }
         return ActionResult.Running;

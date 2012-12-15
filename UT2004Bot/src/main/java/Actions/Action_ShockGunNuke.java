@@ -119,7 +119,7 @@ public class Action_ShockGunNuke implements Action {
             BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting secondary shock rifle");
             if(BotLogic.getInstance().getPlayers().canSeePlayers())
             {
-                BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+               // BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
                 BotLogic.getInstance().getShoot().shootSecondary(secondaryWasShootAt);
             }
             waitingToShootPrimary = true;
@@ -137,7 +137,7 @@ public class Action_ShockGunNuke implements Action {
                     //BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting primary shock rifle");
                       if(BotLogic.getInstance().getPlayers().canSeePlayers())
                      {
-                          BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+                          //BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
                          BotLogic.getInstance().getShoot().shootPrimary(secondaryWasShootAt);
                      }
 

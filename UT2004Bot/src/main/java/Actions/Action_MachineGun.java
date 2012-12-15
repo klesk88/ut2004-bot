@@ -87,6 +87,7 @@ public class Action_MachineGun implements Action{
         
          if(BlackBoard.getInstance().player==null)
         {
+              BlackBoard.getInstance().follow_player = false;
             BotLogic.getInstance().getShoot().stopShooting();
              return Action.ActionResult.Success;
         }
@@ -119,7 +120,7 @@ public class Action_MachineGun implements Action{
         BlackBoard.getInstance().follow_player = true;
         if(BotLogic.getInstance().getPlayers().canSeePlayers())
             {
-                BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+                //BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
           BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(null));
         }
         return Action.ActionResult.Running;

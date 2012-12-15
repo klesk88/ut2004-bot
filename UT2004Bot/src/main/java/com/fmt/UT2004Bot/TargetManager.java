@@ -75,7 +75,7 @@ public class TargetManager {
              GOAPPlanner.getInstance().replan();
          }
         
-
+         BotLogic.getInstance().writeToLog_HackCosIMNoob(" exit world state updated");
     }
     
     private void goalSelection()
