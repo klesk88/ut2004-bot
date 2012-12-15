@@ -192,7 +192,7 @@ public class MovementLogic {
         if(bb.see_incoming_projectile || bb.is_damaged)
         {
             BotLogic.getInstance().getNavigation().stopNavigation();
-            int random_number = (int)Math.random()*100;
+            int random_number = (int)(Math.random()*100);
             if(random_number < 30)
                 BotLogic.getInstance().getMove().strafeRight(90, bb.player.getLocation());
             else
