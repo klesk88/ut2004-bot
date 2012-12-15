@@ -30,18 +30,18 @@ public class Action_MachineGun implements Action{
     public float getConfidence() {
         // return 1;
           //if i don't have this weapon right now
-        if(!BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER)  
-              && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.MINIGUN) &&  !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)  )
-       {
-           return 1;
-       }
-        
-          if(!BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER_AMMO)  
-              && BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN_AMMO) &&  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO)  )
-       {
-           return 1;
-       }
-          
+//        if(!BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER)  
+//              && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.MINIGUN) &&  !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)  )
+//       {
+//           return 1;
+//       }
+//        
+//          if(!BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER_AMMO)  
+//              && BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN_AMMO) &&  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO)  )
+//       {
+//           return 1;
+//       }
+//          
         return confidence;
     }
      @Override

@@ -17,6 +17,8 @@ import java.util.Map;
  */
 public class TargetManager {
     //SINGLETON START
+    
+    private WorldState.TruthStates[] previous_world_state = null;
 
     private static TargetManager instance = null;
     private GOAPPlanner goap = null;
@@ -55,8 +57,15 @@ public class TargetManager {
              
              this.previous_goal = WorldState.getInstance().getActualGoal();
          }
+          
+            if(this.previous_world_state == null)
+         {
+             
+             this.previous_world_state = WorldState.getInstance().getWorldState();
+         }
          
          boolean goal_changed = false;
+         boolean world_state_changed = false;
          WorldState.TruthStates[] temp = WorldState.getInstance().getActualGoal();
          for(int i=0;i<this.previous_goal.length;i++)
          {
@@ -67,11 +76,31 @@ public class TargetManager {
                  break;
              }
          }
+         
+        
           
          if(goal_changed)
          {
               this.previous_goal = temp;
-             bb.currentPlan.clear();
+            
+             GOAPPlanner.getInstance().replan();
+         }
+         
+         WorldState.TruthStates[] temp1 = WorldState.getInstance().getWorldState();
+         for(int i=0;i<this.previous_world_state.length;i++)
+         {
+             if(this.previous_world_state[i] != temp1[i])
+             {
+                
+                 world_state_changed = true;
+                 break;
+             }
+         }
+         
+         if(world_state_changed)
+         {
+             this.previous_world_state = temp1;
+             
              GOAPPlanner.getInstance().replan();
          }
         
@@ -120,6 +149,8 @@ public class TargetManager {
         if (bb.player_visible) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, true);
             
+            
+            
         } else {
             WorldState.getInstance().setWSValue(WorldState.Symbols.PlayerIsVisible, false);
           
@@ -145,14 +176,14 @@ public class TargetManager {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasGunammunition, true);
         }
         
-        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_GRENADE)
+        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO)
                 )) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasGranadeAmmunition, false);
         } else {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasGranadeAmmunition, true);
         }
         
-          if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON)
+          if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO)
                 )) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasFlackAmmo, false);
         } else {
@@ -168,21 +199,21 @@ public class TargetManager {
              WorldState.getInstance().setWSValue(WorldState.Symbols.PerformAdrenalineAction, true);
         }
           
-          if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.LIGHTNING_GUN)
+          if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.LIGHTNING_GUN_AMMO)
                 )) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasLightiningGunAmmo, false);
         } else {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasLightiningGunAmmo, true);
         }
           
-            if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN)
+            if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN_AMMO)
                 )) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasMachineGunAmmo, false);
         } else {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasMachineGunAmmo, true);
         }
             
-             if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER)
+             if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER_AMMO)
                 )) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasRocketAmmunition, false);
         } else {

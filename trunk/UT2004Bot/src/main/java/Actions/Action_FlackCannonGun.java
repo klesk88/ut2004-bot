@@ -34,17 +34,17 @@ public class Action_FlackCannonGun implements Action{
     public float getConfidence() {
         
 //        //if i have this weapon, but not the weapons with more confidence for kill player imporve this confidence
-        if(  !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE) 
-               && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) )
-       {
-          return 1;
-       } 
-          
-        if(  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO) 
-               && BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO) )
-        {
-            return 1;
-        }
+//        if(  !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE) 
+//               && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) )
+//       {
+//          return 1;
+//       } 
+//          
+//        if(  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO) 
+//               && BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO) )
+//        {
+//            return 1;
+//        }
                   
         return confidence;
     }

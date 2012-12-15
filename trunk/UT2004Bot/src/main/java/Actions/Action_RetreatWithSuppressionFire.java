@@ -131,19 +131,19 @@ public class Action_RetreatWithSuppressionFire implements Action {
     
     private void randomDodging(Player playerEscapeFrom)
     {
-        BotLogic.getInstance().getBody().getLocomotion().turnTo(playerEscapeFrom);
-        int avoidanceChoice = (int) (Math.random() * 7);
-        if (avoidanceChoice == 1) {
-            BotLogic.getInstance().getBody().getLocomotion().jump();
-        } else if (avoidanceChoice == 2) {
-            BotLogic.getInstance().getBody().getLocomotion().doubleJump();
-        } else if (avoidanceChoice == 3) {
-            int strafeLength = 100 + ((int) (Math.random() * 250));
-            BotLogic.getInstance().getBody().getLocomotion().strafeLeft(strafeLength);
-        } else if (avoidanceChoice == 4) {
-            int strafeLength = 100 + ((int) (Math.random() * 250));
-            BotLogic.getInstance().getBody().getLocomotion().strafeRight(strafeLength);
-        }
+//        BotLogic.getInstance().getBody().getLocomotion().turnTo(playerEscapeFrom);
+//        int avoidanceChoice = (int) (Math.random() * 7);
+//        if (avoidanceChoice == 1) {
+//            BotLogic.getInstance().getBody().getLocomotion().jump();
+//        } else if (avoidanceChoice == 2) {
+//            BotLogic.getInstance().getBody().getLocomotion().doubleJump();
+//        } else if (avoidanceChoice == 3) {
+//            int strafeLength = 100 + ((int) (Math.random() * 250));
+//            BotLogic.getInstance().getBody().getLocomotion().strafeLeft(strafeLength);
+//        } else if (avoidanceChoice == 4) {
+//            int strafeLength = 100 + ((int) (Math.random() * 250));
+//            BotLogic.getInstance().getBody().getLocomotion().strafeRight(strafeLength);
+//        }
     }
 
   

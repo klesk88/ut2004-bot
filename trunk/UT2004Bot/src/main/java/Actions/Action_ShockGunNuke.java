@@ -41,11 +41,11 @@ public class Action_ShockGunNuke implements Action {
     public float getConfidence() {
       // return 1;
          //if i don't have this weapon right now
-          if(BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) || BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER) || BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.LIGHTNING_GUN) 
-               || BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.MINIGUN) ||  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO)  )
-       {
-          return 0;
-      }
+//          if(BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) || BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER) || BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.LIGHTNING_GUN) 
+//               || BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.MINIGUN) ||  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO)  )
+//       {
+//          return 0;
+//      }
         return confidence;
     }
    
