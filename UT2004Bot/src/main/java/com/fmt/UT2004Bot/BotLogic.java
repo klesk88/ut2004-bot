@@ -4,6 +4,7 @@
  */
 package com.fmt.UT2004Bot;
 
+import Actions.ActionManager;
 import MTC.MTC;
 import java.util.logging.Level;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
@@ -94,7 +95,7 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
         ml.init();
         sensor.init();
         navigation.getLog().setLevel(Level.OFF);
-      
+        ActionManager.getInstance().init();
     }
 
     /**

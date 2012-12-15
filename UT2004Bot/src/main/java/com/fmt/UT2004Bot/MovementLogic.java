@@ -160,19 +160,19 @@ public class MovementLogic {
     {
         if(bb.randomWalk)
         {
-            BotLogic.getInstance().getMove().setSpeed(1.0);
+            BotLogic.getInstance().getMove().setSpeed(0.9);
              //getRandomFightingPoint();
            handleNavPointNavigation();
            return;
         }
         
-      if(bb.player_visible )
+      if(bb.follow_player )
       {
           BotLogic.getInstance().getMove().setSpeed(0.8);
           handlePlayerNavigation();
       }
       //getRandomFightingPoint();
-      BotLogic.getInstance().getMove().setSpeed(1.0);
+      BotLogic.getInstance().getMove().setSpeed(0.9);
       BotLogic.getInstance().getNavigation().navigate(bb.targetPos);
     }
     

@@ -21,15 +21,7 @@ public class ActorSystem {
     //SET TO TRUE IF YOU WANT TO USE PLANNING
     boolean PLANNING_ENABLED = true;
     BlackBoard bb;
-    Actions.Action_SuppressionFire action_suppressionFire;
-    Actions.Action_GoToAmmunition action_gotoammunition;
-    Actions.Action_FollowVisiblePlayer action_followVisiblePlayer;
-    Actions.Action_RandomWalk action_randomWalk;
-    Actions.Action_ShockGunNuke action_schock;
-    Actions.Action_FindShockGunAmmo action_schockAmmoFinding;
-    Actions.Action_FindHealth action_findHealth;
-    Actions.Action_RetreatWithSuppressionFire  action_RetreatSuppressionFire;
-    Actions.Action_GrenadeThrowing gt;
+    
     private GOAPPlanner planner = GOAPPlanner.getInstance();
     private static ActorSystem instance;
 
@@ -44,21 +36,13 @@ public class ActorSystem {
         BotLogic.getInstance().writeToLog_HackCosIMNoob("init start actorSystem");
 
         bb = BlackBoard.getInstance();
-        action_suppressionFire = new Actions.Action_SuppressionFire();
-        action_gotoammunition = new Actions.Action_GoToAmmunition();
-        action_followVisiblePlayer = new Actions.Action_FollowVisiblePlayer();
-        action_randomWalk = new Actions.Action_RandomWalk();
-        action_schock = new Actions.Action_ShockGunNuke();
-        action_schockAmmoFinding = new Actions.Action_FindShockGunAmmo();
-        action_findHealth = new Actions.Action_FindHealth();
-        action_RetreatSuppressionFire = new Actions.Action_RetreatWithSuppressionFire();
-        gt = new Actions.Action_GrenadeThrowing(); 
+        
         if (PLANNING_ENABLED) {
             MTC.getInstance().init(0.3f, 10, 20);
             planner.replan();
         } else {
             bb.currentPlan = new Stack<Actions.Action>();
-            testStack();
+            //testStack();
             BotLogic.getInstance().writeToLog_HackCosIMNoob(" !!! PLANNING DISABLED !!!");
         }
     }
@@ -67,10 +51,10 @@ public class ActorSystem {
      * Write your test stacks here. Will only be called if PLANNER_ENABLED =
      * false;
      */
-    private void testStack() {
-
-        bb.currentPlan.push(action_RetreatSuppressionFire);
-    }
+//    private void testStack() {
+//
+//        bb.currentPlan.push(action_RetreatSuppressionFire);
+//    }
 
     /**
      * Will execute actions from the current plan and ask for new plans upon
@@ -82,7 +66,7 @@ public class ActorSystem {
             if (PLANNING_ENABLED) {
                 planner.replan();
             } else {
-                testStack();
+                //testStack();
             }
         }
         

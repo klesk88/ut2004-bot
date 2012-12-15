@@ -17,7 +17,7 @@ import cz.cuni.amis.utils.collections.MyCollections;
  * @author Ado
  */
 public class Action_RandomWalk implements Action{
-
+private float confidence = 1f; 
     boolean newRun = true;
     
     
@@ -25,9 +25,9 @@ public class Action_RandomWalk implements Action{
        ActionManager.getInstance().addAction(this);
     }
     
-    @Override
-    public boolean arePreConditionsMet() {
-        throw new UnsupportedOperationException("Not supported yet.");
+   @Override
+    public float getConfidence() {
+        return confidence;
     }
 
     @Override
@@ -43,10 +43,7 @@ public class Action_RandomWalk implements Action{
         return postConditionArray;
     }
 
-    @Override
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    
 
     
         @Override

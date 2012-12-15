@@ -81,19 +81,16 @@ public class TargetManager {
     private void goalSelection()
     {
          
-        if( bb.player_visible && (BotLogic.getInstance().getBot().getSelf().getHealth() > 50)
-                && (hasSuppressionAmmo() 
-                || (!(BotLogic.getInstance().getWeaponry().hasAmmoForWeapon(ItemType.SHOCK_RIFLE)
-                && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)))))
+        if( bb.player_visible && (BotLogic.getInstance().getBot().getSelf().getHealth() > 50))
         {
             WorldState.getInstance().setGoalState(WorldState.GoalStates.KillEnemy);
-            
+           
             return;
         }
-        
+    
         Map<UnrealId, Item> viable_medpacks = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.Category.HEALTH);
         //@Michele: if the bot has less than 50% of healt and there are medpacks
-        if (!(BotLogic.getInstance().getBot().getSelf().getHealth() > 50) && viable_medpacks.size()!=0)
+        if (!(BotLogic.getInstance().getBot().getSelf().getHealth() > 50) && viable_medpacks.size()!=0 && !bb.player_visible)
         {
             WorldState.getInstance().setGoalState(WorldState.GoalStates.Survive);
             return;
@@ -104,7 +101,16 @@ public class TargetManager {
             WorldState.getInstance().setGoalState(WorldState.GoalStates.KillEnemy);
             return;
        }
+        
+        int search_pills = (int)(Math.random()*100);
+         Map<UnrealId, Item> viable_pills = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.Category.ADRENALINE);
+       if(search_pills<80 && (viable_pills.size() != 0))
+        {
+            WorldState.getInstance().setGoalState(WorldState.GoalStates.SearchAdrenaline);
+            return;
+        }
         WorldState.getInstance().setGoalState(WorldState.GoalStates.SearchRandomly);
+        return;
     }
 
     private void updateWorldState() {
@@ -132,11 +138,55 @@ public class TargetManager {
             WorldState.getInstance().setWSValue(WorldState.Symbols.ShockGunAmmunition, true);
         }
         
+        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO)))
+                 {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasGunammunition, false);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasGunammunition, true);
+        }
+        
         if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_GRENADE)
                 )) {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasGranadeAmmunition, false);
         } else {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasGranadeAmmunition, true);
+        }
+        
+          if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON)
+                )) {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasFlackAmmo, false);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasFlackAmmo, true);
+        }
+          
+             if (!(BotLogic.getInstance().getInfo().isAdrenalineSufficient())
+                     ) {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasAdrenaline, false);
+             WorldState.getInstance().setWSValue(WorldState.Symbols.PerformAdrenalineAction, false);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasAdrenaline, true);
+             WorldState.getInstance().setWSValue(WorldState.Symbols.PerformAdrenalineAction, true);
+        }
+          
+          if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.LIGHTNING_GUN)
+                )) {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasLightiningGunAmmo, false);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasLightiningGunAmmo, true);
+        }
+          
+            if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN)
+                )) {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasMachineGunAmmo, false);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasMachineGunAmmo, true);
+        }
+            
+             if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER)
+                )) {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasRocketAmmunition, false);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasRocketAmmunition, true);
         }
 
         if (BotLogic.getInstance().getBot().getSelf().getHealth() > 50) {
