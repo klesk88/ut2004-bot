@@ -77,6 +77,7 @@ public class Action_FlackCannonGun implements Action{
         if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO)
                 ) || !BlackBoard.getInstance().player_visible ) {
             BlackBoard.getInstance().follow_player = false;
+             BotLogic.getInstance().getShoot().stopShooting();
             //BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no ammo");
             return Action.ActionResult.Failed;
         }
@@ -92,6 +93,7 @@ public class Action_FlackCannonGun implements Action{
 
         if(BlackBoard.getInstance().player==null)
         {
+            BotLogic.getInstance().getShoot().stopShooting();
              return Action.ActionResult.Success;
         }
 //        if (hasChangedToAssaultRifle
