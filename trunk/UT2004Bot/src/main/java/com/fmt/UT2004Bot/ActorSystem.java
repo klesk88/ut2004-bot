@@ -51,10 +51,11 @@ public class ActorSystem {
      * Write your test stacks here. Will only be called if PLANNER_ENABLED =
      * false;
      */
-//    private void testStack() {
-//
-//        bb.currentPlan.push(action_RetreatSuppressionFire);
-//    }
+    private void testStack() {
+
+        //bb.currentPlan.push(action_randomWalk);
+        //bb.currentPlan.push(gt);
+    }
 
     /**
      * Will execute actions from the current plan and ask for new plans upon
