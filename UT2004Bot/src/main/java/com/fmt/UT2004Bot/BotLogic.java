@@ -146,23 +146,27 @@ public class BotLogic extends UT2004BotModuleController<UT2004Bot> {
      
        
         this.sensor.update();
-
+        log.info(("before weapon"));
+        WeaponConfidence.getInstance().updateWeaponConfidence();
         this.bb.update();
-        
+         log.info(("after bb"));
          TargetManager.getInstance().update();
-        
+         log.info(("after replan"));
        
         // this.targetManager.update();
         // target manager also calls GOAPPlanner
         
         
         //TODO this should be removed
+         
         this.sensor.updateMovement();
+         log.info(("after movement"));
        
         //TODO this should be removed as well
         //for use the raycast part (bugged for the moment) call the 
         //method this.ml.raycast(); instead of this one
         this.ml.raycast();
+         
           BotLogic.getInstance().writeToLog_HackCosIMNoob(" exit raycast");
         
         ActorSystem.getInstance().update();

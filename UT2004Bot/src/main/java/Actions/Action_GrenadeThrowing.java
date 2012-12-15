@@ -33,17 +33,19 @@ public class Action_GrenadeThrowing implements Action {
    @Override
     public float getConfidence() {
        // return 1;
-       if(!BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.LIGHTNING_GUN) 
-               && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.MINIGUN) &&  !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)  )
-       {
-           return 1;
-       }
        
-         if(!BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.LIGHTNING_GUN_AMMO) 
-               && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN_AMMO) &&  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO) && BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO))
-       {
-           return 1;
-       }
+
+//       if(!BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.LIGHTNING_GUN) 
+//               && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.MINIGUN) &&  !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)  )
+//       {
+//           return 1;
+//       }
+//       
+//         if(!BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.LIGHTNING_GUN_AMMO) 
+//               && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN_AMMO) &&  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO) && BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO))
+//       {
+//           return 1;
+//       }
          
         return confidence;
     }

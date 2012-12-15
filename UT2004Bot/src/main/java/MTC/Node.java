@@ -411,8 +411,8 @@ public class Node {
                     int number_of_preconditions_not_met = finalConditions(this.node_state,this.node_goal);
                     if(number_of_preconditions_not_met == 0)
                     {
-                        score += 10  *(double)this.action_choose.getConfidence();
-                    
+                        score += 1  *(double)this.action_choose.getConfidence();
+                        score %=1;
                         this.terminal_node = true;
 			
                          this.simulation =  false;
@@ -441,7 +441,8 @@ public class Node {
                         if(number_of_preconditions_not_met == 0)
                         {
 
-                            score += 10 *(double)simulate_action.getConfidence();
+                            score += 1 *(double)simulate_action.getConfidence();
+                            score %=1;
                            break;
 
                         }

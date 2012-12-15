@@ -32,10 +32,10 @@ public class Action_RocketLuncher implements Action
     public float getConfidence() {
         
           //if i don't have this weapon right now
-         if( BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)  )
-       {
-           return 1;
-       }
+//         if( BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)  )
+//       {
+//           return 1;
+//       }
         return confidence;
     }
     

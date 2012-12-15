@@ -144,7 +144,7 @@ public class MovementLogic {
             BotLogic.getInstance().getNavigation().stopNavigation();
             bb.bot_killed = false;
         }
-        
+        BotLogic.getInstance().getLog().info(" after bot kille");
         handleBlackboardNavigation();
                 /*
         if (this.bb.follow_player) {
@@ -160,17 +160,22 @@ public class MovementLogic {
     {
         if(bb.randomWalk)
         {
+              BotLogic.getInstance().getLog().info(" random walk");
             BotLogic.getInstance().getMove().setSpeed(0.9);
              //getRandomFightingPoint();
            handleNavPointNavigation();
            return;
         }
         
-      if(bb.follow_player )
+      if(bb.follow_player && bb.player!=null)
       {
+            BotLogic.getInstance().getLog().info(" folloe player");
+              BotLogic.getInstance().getLog().info(" player " + bb.player.getName());
           BotLogic.getInstance().getMove().setSpeed(0.8);
           handlePlayerNavigation();
+          return;
       }
+      BotLogic.getInstance().getLog().info(" go to target point");
       //getRandomFightingPoint();
       BotLogic.getInstance().getMove().setSpeed(0.9);
       BotLogic.getInstance().getNavigation().navigate(bb.targetPos);

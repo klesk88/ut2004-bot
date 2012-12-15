@@ -102,6 +102,8 @@ public class BlackBoard {
         targetPos = null;
         predictedEnemyPosition = null;
     }
+    
+ 
 
 
 
