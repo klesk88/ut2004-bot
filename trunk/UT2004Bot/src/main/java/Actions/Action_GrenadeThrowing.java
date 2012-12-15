@@ -75,6 +75,7 @@ public class Action_GrenadeThrowing implements Action {
                 ) || !BlackBoard.getInstance().player_visible ) {
             BlackBoard.getInstance().follow_player = false;
             //BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no ammo");
+            BotLogic.getInstance().getShoot().stopShooting();
             return ActionResult.Failed;
         }
 
@@ -88,6 +89,7 @@ public class Action_GrenadeThrowing implements Action {
 
          if(BlackBoard.getInstance().player==null)
         {
+            BotLogic.getInstance().getShoot().stopShooting();
              return Action.ActionResult.Success;
         }
 //        if (hasChangedToAssaultRifle

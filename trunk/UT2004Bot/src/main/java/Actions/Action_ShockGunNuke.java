@@ -87,6 +87,7 @@ public class Action_ShockGunNuke implements Action {
             waitingToShootPrimary = false;
             BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke failure");
             BlackBoard.getInstance().follow_player = false;
+            BotLogic.getInstance().getShoot().stopShooting();
             return ActionResult.Failed;
         }
 
@@ -110,7 +111,8 @@ public class Action_ShockGunNuke implements Action {
             //} 
             else {
              BlackBoard.getInstance().follow_player = false;
-                return ActionResult.Failed;
+             BotLogic.getInstance().getShoot().stopShooting();  
+             return ActionResult.Failed;
             }
             //Michele: set the focus of the bot to the player
             BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
@@ -143,7 +145,8 @@ public class Action_ShockGunNuke implements Action {
                     waitingToShootPrimary = false;
                     timeStamp_EnergyBallShootBeShot = Double.POSITIVE_INFINITY;
                   BlackBoard.getInstance().follow_player = false;
-                    return ActionResult.Success;
+                  BotLogic.getInstance().getShoot().stopShooting(); 
+                  return ActionResult.Success;
                 }
             }
         }
