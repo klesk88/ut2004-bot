@@ -136,13 +136,13 @@ public class Sensors{
            
         }
         else
-//          if(rememebered_player != null)
+//         if(rememebered_player != null)
 //          {
 //            bb.player_visible = true;
 //            bb.player=  rememebered_player;
 //            bb.player_distance =  BotLogic.getInstance().getInfo().getLocation().getDistance(rememebered_player.getLocation());
 //          }
-        //else                
+//        else                
         {
            
             bb.player_visible = false;

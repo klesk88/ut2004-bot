@@ -83,7 +83,7 @@ public class Action_GrenadeThrowing implements Action {
         }
 
         preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.True;
-        preConditionArray[WorldState.Symbols.HasGunammunition.ordinal()] = TruthStates.True;
+        preConditionArray[WorldState.Symbols.HasGunAmmunition.ordinal()] = TruthStates.True;
         
         return preConditionArray;
     }

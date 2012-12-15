@@ -83,7 +83,7 @@ public class Action_FlackCannonGun implements Action{
         }
 
         preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = WorldState.TruthStates.True;
-        preConditionArray[WorldState.Symbols.HasFlackAmmo.ordinal()] = WorldState.TruthStates.True;
+        preConditionArray[WorldState.Symbols.HasFlakAmmo.ordinal()] = WorldState.TruthStates.True;
        
         return preConditionArray;
     }
