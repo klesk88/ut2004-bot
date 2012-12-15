@@ -48,7 +48,19 @@ public class Action_ShockGunNuke implements Action {
       }
         return confidence;
     }
-
+   
+    @Override
+    public void setConfidence(float confidence_value) {
+         confidence = confidence_value;
+    }
+    
+    private TypeOfAction type_of_action = TypeOfAction.ShockGunNuke;
+    
+    @Override
+    public TypeOfAction getTypeOfAction() {
+         return type_of_action;
+    }
+   
     @Override
     public TruthStates[] GetPostCondtionsArray() {
         TruthStates[] postConditionArray = new TruthStates[WorldState.Symbols.values().length];

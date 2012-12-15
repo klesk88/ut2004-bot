@@ -15,7 +15,11 @@ public interface Action
 {
     public enum ActionResult {Success, Failed, Running}
     
-    
+    public enum TypeOfAction{FlackCannonAmmo, FindHealt, FindLighningGunAmmo, FindMinigunGunAmmo,
+    FindRocketGunAmmo, FindShockgunGunAmmo, FlackCannonGun, GrenadeThrowing,
+    LightningGun, MiniGun, RandomWak, RetreatWithSuppressionFIre, RocketLuncher,
+    SearchAdrenaline, ShockGunNuke, UseAdrenaline
+    }
   
     //pre - post conditionss
     
@@ -42,6 +46,10 @@ public interface Action
     public ActionResult executeAction();
     
     public float getConfidence();
+    
+    public void setConfidence(float confidence_value);
+    
+    public TypeOfAction getTypeOfAction();
             
     
 }

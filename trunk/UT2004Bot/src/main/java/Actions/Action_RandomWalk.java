@@ -44,7 +44,18 @@ private float confidence = 1f;
     }
 
     
-
+ @Override
+    public void setConfidence(float confidence_value) {
+         confidence = confidence_value;
+    }
+ 
+ 
+ private TypeOfAction type_of_action = TypeOfAction.RandomWak;
+    
+    @Override
+    public TypeOfAction getTypeOfAction() {
+         return type_of_action;
+    }
     
         @Override
     public TruthStates[] getPreConditionArray() {

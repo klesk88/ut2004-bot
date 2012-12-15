@@ -94,7 +94,7 @@ public class Sensor_RayCastSystem
          // The most important thing is this line that ENABLES AUTO TRACE functionality,
         // without ".setAutoTrace(true)" the AddRay command would be useless as the bot won't get
         // trace-lines feature activated
-        BotLogic.getInstance().getAct().act(new Configuration().setDrawTraceLines(true).setAutoTrace(true));
+        BotLogic.getInstance().getAct().act(new Configuration().setDrawTraceLines(false).setAutoTrace(true));
         
     }
     

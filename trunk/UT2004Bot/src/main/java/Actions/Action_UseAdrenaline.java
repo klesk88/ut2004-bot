@@ -35,7 +35,19 @@ public class Action_UseAdrenaline implements Action {
     public float getConfidence() {
         return confidence;
     }
-
+     
+      @Override
+    public void setConfidence(float confidence_value) {
+         confidence = confidence_value;
+    }
+      
+      private TypeOfAction type_of_action = TypeOfAction.UseAdrenaline;
+    
+    @Override
+    public TypeOfAction getTypeOfAction() {
+         return type_of_action;
+    }
+     
     @Override
     public WorldState.TruthStates[] GetPostCondtionsArray() {
                         WorldState.TruthStates[] postConditionArray = new WorldState.TruthStates[WorldState.Symbols.values().length];

@@ -38,7 +38,26 @@ public class Action_GrenadeThrowing implements Action {
        {
            return 1;
        }
+       
+         if(!BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.LIGHTNING_GUN_AMMO) 
+               && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN_AMMO) &&  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO) && BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO))
+       {
+           return 1;
+       }
+         
         return confidence;
+    }
+   
+    @Override
+    public void setConfidence(float confidence_value) {
+         confidence = confidence_value;
+    }
+    
+    private TypeOfAction type_of_action = TypeOfAction.GrenadeThrowing;
+    
+    @Override
+    public TypeOfAction getTypeOfAction() {
+         return type_of_action;
     }
 
     @Override
