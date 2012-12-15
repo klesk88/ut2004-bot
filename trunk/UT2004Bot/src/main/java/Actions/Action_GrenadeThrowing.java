@@ -145,7 +145,8 @@ public class Action_GrenadeThrowing implements Action {
             {
                  // BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
                    
-                 BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(null));
+                 BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(
+                         BlackBoard.WeaponsUsed.ASSAULT_RIFLE_Prim));
             }
         return ActionResult.Running;
     }

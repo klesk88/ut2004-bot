@@ -139,7 +139,8 @@ public class Action_MachineGun implements Action{
         if(BotLogic.getInstance().getPlayers().canSeePlayers())
             {
                 //BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
-          BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(null));
+          BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(
+                  BlackBoard.WeaponsUsed.MINIGUN_Prim));
         }
         return Action.ActionResult.Running;
     }
