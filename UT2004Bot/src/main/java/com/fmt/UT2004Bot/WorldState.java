@@ -12,8 +12,8 @@ public class WorldState {
     private static WorldState instance = null;
 
     public enum Symbols {
-        PlayerIsVisible, HasSuppressionAmmunition, IsTargetDead, ShockGunAmmunition, HasLowHealth, HasGranadeAmmunition, HasRocketAmmunition,HasLightiningGunAmmo,HasMachineGunAmmo, HasFlackAmmo, HasAdrenaline,
-        PerformAdrenalineAction, SuppressionFire, HasGunammunition
+        PlayerIsVisible, HasSuppressionAmmunition, IsTargetDead, ShockGunAmmunition, HasLowHealth, HasGrenadeAmmunition, HasRocketAmmunition, HasLightiningGunAmmo, HasMachineGunAmmo, HasFlakAmmo, HasAdrenaline,
+        PerformAdrenalineAction, SuppressionFire, HasGunAmmunition
     }
 
     public enum TruthStates {
@@ -21,7 +21,7 @@ public class WorldState {
     }
 
     public enum GoalStates {
-        KillEnemy, SearchRandomly, EmptyAmmunition, Survive, SearchAdrenaline, SuppressionFire
+        KillEnemy, SearchRandomly, EmptyAmmunition, Survive, SearchAdrenaline, SuppressionFire, FindWeapons
     }
     private boolean[] fixedSizeArray;
     private TruthStates[] goal_current;
@@ -111,6 +111,13 @@ public class WorldState {
                 break;
             case SuppressionFire:
                   goal_current[Symbols.SuppressionFire.ordinal()] = TruthStates.True;
+                break;
+            case FindWeapons:
+                goal_current[Symbols.HasFlakAmmo.ordinal()] = TruthStates.True;
+                goal_current[Symbols.ShockGunAmmunition.ordinal()] = TruthStates.True;
+                goal_current[Symbols.HasLightiningGunAmmo.ordinal()] = TruthStates.True;
+                goal_current[Symbols.HasMachineGunAmmo.ordinal()] = TruthStates.True;
+                goal_current[Symbols.HasRocketAmmunition.ordinal()] = TruthStates.True;
                 break;
                 
            

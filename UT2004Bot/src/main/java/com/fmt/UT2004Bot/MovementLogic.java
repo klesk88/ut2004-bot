@@ -160,6 +160,7 @@ public class MovementLogic {
     {
         if(bb.randomWalk)
         {
+            
               BotLogic.getInstance().getLog().info(" random walk");
             BotLogic.getInstance().getMove().setSpeed(0.9);
              //getRandomFightingPoint();
@@ -169,6 +170,7 @@ public class MovementLogic {
         
       if(bb.follow_player && bb.player!=null)
       {
+          BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
             BotLogic.getInstance().getLog().info(" folloe player");
               BotLogic.getInstance().getLog().info(" player " + bb.player.getName());
           BotLogic.getInstance().getMove().setSpeed(0.8);
@@ -176,6 +178,7 @@ public class MovementLogic {
           return;
       }
       BotLogic.getInstance().getLog().info(" go to target point");
+       BotLogic.getInstance().getPathExecutor().setFocus( bb.targetPos);
       //getRandomFightingPoint();
       BotLogic.getInstance().getMove().setSpeed(0.9);
       BotLogic.getInstance().getNavigation().navigate(bb.targetPos);
@@ -184,9 +187,10 @@ public class MovementLogic {
     
     
       private void handlePlayerNavigation() {
-        if (BotLogic.getInstance().getNavigation().isNavigating() && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null) {
+        BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+          if (BotLogic.getInstance().getNavigation().isNavigating() && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null) {
             // WE'RE NAVIGATING TO SOME PLAYER
-          
+            
             return;
         }
         
@@ -309,7 +313,7 @@ public class MovementLogic {
         }
 
 
-        
+        BotLogic.getInstance().getPathExecutor().setFocus((targetNavPoint.getLocation()));
        BotLogic.getInstance().getNavigation().navigate(targetNavPoint);
         //logNavigation();
     }

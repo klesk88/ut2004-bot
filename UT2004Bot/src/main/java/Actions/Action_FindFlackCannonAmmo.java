@@ -45,7 +45,7 @@ public class Action_FindFlackCannonAmmo implements Action{
         {postConditionArray[i] = WorldState.TruthStates.Uninstantiated;
         }
             
-        postConditionArray[WorldState.Symbols.HasFlackAmmo.ordinal()] = WorldState.TruthStates.True;
+        postConditionArray[WorldState.Symbols.HasFlakAmmo.ordinal()] = WorldState.TruthStates.True;
         
         return postConditionArray;
     }
