@@ -19,12 +19,7 @@ public interface Action
   
     //pre - post conditionss
     
-    /**
-     * check if the pre-conditions are met. 
-     * This can be done procedurally or simply by asking the worldstate about the truth-value of a symbol
-     * @return true if all pre-conditions are met, false otherwise.
-     */
-    public boolean arePreConditionsMet();
+  
    
     /**
      * Apply post-conditions to the (copy of the) world state
@@ -33,10 +28,7 @@ public interface Action
     
     //public void UndoPostConditions();
     
-    /**
-     * update that check the state of the current action
-     */
-    public void update();
+  
     
     /**
      * Apply the pre conditions to the goal state of the world for add them in the search
@@ -48,5 +40,8 @@ public interface Action
     public WorldState.TruthStates[] getPreConditionArray();
     
     public ActionResult executeAction();
+    
+    public float getConfidence();
+            
     
 }

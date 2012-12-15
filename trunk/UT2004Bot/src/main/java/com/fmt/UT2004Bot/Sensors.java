@@ -5,6 +5,7 @@
 package com.fmt.UT2004Bot;
 
 
+import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 
 
@@ -19,8 +20,8 @@ public class Sensors{
     
   
     private BlackBoard bb = null;
-
-
+  
+    private int dead_time = 4000;
     
     public Sensors() {
 
@@ -123,21 +124,34 @@ public class Sensors{
            
           
         
-         Player player =  BotLogic.getInstance().getPlayers().getNearestVisiblePlayer();
-        if(player != null)
+         Player player = BotLogic.getInstance().getPlayers().getNearestVisiblePlayer();
+
+         Player rememebered_player = BotLogic.getInstance().getPlayers().getNearestEnemy(dead_time);
+        if(player != null )
         {
            
             bb.player_visible = true;
             bb.player=  player;
             bb.player_distance =  BotLogic.getInstance().getInfo().getLocation().getDistance(player.getLocation());
+           
         }
         else
+//          if(rememebered_player != null)
+//          {
+//            bb.player_visible = true;
+//            bb.player=  rememebered_player;
+//            bb.player_distance =  BotLogic.getInstance().getInfo().getLocation().getDistance(rememebered_player.getLocation());
+//          }
+        //else                
         {
+           
             bb.player_visible = false;
             bb.player = null;
             bb.player_distance = Double.MAX_VALUE;
+          
            
         }
+            
        
        
     }

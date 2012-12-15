@@ -20,14 +20,14 @@ import java.util.*;
 public class Action_GoToAmmunition implements Action {
 
     
-     
+     private float confidence = 0.7f; 
     public  Action_GoToAmmunition() {
         //ActionManager.getInstance().addAction(this);
     }
     
-    @Override
-    public boolean arePreConditionsMet() {
-        throw new UnsupportedOperationException("Not supported yet.");
+   @Override
+    public float getConfidence() {
+        return confidence;
     }
 
     @Override
@@ -43,10 +43,6 @@ public class Action_GoToAmmunition implements Action {
         return postConditionArray;
     }
 
-    @Override
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public TruthStates[] getPreConditionArray() {

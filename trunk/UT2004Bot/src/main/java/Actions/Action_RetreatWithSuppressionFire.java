@@ -18,16 +18,17 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
  * @author Tilman
  */
 public class Action_RetreatWithSuppressionFire implements Action {
-
+    
+    private float confidence = 1f; 
     
       
     public Action_RetreatWithSuppressionFire() {
        ActionManager.getInstance().addAction(this);
     }
     
-    @Override
-    public boolean arePreConditionsMet() {
-        throw new UnsupportedOperationException("Not supported yet.");
+  @Override
+    public float getConfidence() {
+        return confidence;
     }
 
     @Override
@@ -37,16 +38,13 @@ public class Action_RetreatWithSuppressionFire implements Action {
             postConditionArray[i] = TruthStates.Uninstantiated;
         }
 
-        postConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.False;
-        postConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
+        postConditionArray[WorldState.Symbols.SuppressionFire.ordinal()] = TruthStates.True;
+        //postConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = TruthStates.False;
 
         return postConditionArray;
     }
 
-    @Override
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+  
 
     @Override
     public TruthStates[] getPreConditionArray() {

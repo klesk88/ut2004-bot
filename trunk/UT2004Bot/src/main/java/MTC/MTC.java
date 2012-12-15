@@ -78,7 +78,7 @@ public class MTC{
 		long temp_time=System.currentTimeMillis();
 		int i = 1;
 		//while i have time to perform my calculations
-		while(temp_time - start_time < delay)
+		do //temp_time - start_time < delay)
 		{
                       
 			Node node = treePolicy(root);
@@ -90,7 +90,7 @@ public class MTC{
                          i++;
 			//update the time
 			temp_time=System.currentTimeMillis();
-		}
+		}while(temp_time - start_time < delay);
 	
                  Node best_child = root;
                 List<Action> final_list = new LinkedList<Action>();

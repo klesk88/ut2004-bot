@@ -10,7 +10,9 @@ import com.fmt.UT2004Bot.WorldState;
 import com.fmt.UT2004Bot.WorldState.TruthStates;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,16 +20,20 @@ import java.util.Set;
  * @author Ado
  */
 public class Action_FindShockGunAmmo implements Action {
-
+    private float confidence = 1f; 
     boolean currentlySearchingAmmo = false;
 
     public Action_FindShockGunAmmo() {
-       ActionManager.getInstance().addAction(this);
+       Map<UnrealId, Item> weapon = BotLogic.getInstance().getItems().getAllItems(ItemType.Group.SHOCK_RIFLE);
+      if(weapon.size()!=0)
+      {
+        ActionManager.getInstance().addAction(this);
+      }
     }
     
-    @Override
-    public boolean arePreConditionsMet() {
-        throw new UnsupportedOperationException("Not supported yet.");
+     @Override
+    public float getConfidence() {
+        return confidence;
     }
 
     @Override
@@ -40,11 +46,6 @@ public class Action_FindShockGunAmmo implements Action {
         postConditionArray[WorldState.Symbols.ShockGunAmmunition.ordinal()] = TruthStates.True;
         
         return postConditionArray;
-    }
-
-    @Override
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

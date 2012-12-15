@@ -9,8 +9,11 @@ import com.fmt.UT2004Bot.BotLogic;
 import com.fmt.UT2004Bot.WorldState;
 import com.fmt.UT2004Bot.WorldState.TruthStates;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
+import java.util.Map;
 
 /**
  *
@@ -24,14 +27,26 @@ public class Action_ShockGunNuke implements Action {
     boolean waitingToShootPrimary = false;
     Location secondaryWasShootAt;
     boolean hasChangedToShockRifle = false;
-
+     private float confidence = 0.9f; 
+     
     public Action_ShockGunNuke() {
+       Map<UnrealId, Item> weapon = BotLogic.getInstance().getItems().getAllItems(ItemType.Group.SHOCK_RIFLE);
+      if(weapon.size()!=0)
+      {
         ActionManager.getInstance().addAction(this);
+      }
     }
 
-    @Override
-    public boolean arePreConditionsMet() {
-        throw new UnsupportedOperationException("Not supported yet.");
+   @Override
+    public float getConfidence() {
+      // return 1;
+         //if i don't have this weapon right now
+          if(BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) || BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER) || BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.LIGHTNING_GUN) 
+               || BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.MINIGUN) ||  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO)  )
+       {
+          return 0;
+      }
+        return confidence;
     }
 
     @Override
@@ -46,10 +61,7 @@ public class Action_ShockGunNuke implements Action {
         return postConditionArray;
     }
 
-    @Override
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+   
 
     @Override
     public TruthStates[] getPreConditionArray() {
@@ -90,8 +102,8 @@ public class Action_ShockGunNuke implements Action {
                 && hasChangedToShockRifle
                 && BlackBoard.getInstance().predictionIsReady_Tilman) {
             //Shoot secondary
-            if (BotLogic.getInstance().getInfo().getNearestPlayer() != null) {
-                BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
+            if (BlackBoard.getInstance().player != null) {
+               // BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
                 secondaryWasShootAt = BlackBoard.getInstance().predictLocationForWeapon(null);
             } //else if (BotLogic.getInstance().getInfo().getNearestVisibleItem() != null) {
             //    secondaryWasShootAt = BotLogic.getInstance().getInfo().getNearestVisibleItem().getLocation();  
@@ -100,9 +112,14 @@ public class Action_ShockGunNuke implements Action {
              BlackBoard.getInstance().follow_player = false;
                 return ActionResult.Failed;
             }
-
+            //Michele: set the focus of the bot to the player
+            BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
             BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting secondary shock rifle");
-            BotLogic.getInstance().getShoot().shootSecondary(secondaryWasShootAt);
+            if(BotLogic.getInstance().getPlayers().canSeePlayers())
+            {
+                BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+                BotLogic.getInstance().getShoot().shootSecondary(secondaryWasShootAt);
+            }
             waitingToShootPrimary = true;
             timeStamp_EnergyBallShootBeShot = BotLogic.getInstance().getGame().getTime() + time_estimatedTimeForShooting;
 
@@ -116,7 +133,11 @@ public class Action_ShockGunNuke implements Action {
 
                 {
                     //BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting primary shock rifle");
-                    BotLogic.getInstance().getShoot().shootPrimary(secondaryWasShootAt);
+                      if(BotLogic.getInstance().getPlayers().canSeePlayers())
+                     {
+                          BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+                         BotLogic.getInstance().getShoot().shootPrimary(secondaryWasShootAt);
+                     }
 
                     BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke success");
                     waitingToShootPrimary = false;
