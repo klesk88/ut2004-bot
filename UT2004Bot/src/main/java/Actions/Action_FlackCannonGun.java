@@ -144,7 +144,8 @@ public class Action_FlackCannonGun implements Action{
         if(BotLogic.getInstance().getPlayers().canSeePlayers())
             {
                // BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
-          BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(null));
+          BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(
+                  BlackBoard.WeaponsUsed.FLAK_CANNON_Prim));
             }
         return Action.ActionResult.Running;
     }

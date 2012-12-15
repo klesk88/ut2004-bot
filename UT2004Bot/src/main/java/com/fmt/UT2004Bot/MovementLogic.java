@@ -168,6 +168,13 @@ public class MovementLogic {
            return;
         }
         
+        //if the bot heard a sound and doesn´t see a player, turn to face him
+       if(( bb.is_damaged) && !bb.follow_player)
+       {
+           BotLogic.getInstance().getMove().turnHorizontal(180);
+           return;
+       }
+        
       if(bb.follow_player && bb.player!=null)
       {
           BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
@@ -399,59 +406,61 @@ public class MovementLogic {
             movementSelection();
             return;
         }
-           moving = true;
-        // some sensor/s is/are signaling
-
-        // if we're moving
-        if (moving) {
-            // stop it, we have to turn probably
-            BotLogic.getInstance().getMove().stopMovement();
-            moving = false;
-        }
-        
-        BotLogic.getInstance().getLog().info("Inside Raycast ");
-       
-        // according to the signals, take action...
-        // 8 cases that might happen follow
-        if (bb.isWallFrontStraight) {
-            if (bb.isWallLeft45) {
-                if (bb.isWallRight45) {
-                    // LEFT45, RIGHT45, FRONT are signaling
-                    BotLogic.getInstance().getMove().turnHorizontal(bigTurn);
-                } else {
-                    // LEFT45, FRONT45 are signaling
-                    BotLogic.getInstance().getMove().turnHorizontal(smallTurn);
-                }
-            } else {
-                if (bb.isWallRight45) {
-                    // RIGHT45, FRONT are signaling
-                    BotLogic.getInstance().getMove().turnHorizontal(-smallTurn);
-                } else {
-                    // FRONT is signaling
-                    BotLogic.getInstance().getMove().turnHorizontal(180);
-                }
-            }
-        } else {
-            if (bb.isWallLeft45) {
-                if (bb.isWallRight45) {
-                    // LEFT45, RIGHT45 are signaling
-                    movementSelection();
-                     getRandomNavPoint();
-                } else {
-                    // LEFT45 is signaling
-                    BotLogic.getInstance().getMove().turnHorizontal(smallTurn);
-                }
-            } else {
-                if (bb.isWallRight45) {
-                    // RIGHT45 is signaling
-                    BotLogic.getInstance().getMove().turnHorizontal(-smallTurn);
-                } else {
-                    // no sensor is signaling
-                    movementSelection();
-                     getRandomNavPoint();
-                }
-            }
-        }
+        movementSelection();
+        return;
+//           moving = true;
+//        // some sensor/s is/are signaling
+//
+//        // if we're moving
+//        if (moving) {
+//            // stop it, we have to turn probably
+//            BotLogic.getInstance().getMove().stopMovement();
+//            moving = false;
+//        }
+//        
+//        BotLogic.getInstance().getLog().info("Inside Raycast ");
+//       
+//        // according to the signals, take action...
+//        // 8 cases that might happen follow
+//        if (bb.isWallFrontStraight) {
+//            if (bb.isWallLeft45) {
+//                if (bb.isWallRight45) {
+//                    // LEFT45, RIGHT45, FRONT are signaling
+//                    BotLogic.getInstance().getMove().turnHorizontal(bigTurn);
+//                } else {
+//                    // LEFT45, FRONT45 are signaling
+//                    BotLogic.getInstance().getMove().turnHorizontal(smallTurn);
+//                }
+//            } else {
+//                if (bb.isWallRight45) {
+//                    // RIGHT45, FRONT are signaling
+//                    BotLogic.getInstance().getMove().turnHorizontal(-smallTurn);
+//                } else {
+//                    // FRONT is signaling
+//                    BotLogic.getInstance().getMove().turnHorizontal(180);
+//                }
+//            }
+//        } else {
+//            if (bb.isWallLeft45) {
+//                if (bb.isWallRight45) {
+//                    // LEFT45, RIGHT45 are signaling
+//                    movementSelection();
+//                     getRandomNavPoint();
+//                } else {
+//                    // LEFT45 is signaling
+//                    BotLogic.getInstance().getMove().turnHorizontal(smallTurn);
+//                }
+//            } else {
+//                if (bb.isWallRight45) {
+//                    // RIGHT45 is signaling
+//                    BotLogic.getInstance().getMove().turnHorizontal(-smallTurn);
+//                } else {
+//                    // no sensor is signaling
+//                    movementSelection();
+//                     getRandomNavPoint();
+//                }
+//            }
+//        }
       
     }
 

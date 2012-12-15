@@ -117,7 +117,7 @@ public class Action_ShockGunNuke implements Action {
             //Shoot secondary
             if (BlackBoard.getInstance().player != null) {
                // BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
-                secondaryWasShootAt = BlackBoard.getInstance().predictLocationForWeapon(null);
+                secondaryWasShootAt = BlackBoard.getInstance().predictLocationForWeapon(BlackBoard.WeaponsUsed.SHOCK_RIFLE_Secondary);
             } //else if (BotLogic.getInstance().getInfo().getNearestVisibleItem() != null) {
             //    secondaryWasShootAt = BotLogic.getInstance().getInfo().getNearestVisibleItem().getLocation();  
             //} 

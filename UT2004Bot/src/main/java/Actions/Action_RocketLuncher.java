@@ -134,7 +134,8 @@ public class Action_RocketLuncher implements Action
         if(BotLogic.getInstance().getPlayers().canSeePlayers())
             {
                 //BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
-          BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(null));
+          BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(
+                  BlackBoard.WeaponsUsed.ROCKET_LAUNCHER_Prim));
             }
         return Action.ActionResult.Running;
     }

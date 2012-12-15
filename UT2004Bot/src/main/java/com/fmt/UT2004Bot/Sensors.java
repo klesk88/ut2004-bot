@@ -113,7 +113,7 @@ public class Sensors{
                //bb.randomWalk = true;
          }
          
-           if(BotLogic.getInstance().getSenses().isHearingNoise() || BotLogic.getInstance().getSenses().isHearingPickup())
+           if(BotLogic.getInstance().getSenses().isHearingNoise() )
          {
              bb.heard_player = true;
          }

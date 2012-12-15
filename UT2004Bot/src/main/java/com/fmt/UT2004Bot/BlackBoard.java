@@ -22,8 +22,10 @@ public class BlackBoard {
     //The Weapons our bot might use
     public enum WeaponsUsed {
 
-        ASSAULT_RIFLE_Prim, FLAK_CANNON_Prim, MINIGUN_Prim
+        ASSAULT_RIFLE_Prim, FLAK_CANNON_Prim, MINIGUN_Prim, LIGHTNING_GUN_Prim, ROCKET_LAUNCHER_Prim,
+        SHOCK_RIFLE_Secondary
     }
+            
     private static BlackBoard instance = null;
     public boolean follow_player = false;
     public boolean nav_point_navigation = false;
