@@ -5,8 +5,10 @@
 package com.fmt.UT2004Bot;
 
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathExecutorState;
+import cz.cuni.amis.pogamut.base.agent.navigation.IPathFuture;
 import cz.cuni.amis.pogamut.base.agent.navigation.PathExecutorState;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004PathExecutor;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004Navigation;
@@ -14,9 +16,9 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004PathAutoFixer;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.UT2004DistanceStuckDetector;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.UT2004PositionStuckDetector;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.UT2004TimeStuckDetector;
-import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Configuration;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import cz.cuni.amis.utils.collections.MyCollections;
 import cz.cuni.amis.utils.flag.FlagListener;
 import java.util.logging.Level;
@@ -158,44 +160,56 @@ public class MovementLogic {
     {
         if(bb.randomWalk)
         {
+             //getRandomFightingPoint();
            handleNavPointNavigation();
            return;
         }
         
-     
-      
+      if(bb.player_visible )
+      {
+          BotLogic.getInstance().getMove().setSpeed(0.8);
+          handlePlayerNavigation();
+      }
+      //getRandomFightingPoint();
       BotLogic.getInstance().getNavigation().navigate(bb.targetPos);
     }
     
-    private void handlePlayerNavigation() {
-        //targetNavPoint = null;
-        
-      // BotLogic.getInstance().getLog().info("Player navigation");
-        //BotLogic.getInstance().getLog().info("navigate to nav points  " + BotLogic.getInstance().getNavigation().isNavigatingToNavPoint() );
-        //BotLogic.getInstance().getLog().info("navigate to nav points back  " + BotLogic.getInstance().getNavigation().isTryingToGetBackToNav());
-        //BotLogic.getInstance().getLog().info("navigate path executing " + BotLogic.getInstance().getNavigation().isPathExecuting());
-             
-        //if it get stuck, trying to go back and forward between the same 2 points, unlock it
-      if(BotLogic.getInstance().getNavigation().isTryingToGetBackToNav())
-      {
-          BotLogic.getInstance().getNavigation().navigate(bb.targetPos);
-      }
-      
-        if (BotLogic.getInstance().getNavigation().isNavigating() 
-                && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null  ) {
+    
+    
+      private void handlePlayerNavigation() {
+        if (BotLogic.getInstance().getNavigation().isNavigating() && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null) {
             // WE'RE NAVIGATING TO SOME PLAYER
-            //logNavigation();ùBotLogic.getInstance().getNavigation()
-            //BotLogic.getInstance().getNavigation().
           
             return;
         }
-
-
+        
+         if(bb.is_bumping)
+         {
+              BotLogic.getInstance().getMove().dodgeBack( BotLogic.getInstance().getInfo().getLocation(), bb.bumping_position);
+              return;
+         }
+         
+        if(bb.see_incoming_projectile || bb.is_damaged)
+        {
+            BotLogic.getInstance().getNavigation().stopNavigation();
+            int random_number = (int)Math.random()*100;
+            if(random_number < 30)
+                BotLogic.getInstance().getMove().strafeRight(90, bb.player.getLocation());
+            else
+                if(random_number < 70)
+                    BotLogic.getInstance().getMove().strafeLeft(90, bb.player.getLocation());
+            else
+                 BotLogic.getInstance().getMove().doubleJump();
+          
+            return;
+        }
+        BotLogic.getInstance().getSenses().isBumping();
+        
         // NAVIGATION HAS STOPPED ... 
         // => we need to choose another player to navigate to
 
-
-        if (bb.player_visible == false) {
+        Player player = bb.player;
+        if (player == null) {
             // NO PLAYERS AT SIGHT
             // => navigate to random navpoint
             handleNavPointNavigation();
@@ -203,16 +217,58 @@ public class MovementLogic {
         }
 
         // CHECK DISTANCE TO THE PLAYER ...
-        if (bb.player_distance < UT2004Navigation.AT_PLAYER) {
-            // PLAYER IS NEXT TO US... 
-            // => talk to player			
-
+        if (BotLogic.getInstance().getInfo().getLocation().getDistance(player.getLocation()) < 90) {
+             BotLogic.getInstance().getNavigation().stopNavigation();
+            int random_number = (int)Math.random()*100;
+            if(random_number < 30)
+                BotLogic.getInstance().getMove().strafeRight(90, bb.player.getLocation());
+            else
+                if(random_number < 70)
+                    BotLogic.getInstance().getMove().strafeLeft(90, bb.player.getLocation());
+            else
+                 BotLogic.getInstance().getMove().doubleJump();
+          
             return;
         }
-         BotLogic.getInstance().getLog().info("navigation to some player " );
-        BotLogic.getInstance().getNavigation().navigate(bb.player);
-        //logNavigation();
+
+        BotLogic.getInstance().getNavigation().navigate(player);
+        
     }
+
+     
+//     private void getRandomFightingPoint() {
+//        //BotLogic.getInstance().getLog().info("Picking new target navpoint.");
+//
+//        // choose one feasible navpoint (== not belonging to tabooNavPoints) randomly
+//        //NavPoint chosen = MyCollections.getRandomFiltered(BotLogic.getInstance().getWorld().getAll(NavPoint.class).values(), tabooNavPoints);
+//          if(BotLogic.getInstance().getNavigation().isNavigating() && BotLogic.getInstance().getNavigation().getRemainingDistance() >10 && !BotLogic.getInstance().getSenses().isBumping())
+//          {
+//                return ;
+//          }
+//          
+//          int random_action = (int)Math.random()*2;
+//          Location random_position;
+//          if(random_action>1)
+//          {
+//            //BotLogic.getInstance().getMove().strafeLeft(30, UnrealId.NONE);
+//                random_position = new Location( this.initial_location.x +Math.random()*50 , 0 , this.initial_location.z + Math.random() * 50 );
+//          }
+//          else
+//          {
+////            BotLogic.getInstance().getMove().strafeRight(30, UnrealId.NONE);
+//                random_position = new Location( this.initial_location.x - Math.random()*50 , 0 ,  this.initial_location.z - Math.random() * 50 );
+//          }
+//         //Location random_position = new Location(Math.random()*50 + this.initial_location.x, 0 , Math.random() * 50 + this.initial_location.z);
+//         BotLogic.getInstance().getNavigation().
+//         IPathFuture future_path = BotLogic.getInstance().getPathPlanner().computePath( BotLogic.getInstance().getBot().getLocation(), (random_position));
+//         BotLogic.getInstance().getNavigation().navigate(future_path);
+//         return ;
+//        //BotLogic.getInstance().getLog().warning("All navpoints are tabooized at this moment, choosing navpoint randomly!");
+//
+//        // ok, all navpoints have been visited probably, try to pick one at random
+//        //return MyCollections.getRandom(BotLogic.getInstance().getWorld().getAll(NavPoint.class).values());
+//    
+//     }
 
     private void handleNavPointNavigation() {
         
@@ -307,7 +363,7 @@ public class MovementLogic {
      * @return randomly choosed navpoint
      */
     private NavPoint getRandomNavPoint() {
-        BotLogic.getInstance().getLog().info("Picking new target navpoint.");
+       // BotLogic.getInstance().getLog().info("Picking new target navpoint.");
 
         // choose one feasible navpoint (== not belonging to tabooNavPoints) randomly
         NavPoint chosen = MyCollections.getRandomFiltered(BotLogic.getInstance().getWorld().getAll(NavPoint.class).values(), tabooNavPoints);
@@ -316,7 +372,7 @@ public class MovementLogic {
             return chosen;
         }
 
-        BotLogic.getInstance().getLog().warning("All navpoints are tabooized at this moment, choosing navpoint randomly!");
+        //BotLogic.getInstance().getLog().warning("All navpoints are tabooized at this moment, choosing navpoint randomly!");
 
         // ok, all navpoints have been visited probably, try to pick one at random
         return MyCollections.getRandom(BotLogic.getInstance().getWorld().getAll(NavPoint.class).values());

@@ -70,9 +70,9 @@ public class Action_GrenadeThrowing implements Action {
     public ActionResult executeAction() {
 
         // fail if no weapon is available
-        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_GRENADE)
+        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO)
                 ) || !BlackBoard.getInstance().player_visible ) {
-
+            BlackBoard.getInstance().follow_player = false;
             //BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no ammo");
             return ActionResult.Failed;
         }
@@ -86,31 +86,33 @@ public class Action_GrenadeThrowing implements Action {
         }
 
 
-        if (hasChangedToAssaultRifle
-                && BlackBoard.getInstance().predictionIsReady_Tilman) {
-
-            //Shoot secondary
-            if (BotLogic.getInstance().getInfo().getNearestPlayer() != null) {
-                
-                //BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
-                //BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting grenade assault rifle");
-                //BotLogic.getInstance().getShoot().shootSecondary(BlackBoard.getInstance().player.getLocation());
-                BotLogic.getInstance().getShoot().shootSecondaryCharged(
-                        BlackBoard.getInstance().predictLocationForWeapon(null),
-                        0);
-                return ActionResult.Success;
-            
-            } else {
-                
-                BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no player");
-                return ActionResult.Failed;
-            }
-        }
+//        if (hasChangedToAssaultRifle
+//                && BlackBoard.getInstance().predictionIsReady_Tilman) {
+//
+//            //Shoot secondary
+//            if (BotLogic.getInstance().getInfo().getNearestPlayer() != null) {
+//                
+//                //BlackBoard.getInstance().player = BotLogic.getInstance().getInfo().getNearestPlayer();
+//                //BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting grenade assault rifle");
+//                //BotLogic.getInstance().getShoot().shootSecondary(BlackBoard.getInstance().player.getLocation());
+//                BotLogic.getInstance().getShoot().shootSecondaryCharged(
+//                        BlackBoard.getInstance().predictLocationForWeapon(null),
+//                        0);
+//                return ActionResult.Success;
+//            
+//            } else {
+//                
+//                BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no player");
+//                BlackBoard.getInstance().follow_player = false;
+//                return ActionResult.Failed;
+//            }
+//        }
         //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
 //        BotLogic.getInstance().getShoot().shootSecondaryCharged(
 //                        BlackBoard.getInstance().predictLocationForWeapon(null),
 //                        0);
-          BotLogic.getInstance().getShoot().shootSecondary( BlackBoard.getInstance().predictLocationForWeapon(null));
+        BlackBoard.getInstance().follow_player = true;
+          BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(null));
         return ActionResult.Running;
     }
 

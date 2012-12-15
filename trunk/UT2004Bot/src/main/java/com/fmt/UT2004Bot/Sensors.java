@@ -69,20 +69,64 @@ public class Sensors{
         {
             // we can see some player / is navigating to some point where we lost the player from sight
             // => navigate to player
-            bb.follow_player = true;
+          
             bb.nav_point_navigation = false;
         } 
         else 
         {
             // no player can be seen
             // => navigate to navpoint
-            bb.follow_player = false;
+           
             bb.nav_point_navigation = true;
         }
         
-        Player player =  BotLogic.getInstance().getPlayers().getNearestVisiblePlayer();
+        if(BotLogic.getInstance().getSenses().isColliding())
+        {
+            bb.is_bumping = true;
+            bb.bumping_position = BotLogic.getInstance().getSenses().getBumpLocation();
+        }
+        else
+        {
+            bb.is_bumping = false;
+            bb.bumping_position = null;
+        }
+         if( BotLogic.getInstance().getSenses().isBeingDamaged())
+        {
+           bb.is_damaged = true;
+           
+           //bb.randomWalk = false;
+        }
+         else{
+             bb.is_damaged = false;
+             //bb.randomWalk = true;
+         }
+        
+         if(BotLogic.getInstance().getSenses().seeIncomingProjectile())
+         {
+             bb.see_incoming_projectile = true;
+             //bb.randomWalk = false;
+         }
+         else
+         {
+               bb.see_incoming_projectile = false;
+               //bb.randomWalk = true;
+         }
+         
+           if(BotLogic.getInstance().getSenses().isHearingNoise() || BotLogic.getInstance().getSenses().isHearingPickup())
+         {
+             bb.heard_player = true;
+         }
+         else
+         {
+              bb.heard_player = false;
+         }
+           
+          
+        
+         Player player =  BotLogic.getInstance().getPlayers().getNearestVisiblePlayer();
         if(player != null)
         {
+           
             bb.player_visible = true;
             bb.player=  player;
             bb.player_distance =  BotLogic.getInstance().getInfo().getLocation().getDistance(player.getLocation());
@@ -92,6 +136,7 @@ public class Sensors{
             bb.player_visible = false;
             bb.player = null;
             bb.player_distance = Double.MAX_VALUE;
+           
         }
        
        

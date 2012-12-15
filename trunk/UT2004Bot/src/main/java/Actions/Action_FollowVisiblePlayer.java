@@ -65,7 +65,7 @@ public class Action_FollowVisiblePlayer implements Action{
         }
         else{
             BotLogic.getInstance().writeToLog_HackCosIMNoob("moving to player");
-            BlackBoard.getInstance().follow_player = true;
+           // BlackBoard.getInstance().follow_player = true;
             BlackBoard.getInstance().targetPos = BotLogic.getInstance().getPlayers().getNearestVisiblePlayer().getLocation();
         } 
             
