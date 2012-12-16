@@ -70,7 +70,7 @@ public class Action_SearchAdrenaline implements Action{
         {preConditionArray[i] = WorldState.TruthStates.Uninstantiated;
         }
             
-        preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = TruthStates.False;
+        preConditionArray[WorldState.Symbols.HasLowHealth.ordinal()] = WorldState.TruthStates.False;
         
         return preConditionArray;
     }
