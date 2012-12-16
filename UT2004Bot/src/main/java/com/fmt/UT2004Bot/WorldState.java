@@ -13,7 +13,7 @@ public class WorldState {
 
     public enum Symbols {
         PlayerIsVisible, HasSuppressionAmmunition, IsTargetDead, ShockGunAmmunition, HasLowHealth, HasGrenadeAmmunition, HasRocketAmmunition, HasLightiningGunAmmo, HasMachineGunAmmo, HasFlakAmmo, HasAdrenaline,
-        PerformAdrenalineAction, SuppressionFire, HasGunAmmunition
+        PerformAdrenalineAction, SuppressionFire, HasGunAmmunition, HasLinkGunAmmunition
     }
 
     public enum TruthStates {

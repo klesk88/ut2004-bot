@@ -111,7 +111,11 @@ public class Action_GrenadeThrowing implements Action {
          if(BlackBoard.getInstance().player==null)
         {
               BlackBoard.getInstance().follow_player = false;
+              
             BotLogic.getInstance().getShoot().stopShooting();
+          
+            
+             BlackBoard.getInstance().perform_taunt = true;
              return Action.ActionResult.Success;
         }
 //        if (hasChangedToAssaultRifle

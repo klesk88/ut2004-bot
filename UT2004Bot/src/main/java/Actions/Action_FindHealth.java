@@ -74,7 +74,7 @@ public class Action_FindHealth implements Action {
     public ActionResult executeAction() {
 
         boolean health_dropped = false;
-
+          
         if (BotLogic.getInstance().getBot().getSelf().getHealth() > 50) {
             BotLogic.getInstance().writeToLog_HackCosIMNoob("health search success");
             return ActionResult.Success;

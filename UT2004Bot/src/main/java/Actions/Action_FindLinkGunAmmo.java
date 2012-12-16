@@ -18,36 +18,36 @@ import java.util.Set;
  *
  * @author klesk
  */
-public class Action_FindLightiningGunAmmo implements Action{
+public class Action_FindLinkGunAmmo implements Action{
     
-    public float confidence = 1f; 
-     boolean currentlySearchingAmmo = false;
+        private float confidence = 1f; 
+         boolean currentlySearchingAmmo = false;
      
-    public Action_FindLightiningGunAmmo() {
-       Map<UnrealId, Item> weapon = BotLogic.getInstance().getItems().getAllItems(ItemType.Group.LIGHTNING_GUN);
+    public Action_FindLinkGunAmmo() {
+       Map<UnrealId, Item> weapon = BotLogic.getInstance().getItems().getAllItems(ItemType.Group.MINIGUN);
       if(weapon.size()!=0)
       {
         ActionManager.getInstance().addAction(this);
       }
     }
     
-    @Override
+   @Override
     public float getConfidence() {
         return confidence;
     }
-    
-     @Override
+   
+    @Override
     public void setConfidence(float confidence_value) {
          confidence = confidence_value;
     }
-     
-     private TypeOfAction type_of_action = TypeOfAction.FindLighningGunAmmo;
+    
+    private TypeOfAction type_of_action = TypeOfAction.FindLinkGunAmmo;
     
     @Override
     public TypeOfAction getTypeOfAction() {
          return type_of_action;
     }
-     
+    
     @Override
     public WorldState.TruthStates[] GetPostCondtionsArray() {
         WorldState.TruthStates[] postConditionArray = new WorldState.TruthStates[WorldState.Symbols.values().length];
@@ -55,7 +55,7 @@ public class Action_FindLightiningGunAmmo implements Action{
         {postConditionArray[i] = WorldState.TruthStates.Uninstantiated;
         }
             
-        postConditionArray[WorldState.Symbols.HasLightiningGunAmmo.ordinal()] = WorldState.TruthStates.True;
+        postConditionArray[WorldState.Symbols.HasLinkGunAmmunition.ordinal()] = WorldState.TruthStates.True;
         
         return postConditionArray;
     }
@@ -78,17 +78,17 @@ public class Action_FindLightiningGunAmmo implements Action{
     @Override
     public Action.ActionResult executeAction() {
 
-        if(! BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.LIGHTNING_GUN))
+        if(! BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.LINK_GUN))
         {
             BlackBoard bb = BlackBoard.getInstance();
 
-            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.LIGHTNING_GUN).keySet();
+            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.LINK_GUN).keySet();
 
             Iterator it = itemSet.iterator();
 
             while (it.hasNext()) {
                 UnrealId value = (UnrealId) it.next();
-                bb.targetPos = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.LIGHTNING_GUN).get(value).getLocation();
+                bb.targetPos = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.LINK_GUN).get(value).getLocation();
                 //BotLogic.getInstance().writeToLog_HackCosIMNoob("Shock RIFLE search running");
                 return Action.ActionResult.Running;
             }
@@ -99,21 +99,21 @@ public class Action_FindLightiningGunAmmo implements Action{
 
             //bb.targetPos = null;
 
-            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.LIGHTNING_GUN_AMMO).keySet();
+            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.LINK_GUN_AMMO).keySet();
 
             Iterator it = itemSet.iterator();
 
             while (it.hasNext()) {
                // BotLogic.getInstance().writeToLog_HackCosIMNoob("found shock ammunition");
                 UnrealId value = (UnrealId) it.next();
-                bb.targetPos = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.LIGHTNING_GUN_AMMO).get(value).getLocation();
+                bb.targetPos = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.LINK_GUN_AMMO).get(value).getLocation();
 
                 //TODO: only for testing ! here we return the first value!!! not the closest one
                 currentlySearchingAmmo = true;
                 //BotLogic.getInstance().writeToLog_HackCosIMNoob("Shock ammo searhc running");
                 return Action.ActionResult.Running;
             }
-        } else if (BotLogic.getInstance().getWeaponry().getAmmo(ItemType.LIGHTNING_GUN_AMMO) > 5) {
+        } else if (BotLogic.getInstance().getWeaponry().getAmmo(ItemType.LINK_GUN_AMMO) > 5) {
             currentlySearchingAmmo = false;
             //BotLogic.getInstance().writeToLog_HackCosIMNoob("Shock ammo searhc success");
             return Action.ActionResult.Success;
@@ -123,4 +123,5 @@ public class Action_FindLightiningGunAmmo implements Action{
         currentlySearchingAmmo = false;
         return Action.ActionResult.Failed;
     }
+    
 }

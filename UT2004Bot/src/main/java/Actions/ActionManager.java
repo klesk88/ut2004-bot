@@ -51,6 +51,8 @@ public class ActionManager {
         new Action_MachineGun();
         new Action_SearchAdrenaline();
         new Action_UseAdrenaline();
+        new Action_FindLinkGunAmmo();
+         new Action_LinkGun();
     }
     
     public void addAction(Action action_to_add)

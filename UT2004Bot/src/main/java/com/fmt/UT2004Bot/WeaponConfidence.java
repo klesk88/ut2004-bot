@@ -34,7 +34,10 @@ public class WeaponConfidence {
                 case FindHealt:
                     ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(0.1f);
                     break;
-
+                case FindLinkGunAmmo:
+                     ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(
+                            updateSingleAmmoValue(ItemType.LINK_GUN, ItemType.LINK_GUN_AMMO, 0.055f));
+                    break;
                 case FlackCannonAmmo:
                     ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(
                             updateSingleAmmoValue(ItemType.FLAK_CANNON, ItemType.FLAK_CANNON_AMMO, 0.06f));
@@ -81,6 +84,10 @@ public class WeaponConfidence {
                     ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(
                             updateSingleWeaponValue(ItemType.SHOCK_RIFLE, ItemType.SHOCK_RIFLE_AMMO, 0.9f));
                     break;
+                case LinkGun:
+                      ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(
+                            updateSingleWeaponValue(ItemType.LINK_GUN, ItemType.LINK_GUN_AMMO, 0.55f));
+                    break;
                 case RandomWak:
                     ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(0.1f);
                     break;
@@ -95,16 +102,18 @@ public class WeaponConfidence {
                 case UseAdrenaline:
                     ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(0.1f);
                     break;
+                
+                
             }
         }
     }
 
     private float updateSingleAmmoValue(ItemType weapon, ItemType ammo, float value) {
         if (BotLogic.getInstance().getWeaponry().hasAmmo(ammo)) {
-             //value = value - (value / 3);
+             value = value - (value / 3);
         }
         if (BotLogic.getInstance().getWeaponry().hasWeapon(weapon)) {
-             //value = value - (value / 2);
+             value = value - (value / 2);
         }
         return value;
     }

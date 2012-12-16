@@ -65,6 +65,8 @@ public class ActorSystem {
 
         if (bb.currentPlan.isEmpty() ) {
             if (PLANNING_ENABLED) {
+                   bb.randomWalk=false;
+             bb.follow_player = false;
                 planner.replan();
             } else {
                 //testStack();
@@ -83,6 +85,8 @@ public class ActorSystem {
             if (result == Actions.Action.ActionResult.Failed) {
                 bb.currentPlan.pop();
                 if (PLANNING_ENABLED) {
+                       bb.randomWalk=false;
+             bb.follow_player = false;
                     planner.replan();
                 }
             }

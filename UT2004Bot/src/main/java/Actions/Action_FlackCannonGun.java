@@ -113,6 +113,7 @@ public class Action_FlackCannonGun implements Action{
         {
               BlackBoard.getInstance().follow_player = false;
             BotLogic.getInstance().getShoot().stopShooting();
+            BlackBoard.getInstance().perform_taunt = true;
              return Action.ActionResult.Success;
         }
 //        if (hasChangedToAssaultRifle

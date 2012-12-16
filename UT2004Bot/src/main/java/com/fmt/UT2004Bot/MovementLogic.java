@@ -155,9 +155,23 @@ public class MovementLogic {
         * */
         
     }
-
+   
     private void handleBlackboardNavigation()
     {
+        
+        if(!bb.follow_player && bb.perform_taunt)
+        {
+             BotLogic.getInstance().getNavigation().stopNavigation();
+             BotLogic.getInstance().getBody().getAction().playAnimation("Gesture_Taunt01");
+             bb.perform_taunt = false;
+             return;
+        }
+        else
+        {
+            bb.perform_taunt = false;
+        
+        }
+        
         if(bb.randomWalk)
         {
             
@@ -177,15 +191,14 @@ public class MovementLogic {
         
       if(bb.follow_player && bb.player!=null)
       {
-          BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
-            BotLogic.getInstance().getLog().info(" folloe player");
-              BotLogic.getInstance().getLog().info(" player " + bb.player.getName());
+          //BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+           
           BotLogic.getInstance().getMove().setSpeed(0.8);
           handlePlayerNavigation();
           return;
       }
       BotLogic.getInstance().getLog().info(" go to target point");
-       BotLogic.getInstance().getPathExecutor().setFocus( bb.targetPos);
+       //BotLogic.getInstance().getPathExecutor().setFocus( bb.targetPos);
       //getRandomFightingPoint();
       BotLogic.getInstance().getMove().setSpeed(0.9);
       BotLogic.getInstance().getNavigation().navigate(bb.targetPos);
@@ -194,13 +207,8 @@ public class MovementLogic {
     
     
       private void handlePlayerNavigation() {
-        BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
-          if (BotLogic.getInstance().getNavigation().isNavigating() && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null) {
-            // WE'RE NAVIGATING TO SOME PLAYER
-            
-            return;
-        }
-        
+       // BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+         BotLogic.getInstance().getLog().info(" follow player");
          if(bb.is_bumping)
          {
               BotLogic.getInstance().getMove().dodgeBack( BotLogic.getInstance().getInfo().getLocation(), bb.bumping_position);
@@ -221,21 +229,21 @@ public class MovementLogic {
           
             return;
         }
-        BotLogic.getInstance().getSenses().isBumping();
+       // BotLogic.getInstance().getSenses().isBumping();
         
         // NAVIGATION HAS STOPPED ... 
         // => we need to choose another player to navigate to
 
-        Player player = bb.player;
-        if (player == null) {
-            // NO PLAYERS AT SIGHT
-            // => navigate to random navpoint
-            handleNavPointNavigation();
-            return;
-        }
+        //Player player = bb.player;
+//        if (player == null) {
+//            // NO PLAYERS AT SIGHT
+//            // => navigate to random navpoint
+//            handleNavPointNavigation();
+//            return;
+//        }
 
         // CHECK DISTANCE TO THE PLAYER ...
-        if (BotLogic.getInstance().getInfo().getLocation().getDistance(player.getLocation()) < 90) {
+        if (BotLogic.getInstance().getInfo().getLocation().getDistance(bb.player.getLocation()) < 15) {
              BotLogic.getInstance().getNavigation().stopNavigation();
             int random_number = (int)(Math.random()*100);
             if(random_number < 30)
@@ -248,8 +256,15 @@ public class MovementLogic {
           
             return;
         }
+        
+          if (BotLogic.getInstance().getNavigation().isNavigating() && BotLogic.getInstance().getNavigation().getCurrentTargetPlayer() != null) {
+            // WE'RE NAVIGATING TO SOME PLAYER
+            
+            return;
+        }
+        
 
-        BotLogic.getInstance().getNavigation().navigate(player);
+        BotLogic.getInstance().getNavigation().navigate(bb.player);
         
     }
 
@@ -290,6 +305,8 @@ public class MovementLogic {
 
     private void handleNavPointNavigation() {
         
+       
+      
         if (BotLogic.getInstance().getNavigation().isNavigating()) {
             // IS TARGET CLOSE & NEXT TARGET NOT SPECIFIED?
             while (BotLogic.getInstance().getNavigation().getContinueTo() == null && BotLogic.getInstance().getNavigation().getRemainingDistance() < 400) {
@@ -319,8 +336,8 @@ public class MovementLogic {
             return;
         }
 
-
-        BotLogic.getInstance().getPathExecutor().setFocus((targetNavPoint.getLocation()));
+ 
+      //  BotLogic.getInstance().getPathExecutor().setFocus((targetNavPoint.getLocation()));
        BotLogic.getInstance().getNavigation().navigate(targetNavPoint);
         //logNavigation();
     }

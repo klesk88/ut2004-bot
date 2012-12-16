@@ -74,7 +74,7 @@ public class Action_RetreatWithSuppressionFire implements Action {
     public ActionResult executeAction() {
 
         Player playerEscapeFrom = BotLogic.getInstance().getInfo().getNearestVisiblePlayer();
-
+        BlackBoard.getInstance().follow_player = false;
         if (playerEscapeFrom == null) {
             BotLogic.getInstance().writeToLog_HackCosIMNoob("Action_RetreatWithSuppressionFire successful");
             return ActionResult.Success;
@@ -106,7 +106,7 @@ public class Action_RetreatWithSuppressionFire implements Action {
             BotLogic.getInstance().writeToLog_HackCosIMNoob("Action_RetreatWithSuppressionFire running");
             BotLogic.getInstance().getShoot().changeWeapon(ItemType.FLAK_CANNON);
             BotLogic.getInstance().getShoot().shoot();
-
+            
             return ActionResult.Running;
         }
 
