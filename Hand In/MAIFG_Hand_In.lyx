@@ -827,27 +827,33 @@ Training Phase
 \end_layout
 
 \begin_layout Standard
-We decided to create the data set to train the neural network with back
- propagation, recording the position of a character we were playing with.
- Since the Pogamut framework doesn’t allow getting the position of a player
- if it is not visible, we had to implement a UT Server that is omniscient,
- in order to get our character position for each frame.
- In the beginning we have thought that there was not possible to create
- incoherent and misleading data for the neural network just moving around
- the player, but it was wrong and we are going to explain it in detail after.
- After we collected the inputs from several games, we had to prepare and
- convert the data for the neural network, which means convert it from world
- to local frame, normalize and put it in proper data structure so that the
- neural network was able to read it (square arrays).
+In order to train the neural network with backpropagation, we decided to
+ create the data set recording the position of a character we were playing
+ with.
+ Since the Pogamut framework does not allow retrieval of the position of
+ a player if he is not visible, we had to implement a UT Server that is
+ omniscient, in order to get our character position for each frame.
+ In the beginning we thought that it was not possible to create incoherent
+ and misleading data for the neural network when just moving around the
+ player, but this assumption was wrong and we are going to explain it in
+ detail in the following.
+ 
+\end_layout
+
+\begin_layout Standard
+After we collected the inputs from several games we had to prepare and convert
+ the data for the neural network, which means converting it from world to
+ local frame, normalize and put it in a proper data structure so that the
+ neural network is able to read it (square arrays).
  The first test didn’t work.
- We have tried various topologies of the neural network and several values
- for the learning rate, but both the average error (calculated as desired
- output – actual output) for all the samples and the error of some of the
- sample was extremely slow (almost null) in converging.
+ We tried various topologies of the neural network and several values for
+ the learning rate, but both the average error (calculated as desired output
+ – actual output) for all the samples and the error of some of the sample
+ was extremely slow (almost zero) in converging.
  The only thing the neural network was able to understand was that when
  the target doesn’t move in the previous position, it will also not move
  in the future.
- Basically the most of the output were near to 0, which means that the player
+ Basically most of the output was near to 0, which means that the player
  is not moving from the last input position.
  After a while we understand the reason why: the data we collect were incoherent.
  Basically moving randomly we generated incoherent data.
@@ -856,40 +862,43 @@ We decided to create the data set to train the neural network with back
  also a positive value, the second time with the same kind of input we had
  a negative output, which means that we changed direction in the end of
  the path.
- After we understood that error, we tried to generate training data again,
- trying to not make movement that could have been misleading for the neural
- network.
- So basically we moved our character almost in a linear way, trying to cover
- as much direction was possible.
- Then we tested this new training set and we saw that it was working since
- the average error was decreasing, so data were converging.
- Then we have tried several experiments to optimize the result.
- Unfortunately the data that we have collected are not trusted since for
- each setting of the neural network the convergence speed was pretty low.
- So from the data that we had we choose a setting that gave us a better
- speed of convergence more than an accurate result, even because we didn’t
- need a very high accuracy for our bot.
- So we have chosen a learning rate of 0.9 (very high) and a topology following
- the “rule of thumb” [1], setting the number of the hidden layer as the
- average between the input and the output layer.
- When we put the neural network into the project we only had to perform
- the forward method and get the output.
- The only problem was to give a meaning to the data, which means to apply
- the inverse operation of normalization and conversion from local to world
- frame.
- When we tested the result we discovered that the neural network was not
- able to make a right prediction for all the directions.
- This is the reason why has been a big mistake producing the training set
- “by hand”.
- If we had more time, an optimal solution to solve this problem would have
- been to program a bot that moves with different speed along a vector and
- then covers all the possible direction (basically means rotate the direction
- vector a bit), just to be sure to cover enough directions so that the neural
- network is able to build a proper function.
+ 
 \end_layout
 
 \begin_layout Standard
-[1] http://www.heatonresearch.com/articles/5/page2.html rule of thumb 
+After we understood that error, we tried to generate training data again,
+ trying to not make movement that could have been misleading for the neural
+ network.
+ So basically we moved our character almost in a linear way, trying to cover
+ as many directions as possible.
+ Then we tested this new training set and the average error was decreasing,
+ so the neural network was converging towards the desired output.
+ Then we tried several topologies and parameters to optimize the result.
+ Unfortunately it was difficult to explore the consequences of different
+ settings since for each setting the convergence speed was pretty low.
+ Based on these experiments and the remaining time we choose a setting that
+ gave us a better speed of convergence more than an accurate result, assuming
+ that we would not need a very high accuracy for our bot.
+ Our final neural network was created with a learning rate of 0.9 (very high)
+ and a topology following the “rule of thumb” 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Heaton_MAIfG_RuleOfThumb"
+
+\end_inset
+
+, setting the number of the hidden layer as the average between the input
+ and the output layer.
+ When putting the neural network into our project we stopped learning and
+ only exploited what had been created.
+ This required some post-processing the output - application of the inverse
+ operation of normalization and conversion from local to world frame.
+ Testing the result both in a testing environment and the standard environment
+ we discovered that the neural network was not able to make a right prediction
+ for all the directions.
+ For one direction we get a very good prediction, but the further away the
+ actual movement is from this direction the less well we are able to predict
+ where the enemy will move.
 \end_layout
 
 \begin_layout Section
@@ -913,6 +922,16 @@ Conclusion
 Movment.
  A way for resolve this bug could be check, before perform a random movement,
  if the bot will collide with some other objects.
+\end_layout
+
+\begin_layout Standard
+There are various factors we would have to consider in order to enhance
+ the performance of our neural network.
+ We now understand that it has been problematic to produce the training
+ set “by hand”.
+ Our data set might be too sparse.
+ It would also be interesting to train the neural network with a lower learning
+ rate.
 \end_layout
 
 \begin_layout Subsubsection*
