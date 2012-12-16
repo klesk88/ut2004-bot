@@ -72,7 +72,7 @@ private float confidence = 1f;
 
     @Override
     public ActionResult executeAction() {
-        
+          //BlackBoard.getInstance().follow_player = false;
         BlackBoard bb = BlackBoard.getInstance();
         
 //        if (newRun){

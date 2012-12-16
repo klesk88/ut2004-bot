@@ -260,16 +260,18 @@ public class Node {
             
             if(possible_actions.size() == 0)
             {
-                for(int i=0;i<list_of_actions.size();i++)
-                {
-                    if(list_of_actions.get(i) != this.action_choose)
-                    {
-                        possible_actions.add(list_of_actions.get(i));
-                    }
-                }
+//                for(int i=0;i<list_of_actions.size();i++)
+//                {
+//                    if(list_of_actions.get(i) != this.action_choose)
+//                    {
+//                        possible_actions.add(list_of_actions.get(i));
+//                    }
+//                }
+                
+                number_of_possible_actions  = 0;
             }
-            
-            number_of_possible_actions = possible_actions.size();                  
+            else
+                number_of_possible_actions = possible_actions.size();                  
         }
         
         protected int getNumberOfPossibleActions()
@@ -337,12 +339,13 @@ public class Node {
             
             if(possible_actions.size() == 0)
             {
-                for(int i=0;i<list_of_actions.size();i++)
-                {
-                    
-                        possible_actions.add(list_of_actions.get(i));
-                    
-                }
+//                for(int i=0;i<list_of_actions.size();i++)
+//                {
+//                    
+//                        possible_actions.add(list_of_actions.get(i));
+//                    
+//                }
+                return null;
             }
             
             j= (int)(Math.random() * (possible_actions.size()-1));
@@ -418,6 +421,11 @@ public class Node {
                          this.simulation =  false;
                         return score;
 		    }
+                    
+                    if(this.number_of_possible_actions == 0)
+                    {
+                        return 0;
+                    }
                 // BotLogic.getInstance().getLog().info(" simulation");this.getParent()
 		//continue until i don't reach  a final condition or the number of simulations decided previously
 		while(!final_condition_reached && temp<number_of_simulations)

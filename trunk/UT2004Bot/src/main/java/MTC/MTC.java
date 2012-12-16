@@ -78,19 +78,19 @@ public class MTC{
 		long temp_time=System.currentTimeMillis();
 		int i = 1;
 		//while i have time to perform my calculations
-		do //temp_time - start_time < delay)
+		while(temp_time - start_time < delay)
 		{
-                      
+                     
 			Node node = treePolicy(root);
-                           
+                         
 			delta = defaultPolicy(node);	
-                           
+                        
 			backup(node,delta);
 			
                          i++;
 			//update the time
 			temp_time=System.currentTimeMillis();
-		}while(temp_time - start_time < delay);
+		}
 	
                  Node best_child = root;
                 List<Action> final_list = new LinkedList<Action>();
@@ -162,19 +162,26 @@ public class MTC{
 	private void backup(Node node, double delta)
 	{
             boolean is_node_terminal = false;
-            is_node_terminal = node.isTerminal();
-            
+          //  BotLogic.getInstance().getLog().info("a");
+            if(node!=null)
+            {
+             is_node_terminal = node.isTerminal();
+            }
+           // BotLogic.getInstance().getLog().info("b");
 		while(node!=null)
 		{
 			node.increaseN();
+                      //  BotLogic.getInstance().getLog().info("c");
 			node.setQ(delta);
-                        
+                        //BotLogic.getInstance().getLog().info("d");
                         if(node.getParent() != null && is_node_terminal)
                         {
                             node.getParent().setBestChild(node,node.getQ(),node.getN());
+                            //BotLogic.getInstance().getLog().info("e");
                         }
                         
                         node = node.getParent();
+                        //BotLogic.getInstance().getLog().info("f");
 		}
 	}
 	

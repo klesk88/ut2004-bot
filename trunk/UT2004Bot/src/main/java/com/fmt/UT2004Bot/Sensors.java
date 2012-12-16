@@ -126,7 +126,7 @@ public class Sensors{
         
          Player player = BotLogic.getInstance().getPlayers().getNearestVisiblePlayer();
 
-         Player rememebered_player = BotLogic.getInstance().getPlayers().getNearestEnemy(dead_time);
+         Player rememebered_player = BotLogic.getInstance().getPlayers().getNearestPlayer(dead_time);
         if(player != null )
         {
            
@@ -135,14 +135,14 @@ public class Sensors{
             bb.player_distance =  BotLogic.getInstance().getInfo().getLocation().getDistance(player.getLocation());
            
         }
-        else
+//        else
 //         if(rememebered_player != null)
 //          {
 //            bb.player_visible = true;
 //            bb.player=  rememebered_player;
 //            bb.player_distance =  BotLogic.getInstance().getInfo().getLocation().getDistance(rememebered_player.getLocation());
 //          }
-//        else                
+        else                
         {
            
             bb.player_visible = false;

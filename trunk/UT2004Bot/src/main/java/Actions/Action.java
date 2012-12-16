@@ -18,7 +18,7 @@ public interface Action
     public enum TypeOfAction{FlackCannonAmmo, FindHealt, FindLighningGunAmmo, FindMinigunGunAmmo,
     FindRocketGunAmmo, FindShockgunGunAmmo, FlackCannonGun, GrenadeThrowing,
     LightningGun, MiniGun, RandomWak, RetreatWithSuppressionFIre, RocketLuncher,
-    SearchAdrenaline, ShockGunNuke, UseAdrenaline
+    SearchAdrenaline, ShockGunNuke, UseAdrenaline, LinkGun, FindLinkGunAmmo
     }
   
     //pre - post conditionss

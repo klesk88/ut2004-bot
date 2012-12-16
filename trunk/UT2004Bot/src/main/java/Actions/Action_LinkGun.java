@@ -16,10 +16,11 @@ import java.util.Map;
  *
  * @author klesk
  */
-public class Action_MachineGun implements Action{
-    private float confidence = 0.5f; 
-      public Action_MachineGun() {
-      Map<UnrealId, Item> weapon = BotLogic.getInstance().getItems().getAllItems(ItemType.Group.MINIGUN);
+public class Action_LinkGun implements Action{
+    
+        private float confidence = 0.4f; 
+         public Action_LinkGun() {
+      Map<UnrealId, Item> weapon = BotLogic.getInstance().getItems().getAllItems(ItemType.Group.LIGHTNING_GUN);
       if(weapon.size()!=0)
       {
         ActionManager.getInstance().addAction(this);
@@ -28,33 +29,34 @@ public class Action_MachineGun implements Action{
     
     @Override
     public float getConfidence() {
-        // return 1;
+        //return 1;
           //if i don't have this weapon right now
-//        if(!BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER)  
-//              && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.MINIGUN) &&  !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)  )
+//       if(!BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.FLAK_CANNON) && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.ROCKET_LAUNCHER) && BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.LIGHTNING_GUN) 
+//               && !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.MINIGUN) &&  !BotLogic.getInstance().getWeaponry().hasWeapon(ItemType.SHOCK_RIFLE)  )
 //       {
 //           return 1;
-//       }
-//        
-//          if(!BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER_AMMO)  
-//              && BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN_AMMO) &&  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO)  )
+//       }    
+//       
+//        if(!BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.FLAK_CANNON_AMMO) && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ROCKET_LAUNCHER_AMMO) && BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.LIGHTNING_GUN_AMMO) 
+//               && !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN_AMMO) &&  !BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.SHOCK_RIFLE_AMMO)  )
 //       {
 //           return 1;
-//       }
-//          
+//       }    
         return confidence;
     }
+    
      @Override
     public void setConfidence(float confidence_value) {
          confidence = confidence_value;
     }
      
-     private TypeOfAction type_of_action = TypeOfAction.MiniGun;
+     private TypeOfAction type_of_action = TypeOfAction.LinkGun;
     
     @Override
     public TypeOfAction getTypeOfAction() {
          return type_of_action;
     }
+     
     
     @Override
     public WorldState.TruthStates[] GetPostCondtionsArray() {
@@ -78,7 +80,7 @@ public class Action_MachineGun implements Action{
         }
 
         preConditionArray[WorldState.Symbols.PlayerIsVisible.ordinal()] = WorldState.TruthStates.True;
-        preConditionArray[WorldState.Symbols.HasMachineGunAmmo.ordinal()] = WorldState.TruthStates.True;
+        preConditionArray[WorldState.Symbols.HasLinkGunAmmunition.ordinal()] = WorldState.TruthStates.True;
        
         return preConditionArray;
     }
@@ -87,7 +89,7 @@ public class Action_MachineGun implements Action{
     public Action.ActionResult executeAction() {
 
         // fail if no weapon is available
-        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.MINIGUN_AMMO)
+        if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.LINK_GUN_AMMO)
                 ) || !BlackBoard.getInstance().player_visible ) {
             BlackBoard.getInstance().follow_player = false;
             //BotLogic.getInstance().writeToLog_HackCosIMNoob("Grenade throwing failure - no ammo");
@@ -95,12 +97,12 @@ public class Action_MachineGun implements Action{
             return Action.ActionResult.Failed;
         }
 
-        if (BotLogic.getInstance().getWeaponry().getCurrentWeapon().getType() == ItemType.MINIGUN) {
+        if (BotLogic.getInstance().getWeaponry().getCurrentWeapon().getType() == ItemType.LINK_GUN) {
            
         } else {
           
            // BotLogic.getInstance().writeToLog_HackCosIMNoob("changing to rocket luncher");
-            BotLogic.getInstance().getShoot().changeWeapon(ItemType.MINIGUN);
+            BotLogic.getInstance().getShoot().changeWeapon(ItemType.LINK_GUN);
         }
         
          if(BlackBoard.getInstance().player==null)
@@ -139,11 +141,11 @@ public class Action_MachineGun implements Action{
         BlackBoard.getInstance().follow_player = true;
         if(BotLogic.getInstance().getPlayers().canSeePlayers())
             {
-                //BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
-          BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(
-                  BlackBoard.WeaponsUsed.MINIGUN_Prim));
-        }
+               // BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
+          BotLogic.getInstance().getShoot().shootPrimary( BlackBoard.getInstance().predictLocationForWeapon(null));             
+            }
         return Action.ActionResult.Running;
     }
+    
     
 }

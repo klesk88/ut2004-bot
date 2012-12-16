@@ -82,13 +82,13 @@ public class Action_FindRocketAmmunition implements Action {
         {
             BlackBoard bb = BlackBoard.getInstance();
 
-            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getAllItems(ItemType.ROCKET_LAUNCHER).keySet();
+            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.ROCKET_LAUNCHER).keySet();
 
             Iterator it = itemSet.iterator();
 
             while (it.hasNext()) {
                 UnrealId value = (UnrealId) it.next();
-                bb.targetPos = BotLogic.getInstance().getItems().getAllItems(ItemType.ROCKET_LAUNCHER).get(value).getLocation();
+                bb.targetPos = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.ROCKET_LAUNCHER).get(value).getLocation();
                 //BotLogic.getInstance().writeToLog_HackCosIMNoob("Shock RIFLE search running");
                 return Action.ActionResult.Running;
             }
@@ -99,14 +99,14 @@ public class Action_FindRocketAmmunition implements Action {
 
             //bb.targetPos = null;
 
-            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getAllItems(ItemType.ROCKET_LAUNCHER_AMMO).keySet();
+            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.ROCKET_LAUNCHER_AMMO).keySet();
 
             Iterator it = itemSet.iterator();
 
             while (it.hasNext()) {
                // BotLogic.getInstance().writeToLog_HackCosIMNoob("found shock ammunition");
                 UnrealId value = (UnrealId) it.next();
-                bb.targetPos = BotLogic.getInstance().getItems().getAllItems(ItemType.ROCKET_LAUNCHER_AMMO).get(value).getLocation();
+                bb.targetPos = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.ROCKET_LAUNCHER_AMMO).get(value).getLocation();
 
                 //TODO: only for testing ! here we return the first value!!! not the closest one
                 currentlySearchingAmmo = true;

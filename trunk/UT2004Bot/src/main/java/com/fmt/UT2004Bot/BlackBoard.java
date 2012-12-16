@@ -53,6 +53,7 @@ public class BlackBoard {
     public boolean heard_player = false;
     public boolean is_bumping = false;
     public Location bumping_position;
+    public boolean perform_taunt = false;
     public ItemType[] mostDesiredAmmunition = new ItemType[3];
     private Predictor predictor = null;
     

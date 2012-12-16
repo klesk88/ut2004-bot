@@ -82,7 +82,8 @@ public class TargetManager {
          if(goal_changed)
          {
               this.previous_goal = temp;
-            
+             bb.randomWalk=false;
+             bb.follow_player = false;
              GOAPPlanner.getInstance().replan();
          }
          
@@ -100,7 +101,8 @@ public class TargetManager {
          if(world_state_changed)
          {
              this.previous_world_state = temp1;
-             
+              bb.randomWalk=false;
+             bb.follow_player = false;
              GOAPPlanner.getInstance().replan();
          }
         
@@ -110,7 +112,7 @@ public class TargetManager {
     private void goalSelection()
     {
          
-        if( bb.player_visible && (BotLogic.getInstance().getBot().getSelf().getHealth() > 50))
+        if( bb.player_visible && (BotLogic.getInstance().getBot().getSelf().getHealth() > 50) || bb.is_damaged)
         {
             WorldState.getInstance().setGoalState(WorldState.GoalStates.KillEnemy);
            
@@ -130,8 +132,8 @@ public class TargetManager {
             WorldState.getInstance().setGoalState(WorldState.GoalStates.KillEnemy);
             return;
        }
-        
-        if(!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO)))
+        int d = BotLogic.getInstance().getWeaponry().getPrimaryWeaponAmmo(ItemType.ASSAULT_RIFLE);
+        if((BotLogic.getInstance().getWeaponry().getPrimaryWeaponAmmo(ItemType.ASSAULT_RIFLE) <50))
         {
              WorldState.getInstance().setGoalState(WorldState.GoalStates.FindWeapons);
              return;
@@ -181,6 +183,13 @@ public class TargetManager {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasGunAmmunition, false);
         } else {
             WorldState.getInstance().setWSValue(WorldState.Symbols.HasGunAmmunition, true);
+        }
+        
+          if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.LINK_GUN)))
+                 {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasLinkGunAmmunition, false);
+        } else {
+            WorldState.getInstance().setWSValue(WorldState.Symbols.HasLinkGunAmmunition, true);
         }
         
         if (!(BotLogic.getInstance().getWeaponry().hasAmmo(ItemType.ASSAULT_RIFLE_AMMO)

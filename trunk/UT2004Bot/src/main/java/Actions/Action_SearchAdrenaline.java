@@ -77,15 +77,16 @@ public class Action_SearchAdrenaline implements Action{
 
     @Override
     public Action.ActionResult executeAction() {
-
+              BlackBoard.getInstance().follow_player = false;
        BlackBoard bb = BlackBoard.getInstance();
 
-            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getAllItems(ItemType.ADRENALINE_PACK).keySet();
+            Set<UnrealId> itemSet = BotLogic.getInstance().getItems().getSpawnedItems(ItemType.ADRENALINE_PACK).keySet();
 
             Iterator it = itemSet.iterator();
 
             while (it.hasNext()) {
                 UnrealId value = (UnrealId) it.next();
+             
                 bb.targetPos = BotLogic.getInstance().getItems().getAllItems(ItemType.ADRENALINE_PACK).get(value).getLocation();
                 //BotLogic.getInstance().writeToLog_HackCosIMNoob("Shock RIFLE search running");
                 return Action.ActionResult.Running;
