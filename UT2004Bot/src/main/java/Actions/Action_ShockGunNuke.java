@@ -136,7 +136,7 @@ public class Action_ShockGunNuke implements Action {
             }
             waitingToShootPrimary = true;
             timeStamp_EnergyBallShootBeShot = BotLogic.getInstance().getGame().getTime() + time_estimatedTimeForShooting;
-
+            
             //BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke running");
             BlackBoard.getInstance().follow_player = true;
             return ActionResult.Running;
@@ -147,17 +147,17 @@ public class Action_ShockGunNuke implements Action {
 
                 {
                     //BotLogic.getInstance().writeToLog_HackCosIMNoob("shooting primary shock rifle");
-                      if(BotLogic.getInstance().getPlayers().canSeePlayers())
-                     {
+                     //if(BotLogic.getInstance().getPlayers().canSeePlayers())
+                     //{
                           //BotLogic.getInstance().getPathExecutor().setFocus(BlackBoard.getInstance().player.getLocation());
-                         BotLogic.getInstance().getShoot().shootPrimary(secondaryWasShootAt);
-                     }
-
+                       //  BotLogic.getInstance().getShoot().shootPrimary(secondaryWasShootAt);
+                     //}
+BotLogic.getInstance().getShoot().shootPrimary(secondaryWasShootAt);
                     BotLogic.getInstance().writeToLog_HackCosIMNoob("ShockGunNuke success");
                     waitingToShootPrimary = false;
                     timeStamp_EnergyBallShootBeShot = Double.POSITIVE_INFINITY;
                   BlackBoard.getInstance().follow_player = false;
-                  BotLogic.getInstance().getShoot().stopShooting(); 
+                  //BotLogic.getInstance().getShoot().stopShooting(); 
                   BlackBoard.getInstance().perform_taunt = true;
                   return ActionResult.Success;
                 }

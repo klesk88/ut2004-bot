@@ -5,7 +5,6 @@
 package com.fmt.UT2004Bot;
 
 import Actions.Action;
-import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.*;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
@@ -23,7 +22,7 @@ public class BlackBoard {
     public enum WeaponsUsed {
 
         ASSAULT_RIFLE_Prim, FLAK_CANNON_Prim, MINIGUN_Prim, LIGHTNING_GUN_Prim, ROCKET_LAUNCHER_Prim,
-        SHOCK_RIFLE_Secondary
+        SHOCK_RIFLE_Secondary, LINK_GUN_Prim
     }
             
     private static BlackBoard instance = null;
@@ -86,6 +85,11 @@ public class BlackBoard {
         if (BotLogic.getInstance().getSenses().hasDied()) {
             cleanUpBlackBoardAfterDeath();
         }
+        
+        if(BotLogic.getInstance().getInfo().getNearestVisiblePlayer() == null)
+        {
+        BotLogic.getInstance().getShoot().stopShooting();
+        }  
         
         updateAmmoPriorities();
         
@@ -220,17 +224,67 @@ public class BlackBoard {
 
     public Location predictLocationForWeapon(WeaponsUsed desiredWeapon) {
         //call francescos method here
-
+        float speed = 0;
+        float weight = 0;
+        switch (desiredWeapon){
+            
+            case ROCKET_LAUNCHER_Prim:
+                    speed = 1350;
+                break;
+                
+            case SHOCK_RIFLE_Secondary:
+                    speed = 1150;
+                
+            case FLAK_CANNON_Prim:
+                speed = 2500;
+                    
+            case LINK_GUN_Prim:
+                speed = 1000;
+                         
+            default: speed = 0;
+                break;                   
+        }
+        
+        if (speed == 0){
+            
+            weight = 0;
+        }
+        else{
+            
+            if (player != null){
+                double temp_distance = Location.getDistance(BotLogic.getInstance().getBot().getLocation(), player.getLocation());
+                weight = (float) ((temp_distance/speed)/0.6);
+                if (weight > 1){
+                    weight = 1;
+                }
+            }
+        }
+        
+        if (player != null){
+            
+           Location temp_returned_location = this.lerp(player.getLocation(), predictor.getPredictedLocation(),weight);
+           return temp_returned_location;
+        }
+        
+        
         return predictor.getPredictedLocation();
     }
     
     public Location lerp(Location first_location, Location second_location, float weight){
         
-        Location returend_location = new Location(0,0,0);
+        //Location returend_location = new Location(0,0,0);
+        double tempx = first_location.getX();
+        tempx += weight*(second_location.getX() - first_location.getX());
+        double tempy = first_location.getY();
+        tempy += weight*(second_location.getY() - first_location.getY());
+        double tempz = first_location.getZ();
+        tempz += weight*(second_location.getZ() - first_location.getZ());
         
-        returend_location.setX(first_location.getX() + weight*(second_location.getX() - first_location.getX()));
+        Location returend_location = new Location(tempx,tempy,tempz);
+        
+        /*returend_location.setX(first_location.getX() + weight*(second_location.getX() - first_location.getX()));
         returend_location.setY(first_location.getY() + weight*(second_location.getY() - first_location.getY()));
-        returend_location.setZ(first_location.getZ() + weight*(second_location.getZ() - first_location.getZ()));
+        returend_location.setZ(first_location.getZ() + weight*(second_location.getZ() - first_location.getZ()));*/
         
         
         return returend_location;
