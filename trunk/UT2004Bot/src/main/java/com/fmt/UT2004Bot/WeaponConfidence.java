@@ -32,15 +32,15 @@ public class WeaponConfidence {
             switch (ActionManager.getInstance().getActionsAvailable().get(i).getTypeOfAction()) {
 
                 case FindHealt:
-                    ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(0.1f);
+                    ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(0.3f);
                     break;
                 case FindLinkGunAmmo:
                      ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(
-                            updateSingleAmmoValue(ItemType.LINK_GUN, ItemType.LINK_GUN_AMMO, 0.055f));
+                            updateSingleAmmoValue(ItemType.LINK_GUN, ItemType.LINK_GUN_AMMO, 0.05f));
                     break;
                 case FlackCannonAmmo:
                     ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(
-                            updateSingleAmmoValue(ItemType.FLAK_CANNON, ItemType.FLAK_CANNON_AMMO, 0.06f));
+                            updateSingleAmmoValue(ItemType.FLAK_CANNON, ItemType.FLAK_CANNON_AMMO, 0.05f));
                     break;
                 case FindLighningGunAmmo:
                     ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(
@@ -82,7 +82,7 @@ public class WeaponConfidence {
                     
                 case ShockGunNuke:
                     ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(
-                            updateSingleWeaponValue(ItemType.SHOCK_RIFLE, ItemType.SHOCK_RIFLE_AMMO, 0.9f));
+                            updateSingleWeaponValue(ItemType.SHOCK_RIFLE, ItemType.SHOCK_RIFLE_AMMO, 23.9f));
                     break;
                 case LinkGun:
                       ActionManager.getInstance().getActionsAvailable().get(i).setConfidence(
