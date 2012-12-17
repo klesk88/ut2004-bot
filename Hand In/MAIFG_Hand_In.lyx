@@ -140,28 +140,31 @@ Aim
 \begin_layout Standard
 Our main goal with this project was to experiment with techniques, to learn
  from implementing them and to have fun.
- We were interested in prediction with neural networks and GOAP.
- Whilst thinking about how to implement GOAP we decided that it would be
- interesting to use Monte Carlo Tree Search (MCTS in the following) instead
- of A*.
+ We were interested in prediction with neural networks and Goal Oriented
+ Action Planning (in the following GOAP).
+ Whilst thinking about how to implement the STRIPS like planning solution
+ suggested by GOAP we decided that it would be interesting to use Monte
+ Carlo Tree Search (MCTS in the following) instead of A*.
  Our agent architecture also uses GOAP as a starting point.
  
 \end_layout
 
 \begin_layout Standard
-We would not use these solutions if we were writing actual Unreal bots as
- AI Programmers for Epic, and would have focused other techniques, for example
- mirroring of the opponents actions, if we were serious about participating
- in the 2K BotPrize.
+We would not use these solutions in their current state if we were writing
+ actual Unreal bots as AI Programmers for Epic, and would have focused other
+ techniques, for example mirroring of the opponents actions, if we were
+ serious about participating in the 2K BotPrize.
 \end_layout
 
 \begin_layout Standard
 A secondary goal was to create a bot that would be able to navigate the
- map in a reasonable fashion.
+ map in a reasonable fashion, being able to for example pick up health packs.
  Furthermore, in a competitive sense, the bot should be interesting to play
- against for the best Unreal player in the team, Michele, and at the same
- time the bot should be defeatable by the worst player, Tilman.
- 
+ considerably well against the best Unreal Tournament 2004 player in the
+ team, Michele, and at the same time the bot should be defeatable by the
+ worst player, Tilman.
+ As this is a very subjective measure, we also decided to use performance
+ against other bots as evaluation criteria.
 \end_layout
 
 \begin_layout Section
@@ -169,11 +172,11 @@ Overall Design of the Bot
 \end_layout
 
 \begin_layout Subsection
-Adaption of GOAP to Unreal 2004
+Adaption of GOAP to Unreal Tournament 2004
 \end_layout
 
 \begin_layout Standard
-Unreal 2004 is different from F.E.A.R.
+Unreal Tournament 2004 is different from F.E.A.R.
  in many ways.
  Game play is less tactical and there are no cover and no smart objects
  in the environment.
@@ -198,9 +201,11 @@ key "Champandard_2007_FearAi"
 
 \begin_layout Standard
 Thus we found it difficult to translate the abstraction level Orkin uses
- for his actions to the simpler single player game play in Unreal.
- For instance weapon changing can be done instantly in Unreal, but is a
- major tactical element as cover or squad behaviors are less relevant.
+ for his actions to the simpler single player game play in Unreal Tournament
+ 2004.
+ For instance weapon changing can be done instantly in Unreal Tournament
+ 2004, but is a major tactical element as cover or squad behaviors are less
+ relevant.
  We thus decided not to solve weapon selection in the Target Manager as
  it is done in GOAP, but to let our planning system solve the weapon selection
  problem.
@@ -208,7 +213,8 @@ Thus we found it difficult to translate the abstraction level Orkin uses
  flak cannon or assault rifles - all weapons which fire many bullets with
  spread and low accuracy.
  If the bot has high health he can however decide to kill the player by
- engaging him using the potentially more powerful shock gun nuke action.
+ engaging him using the potentially more powerful shock gun nuke action,
+ and will aim correctly at the predicted enemy position.
 \end_layout
 
 \begin_layout Subsection
@@ -216,15 +222,16 @@ Setting and Performance
 \end_layout
 
 \begin_layout Standard
-We only worked with 2-3 players at a time - usually testing with a 1-1 scenario
- and sometimes adding a second bot to test whether everything would work
- fine.
- This also reduced the significance of the working memory, for example target
- selection in such a simple scenario is not a highly interesting problem.
+We usually worked with 2-3 players at a time - usually testing with a 1-1
+ scenario and sometimes adding a second bot to test whether everything would
+ work fine.
+ This also reduced the significance of the working memory.
+ For example target selection in such a simple scenario is not a highly
+ interesting problem.
  Furthermore we do not need to care about detailed optimizations - we are
  using pogamut and gamebots, which is not an efficient solution compared
- to implementing bots inside a game, Unreal 2004 is an old game with low
- system requirements and we have only few agents at a time.
+ to implementing bots inside a game, Unreal Tournament 2004 is an old game
+ with low system requirements and we have only few agents at a time.
 \end_layout
 
 \begin_layout Subsection
@@ -255,7 +262,7 @@ key "Burke01creaturesmarts:"
  working memory.
  The information in the working memory is used for planning once a goal
  has been selected - a key difference to the C4 architecture being the real
- time planner .
+ time planner as decision making solution.
  If the facts in the working memory change the highest priority goal is
  re-evaluated.
  Subsystems such as navigation or the animation system are instructed via
@@ -321,6 +328,17 @@ key "Long_MasterThesisGOAP"
 Our architecture is similar.
  We did however not get to implement a proper working memory and use the
  blackboard instead.
+ Furthermore our target management is simpler - we currently focus on the
+ closest visible enemy.
+ This is however less a design decision than result of limited implementation
+ time.
+ A design decision was to move weapon selection out of the target managing.
+ The target manager is responsible for deciding when to replan.
+ Due to using the Pogamut framework and Unreal Tournament 2004 animation
+ and weapon use are not a significant part of our agent architecture.
+ Weapons are handled by actions.
+ Animation is partially handeled in the MovementLogic, and if the code was
+ properly restructured should only be handeled in this system for clarity.
 \end_layout
 
 \begin_layout Subsection
@@ -332,17 +350,110 @@ Orkin uses fixed sized arrays for maintaining variables about a world state.
  Our world state is realized as a fixed size data structure by basing our
  world state boolean array on an enumeration of the symbols.
  As symbols in the goal state can be irrelevant in addition to being true
- or false, like uninstantiated variables in logic, we created an enum expressing
- true, false and uninstantiated.
- A third enumeration describes the possible goal, and a switch case in the
- world state class can safely create goal states based on this enumeration.
+ or false, inspired by uninstantiated variables in logic programming, we
+ created an enum expressing true, false and uninstantiated.
+ A third enumeration describes the possible goals, and a switch case in
+ the world state class can safely create goal states based on this enumeration.
+ We are currently using 7 goals and 14 world state symbols, and the system
+ allows for safe and quick expansion.
 \end_layout
 
 \begin_layout Itemize
-Goals: KillEnemy, SearchRandomly, EmptyAmmunition, Survive, SearchAdrenaline,
- SuppressionFire, FindWeapons
+Goals: Only one goal may be active at a time.
 \end_layout
 
+\begin_deeper
+\begin_layout Itemize
+KillEnemy, 
+\end_layout
+
+\begin_layout Itemize
+SearchRandomly
+\end_layout
+
+\begin_layout Itemize
+EmptyAmmunition
+\end_layout
+
+\begin_layout Itemize
+Survive
+\end_layout
+
+\begin_layout Itemize
+SearchAdrenaline
+\end_layout
+
+\begin_layout Itemize
+SuppressionFire
+\end_layout
+
+\begin_layout Itemize
+FindWeapons
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+World state symbols: Modeled with a boolean array
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+PlayerIsVisible
+\end_layout
+
+\begin_layout Itemize
+HasSuppressionAmmunition 
+\end_layout
+
+\begin_layout Itemize
+IsTargetDead
+\end_layout
+
+\begin_layout Itemize
+HasShockGunAmmunition 
+\end_layout
+
+\begin_layout Itemize
+HasLowHealth 
+\end_layout
+
+\begin_layout Itemize
+HasGrenadeAmmunition 
+\end_layout
+
+\begin_layout Itemize
+HasRocketAmmunition
+\end_layout
+
+\begin_layout Itemize
+HasLightiningGunAmmo
+\end_layout
+
+\begin_layout Itemize
+HasMachineGunAmmo
+\end_layout
+
+\begin_layout Itemize
+HasFlakAmmo
+\end_layout
+
+\begin_layout Itemize
+HasAdrenaline
+\end_layout
+
+\begin_layout Itemize
+PerformAdrenalineAction
+\end_layout
+
+\begin_layout Itemize
+SuppressionFire
+\end_layout
+
+\begin_layout Itemize
+HasGunAmmunition
+\end_layout
+
+\end_deeper
 \begin_layout Standard
 \begin_inset Note Note
 status collapsed
@@ -367,20 +478,49 @@ Actions
 
 \begin_layout Standard
 We implemented various actions that can be used by the planner.
- 
+ Similar to how actions are used in a behaviour tree our actions return
+ Running, Success or Failed, and the ActorSystem executes the top action
+ in the planning stack.
+ It is desirable that actions keep on running for some time, as it reduces
+ the frequency at which replanning is required due to failure or successful
+ plan execution.
 \end_layout
 
+\begin_layout Itemize
+Find health pack: Look for health packs.
+ Which health pack to go to depends on which health packs are spawned, visible
+ and on how strong each healthpack is.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+preconditions: -
+\end_layout
+
+\begin_layout Itemize
+postconditions: NOT HasLowHealth
+\end_layout
+
+\begin_layout Itemize
+designed reward: 0.1
+\end_layout
+
+\end_deeper
 \begin_layout Itemize
 Random Walk: Randomly run around on the map, trying to find a player.
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-preconditions:
+preconditions: -
 \end_layout
 
 \begin_layout Itemize
-postconditions
+postconditions: PlayerIsVisible
+\end_layout
+
+\begin_layout Itemize
+designed reward: 0.1
 \end_layout
 
 \end_deeper
@@ -391,26 +531,52 @@ Retreat with suppression fire: Try to find a health pack, and shoot at the
 
 \begin_deeper
 \begin_layout Itemize
-preconditions:
+preconditions: HasSuppressionAmmunition
 \end_layout
 
 \begin_layout Itemize
-postconditions:
+postconditions: SuppressionFire
+\end_layout
+
+\begin_layout Itemize
+designed reward: 0.1
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-Find shock gun ammuntion: If there is shock gun ammunition on the map go
- there.
+SearchAdrenaline: Try to find adrenaline
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-preconditions:
+preconditions: HasLowHealth
 \end_layout
 
 \begin_layout Itemize
-postconditions:
+postconditions: HasAdrenaline 
+\end_layout
+
+\begin_layout Itemize
+designed reward: 0.1
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+UseAdrenaline: Use adrenaline doing one of the predefined combos depending
+ on the current state of the bot.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+preconditions: HasAdrenaline
+\end_layout
+
+\begin_layout Itemize
+postconditions: PerformAdrenaline
+\end_layout
+
+\begin_layout Itemize
+designed reward: 0.1
 \end_layout
 
 \end_deeper
@@ -423,54 +589,133 @@ Shock gun nuke: Fire the secondary mode of the shock gun, and after some
 
 \begin_deeper
 \begin_layout Itemize
-preconditions:
+preconditions: ShockGunAmmunition, IsPlayerVisible
 \end_layout
 
 \begin_layout Itemize
-postconditions:
+postconditions: IsTargetDead
+\end_layout
+
+\begin_layout Itemize
+designed reward: 0.9
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-Find health pack: Look for health packs.
- Which health pack to go to depends on various factors (TODO: FINISH THIS
- TEXT)
+Find[...]Ammunition: If the bot does not have the weapon [...] tries to find that,
+ otherwise returns running until ammunition is found, succeeds upon having
+ more than 5 ammunition items and fails if none of the mentioned cases are
+ met.
+ There is no behavior for finding assault rifle ammo.
+ 
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-preconditions:
+preconditions: NOT HasLowHealth
 \end_layout
 
 \begin_layout Itemize
-postconditions:
+postconditions: Has[...]Ammunition
 \end_layout
 
-\end_deeper
 \begin_layout Itemize
-Shoot grenade: Will fire a grenade at a player position.
+designed reward:
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-preconditions:
+0.4 for lightning gun
 \end_layout
 
 \begin_layout Itemize
-postconditions:
+0.5 for mini gun
+\end_layout
+
+\begin_layout Itemize
+0.5 for link gun
+\end_layout
+
+\begin_layout Itemize
+0.6 for flak cannon
+\end_layout
+
+\begin_layout Itemize
+0.7 for rocket launcher
+\end_layout
+
+\begin_layout Itemize
+0.9 for shock gun
 \end_layout
 
 \end_deeper
+\end_deeper
+\begin_layout Itemize
+Shoot[...]: Shoots the weapon [...] in primary mode.
+ Returns running whilst changing weapon, and fails if for example there
+ is no player visible anymore.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+preconditions: Has[...]Ammunition, IsPlayerVisible
+\end_layout
+
+\begin_layout Itemize
+postconditions: IsTargetDead
+\end_layout
+
+\begin_layout Itemize
+designed reward: 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+0.2 for assault rifle
+\end_layout
+
+\begin_layout Itemize
+0.4 for lightning gun
+\end_layout
+
+\begin_layout Itemize
+0.5 for mini gun
+\end_layout
+
+\begin_layout Itemize
+0.55 for link gun
+\end_layout
+
+\begin_layout Itemize
+0.6 for flak cannon
+\end_layout
+
+\begin_layout Itemize
+0.7 for rocket launcher
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+Some postconditions are only relevant for goals.
+ For example PerformAdrenaline is used to check the adrenaline goal.
+\end_layout
+
 \begin_layout Section
 Planner
 \end_layout
 
 \begin_layout Standard
 The planning is done inside the GOAPPlanner class and replanning is triggered
- every time the state of the world changes in a way that makes a new goal
- more desireable than the current one, or when the actual plan either fails
- or succeeds.
- To create a plan our system uses Monte Carlo Tree Search (MCTS) with the
+ by the TargetManager every time the state of the world changes in a way
+ that makes a new goal more desireable than the current one, or when the
+ actual plan either fails or succeeds.
+ 
+\end_layout
+
+\begin_layout Standard
+To create a plan our system uses Monte Carlo Tree Search (MCTS) with the
  UCT formula (we use as a starting point Michele's MCTS used for the PacMan
  project).
  We decided to use this algorithm, instead of the usual A* used by Orkin,
@@ -483,13 +728,18 @@ The planning is done inside the GOAPPlanner class and replanning is triggered
  to other interesting plans - we were hoping to achieve more variety in
  agent behaviour.
  For example we could find two different plans which satisfy the same goal
- and have the same reward, and a different one randomly every time.
- Although, while the MCTS is probably more computational expensive in tems
+ and have the same reward, and a different one is chosen randomly every
+ time - a likely scenario as our plans are short.
+ 
+\end_layout
+
+\begin_layout Standard
+Although, while the MCTS is probably more computational expensive in tems
  of CPU and RAM usage, it gives a desirable degree of control in the sense
  that the user can dynamically change the time used by the algorithm to
  create a plan and the number of simulations inside the simulation step.
- This allows us to scale the artificial intelligence of the bot to powerful
- machines.
+ Once we created enough content in the form of actions this allows us to
+ scale the artificial intelligence of the bot to powerful machines.
 \end_layout
 
 \begin_layout Standard
@@ -521,8 +771,16 @@ The MCTS applies the tree policy and, if the node has not yet generated
 \end_layout
 
 \begin_layout Itemize
-After the node is created, it updates its internal goal state and world
- state by applying, in order (SEE EDMUND LONG p 33): 
+As illustrated in fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Application-of-actions"
+
+\end_inset
+
+ after the node is created, it updates its internal goal state and world
+ state by applying, in order: 
 \end_layout
 
 \begin_deeper
@@ -532,7 +790,7 @@ To a temporary copy of the world state the post condition of the action
 \end_layout
 
 \begin_layout Itemize
-To a temporary copy of the goal state the pre conditions of the action choose
+To a temporary copy of the goal state the pre conditions of the action chosen
  for this node
 \end_layout
 
@@ -542,7 +800,7 @@ Then the MCTS runs the simulation step where it has to calculate the delta
  value for that node.
  In the simulation step we give a big reward if the action chosen is a terminal
  condition - that is, it is a goal state.
- A small reward is given if one of the action has to take further steps
+ A small reward is given if one of the actions has to take further steps
  to reach a final condition.
  This value is a product of 1 divided be the count of unsatisfied preconditions
  and an designed reward that allows us to control the value of that particular
@@ -580,6 +838,12 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Application-of-actions"
+
+\end_inset
+
 Application of actions during planning, taken from 
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -615,8 +879,14 @@ We gave every action a value that expresses how much we, as designers of
  rocket launcher ammunition has a low reward.
  These values, whilst using a hardcoded base value, are calculated each
  time the bot is updated.
- For example if we are already have ammunition for the rocket launcher finding
+ For example if we already have ammunition for the rocket launcher finding
  more ammunition of that kind is less attractive.
+\end_layout
+
+\begin_layout Standard
+We call these values designed rewards, because they allow to adjust the
+ decision making managed by our planning to design decisions that are not
+ related to any mathematical optimality.
 \end_layout
 
 \begin_layout Section
@@ -624,7 +894,7 @@ Movement
 \end_layout
 
 \begin_layout Standard
-The low level logic of the movement is handle by the MovementLogic class.
+The low level logic of the movement is handled by the MovementLogic class.
  We have three different kind of behaviours which are controlled by our
  actions:
 \end_layout
@@ -647,20 +917,32 @@ A random walk behaviour, that make the bot move by taking random navigation
 \begin_layout Itemize
 A specific behaviour, in which the bot tries to reach a well defined point
  in the map selected by some of our actions.
- For example if the bot is looking for health he will go to health pack
- preferring, in the following order spawned, visible and strong health packs.
+ For example if the bot is looking for health he will select a health pack
+ location preferring, in the following order spawned, visible and strong
+ health packs.
 \end_layout
 
 \begin_layout Standard
 These methods are used only if there is no collision.
- If our raycast system, composed out 5 rays [COMPARISON WITH PAPER], detects
- collisions we move the bot manually and try to make it unstuck.
+ Inspired by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "5286463"
+
+\end_inset
+
+ we implemented a raycasting system for detecting collision with walls.
+ Our raycast system is only composed out five rays as it was created with
+ human visual cones in mind, and at least a sixth ray for the back would
+ be desireable.
+ If the raycast system detects collisions we move the bot manually and try
+ to get it unstuck.
  This system doesn't work very well because we do not remember problematic
  areas, neither do we check whether a planned movement will get the bot
  stuck.
  Thus, if the bot is actually engaged in a fight, even if it gets unstuck,
- immediately thereafter the bot can perform a random movement that get him
- stuck again.
+ immediately thereafter the bot can perform a random movement that gets
+ him stuck again.
 \end_layout
 
 \begin_layout Section
@@ -670,11 +952,12 @@ Prediction of enemy position with a neural network
 \begin_layout Standard
 One of the human features that for example hunters exhibit is to predict
  the location of some object after observing its previous movements.
- When an hunter, or, inour case, a player that is playing a first person
+ When an hunter, or, in our case, a player that is playing a first person
  shooter, has to predict the location of an object in the future in order
  to shoot at it, he considers some variables like the previous locations
- of the object, the speed of the object (and also his speed if he is moving),
- the speed of the projectile and the distance between him and the object.
+ of the object, the speed of the object (relative to his speed if he is
+ moving), the speed of the projectile and the distance between him and the
+ object.
  This human feature is not infallible, in fact if his assumptions are not
  met, for example when the object makes an unexpected movement, the hunter
  will miss the object.
@@ -710,11 +993,15 @@ key "Welch:1995:IKF:897831"
 Input and Postprocessing of Output
 \end_layout
 
+\begin_layout Paragraph
+Prediction time 
+\end_layout
+
 \begin_layout Standard
 First, we had to decide which input to use.
  Basically we had to decide whether to collect a huge amount of player behaviour
-s, like moving really fast on left and right, walking around, jumping continuous
-ly, and so on.
+s, like strafing fast to the left or right, walking around, jumping continuously
+, and so on.
  This way we could have worked on long-term prediction.
  On the other hand we could collect simple, almost linear, movement, so
  that the neural network was able to infer a position in the near future,
@@ -726,15 +1013,19 @@ ly, and so on.
  
 \end_layout
 
+\begin_layout Paragraph
+Considerations concerning Input
+\end_layout
+
 \begin_layout Standard
-Another problem very important that emerged was what kind of inputs we had
- to use for the neural network.
+Considering input for our neural networks a number of considerations came
+ to our mind.
  The output had to be a position, which means three different outputs representi
 ng the position on X, Y and Z.
  Analyzing the Pogamut framework we realized that we didn’t have to use
  the position of our bot as input, since there is a function allowing to
  shoot at a desired position.
- Therefore only focused on the parameters of the enemy.
+ Therefore we only focused on the parameters of the enemy.
  Additionally we assumed that we needed the previous position of the enemy
  and the corresponding time at which each position was recorded.
  Because of the fixed updates of the bot logic we receive the position of
@@ -753,6 +1044,10 @@ ng the position on X, Y and Z.
  
 \end_layout
 
+\begin_layout Paragraph
+Solution chosen for input and output
+\end_layout
+
 \begin_layout Standard
 For our first test we decided to not use the direction and the speed of
  the enemy, because we thought that the neural network could be able to
@@ -762,59 +1057,86 @@ For our first test we decided to not use the direction and the speed of
  first test).
  One issue we had was to decide how many predicted position we needed to
  have and at which frame interval.
- This problems come from the fact that each weapon has a different speed,
- and the time which the projectile reaches the target, also change according
- to the distance from it.
+ This problems comes from the fact that each weapon has a different speed.
+ The time needed for the projectile to reach its target furthermore depends
+ on distance between weapon and target.
  To solve this problem we have chosen to have only one mid-term time prediction,
  and retrieving the all the predictions in between time 0 and the predicted
  time of the neural network, making a linear interpolation with vectors.
  In order to apply that algorithm we assumed that the movement of the enemy
  is linear.
- So we develop a lerp function that takes as parameter two locations and
- a weight.
+ So we implemented a lerp function that takes as parameter two locations
+ and a weight.
  The first parameter is the current enemy position, the second one is the
  predicted position from the neural network and the third is a weight between
  0 and 1, where 0 represent the first position, 1 the second one and all
  the number in between represent a linear interpolation between the two
  vectors.
- To decide the best setting for the neural network we had to face some problem.
- The first problem came from the Pogamut framework (was actually inherited
- from Unreal).
- That was not actually a problem, was more a limitation to avoid unfair
- bot behaviors.
- Basically is not possible to get an enemy position if it is not visible.
- In this way was not possible to make an instant prediction since we needed
+ 
+\end_layout
+
+\begin_layout Subsection
+Design of the neural network
+\end_layout
+
+\begin_layout Standard
+Setting up the neural network we faced various challenges.
+ 
+\end_layout
+
+\begin_layout Standard
+A first limitation came from the Pogamut framework (was actually inherited
+ from Unreal Tournament 2004).
+ It is not possible to get an enemy position if the enemy is not visible.
+ Therefore it was not possible to make an instant prediction since we needed
  to collect previous locations to set the inputs for the neural network.
- The second problem was setting a proper value for the output of the neural
+ 
+\end_layout
+
+\begin_layout Standard
+The second problem was setting a proper value for the output of the neural
  network, which means a prediction in one particular time of the future.
- To set the best value we look at the speed of several weapons and we have
- noticed that the slower one was the rocket launcher.
+ To set the best value we look at the speed of several weapons.
+ We noticed that the slowest one was the rocket launcher.
  So we tested the speed of the projectile of the rocket launcher from several
- distance and we found a trade-off.
- So basically the prediction was stetted to 0.6 second.
- Having all those data we could also find a proper setting for the input.
- So we assumed a good setting for the neural network was 4 different inputs,
- each one a position whit 0.2 second of difference and the output a position
- in the future, 0.6 second of different from the last input.
- In implementing the neural network we also faced other problem like the
- preparation and the normalization of the data (inputs and the desired output
- for the back propagation in the training phase).
- The first option was to give as input the coordinate in world frame or
- local frame relative to the bot.
- Neither of those solutions was good, essentially for the problem of normalizati
-on.
+ distances and we found a trade-off: the prediction was set to 0.6 second.
+ 
+\end_layout
+
+\begin_layout Standard
+Having all those data we could also find a proper setting for the input.
+ So we assumed a good setting for the neural network would be 4 different
+ inputs, each one a position with 0.2 second of difference.
+ As output we wanted a position in the future, 0.6 second after the last
+ input was received.
+ In implementing the neural network we also faced other problems like the
+ preparation and the normalization of the data.
+ A data set for supervised learning was needed, containing inputs and the
+ desired output for the back propagation in the training phase.
+ 
+\end_layout
+
+\begin_layout Standard
+The first question was whether to give as input the coordinate in world
+ frame or local frame relative to the bot.
+ Neither of those solutions was good, essentially normalization was difficult
+ due to the different global world coordinates on different maps.
  Each level is different and has a set of minimum and maximum coordinate,
- in this way is impossible to find a value that fits, in a proper way, our
+ therefore it impossible to find a value that fits, in a proper way, our
  problem.
  So we came out with the idea of setting the input in local coordinate relative
  to the first input (position) in the neural network.
  The normalization factor was 400 which mean the max number of units a bot
  can cover in 0.6 second and the output was the position relative to the
  last input of the neural network.
- At that point the setting of the neural network was complete, with 12 input
+ 
+\end_layout
+
+\begin_layout Standard
+At that point the setting of the neural network was complete, with 12 input
  (4 positions) and 3 outputs (1 position).
- Basically the bot needs 0.8 second from when it sees a player to begin to
- make a prediction.
+ The bot needs 0.6 second from when it sees a player to begin to make a predictio
+n.
  If it visually lost its target for more than 0.1 second it has to start
  to collect data from scratch.
  To solve this problem the class Predictor, which manage data and the neural
@@ -828,7 +1150,7 @@ Training Phase
 
 \begin_layout Standard
 In order to train the neural network with backpropagation, we decided to
- create the data set recording the position of a character we were playing
+ create the data set by recording the position of a character we were playing
  with.
  Since the Pogamut framework does not allow retrieval of the position of
  a player if he is not visible, we had to implement a UT Server that is
@@ -840,29 +1162,40 @@ In order to train the neural network with backpropagation, we decided to
  
 \end_layout
 
+\begin_layout Paragraph
+First training data set
+\end_layout
+
 \begin_layout Standard
 After we collected the inputs from several games we had to prepare and convert
  the data for the neural network, which means converting it from world to
  local frame, normalize and put it in a proper data structure so that the
- neural network is able to read it (square arrays).
- The first test didn’t work.
+ neural network is able to read it.
+ The first test did not work.
  We tried various topologies of the neural network and several values for
  the learning rate, but both the average error (calculated as desired output
- – actual output) for all the samples and the error of some of the sample
+ / actual output) for all the samples and the error of some of the sample
  was extremely slow (almost zero) in converging.
- The only thing the neural network was able to understand was that when
- the target doesn’t move in the previous position, it will also not move
- in the future.
+ 
+\end_layout
+
+\begin_layout Standard
+The only thing the neural network was able to understand was that when the
+ target doesn’t move in the previous position, it will also not move in
+ the future.
  Basically most of the output was near to 0, which means that the player
  is not moving from the last input position.
- After a while we understand the reason why: the data we collect were incoherent.
- Basically moving randomly we generated incoherent data.
+ After a while we understand the reason why: the data we collect was incoherent.
  For example in one case the inputs were positive positions along a direction
  and the output (the position after 0.6 second after the last input) was
  also a positive value, the second time with the same kind of input we had
  a negative output, which means that we changed direction in the end of
  the path.
  
+\end_layout
+
+\begin_layout Paragraph
+Second training set
 \end_layout
 
 \begin_layout Standard
@@ -876,9 +1209,17 @@ After we understood that error, we tried to generate training data again,
  Then we tried several topologies and parameters to optimize the result.
  Unfortunately it was difficult to explore the consequences of different
  settings since for each setting the convergence speed was pretty low.
- Based on these experiments and the remaining time we choose a setting that
- gave us a better speed of convergence more than an accurate result, assuming
- that we would not need a very high accuracy for our bot.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Topology
+\end_layout
+
+\begin_layout Standard
+Based on these experiments and the remaining time we choose a setting that
+ gave us a better speed of convergence more than an accurate result.
+ We were assuming that we would not need a very high accuracy for our bot.
  Our final neural network was created with a learning rate of 0.9 (very high)
  and a topology following the “rule of thumb” 
 \begin_inset CommandInset citation
@@ -887,11 +1228,19 @@ key "Heaton_MAIfG_RuleOfThumb"
 
 \end_inset
 
-, setting the number of the hidden layer as the average between the input
- and the output layer.
+, setting the number of neurons in the hidden layer as the average between
+ the input and the output layer.
  When putting the neural network into our project we stopped learning and
  only exploited what had been created.
- This required some post-processing the output - application of the inverse
+ 
+\end_layout
+
+\begin_layout Paragraph
+Results
+\end_layout
+
+\begin_layout Standard
+This required some post-processing of the output - application of the inverse
  operation of normalization and conversion from local to world frame.
  Testing the result both in a testing environment and the standard environment
  we discovered that the neural network was not able to make a right prediction
@@ -901,27 +1250,359 @@ key "Heaton_MAIfG_RuleOfThumb"
  where the enemy will move.
 \end_layout
 
+\begin_layout Standard
+When playing the game the prediction is however quite well for our purpose,
+ being accurate put not always spot on.
+\end_layout
+
 \begin_layout Section
 Evaluation
 \end_layout
 
 \begin_layout Standard
-Interaction with the bot is enjoyable for a short time.
+Interaction with the bot is enjoyable to play with, at least until, as a
+ human being, you get used to his quirks.
  He can do some fun things, for example he gets the shock gun nuke right
  at times, or dodges enemy fire interestingly when retreating.
- At the same time the bot is not challenging enough to create a really fun
- engagement.
- 
-\end_layout
-
-\begin_layout Section
-Conclusion
+ We made four experiments, each time playing 6 matches.
+ A match was won once the first participant achieved 10 kills.
+ We played three 1-1 matches, with the bot competing againt each of us.
+ We also tested the bot against other bots.
+ The games that were played against us where done using the training day
+ and the rankin maps.
 \end_layout
 
 \begin_layout Standard
-Movment.
- A way for resolve this bug could be check, before perform a random movement,
- if the bot will collide with some other objects.
+Against Michele our bot won one out of the six matches, with the winning
+ match being the first one (fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Michele-vs-our"
+
+\end_inset
+
+).
+ The bot had a total of 44 kills, and Michele a total of 56 kills.
+\end_layout
+
+\begin_layout Standard
+Against Francesco our bot won three matches, and was thus tied with Francesco
+ in terms of overall wins (fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Francecso-vs-our"
+
+\end_inset
+
+).
+ Francesco had 49 kills, and the bot 46.
+\end_layout
+
+\begin_layout Standard
+Against Tilman our bot won five out of six matches, with the lost match
+ being the last one (fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Tilman-vs-our"
+
+\end_inset
+
+).
+ Tilman had 50 kills, and the bot had 56 kills.
+ 
+\end_layout
+
+\begin_layout Standard
+Whilst the data set might be too small to draw well supported conclusions,
+ it appears, also based introspection, as if the skill of the human player
+ allows to learn and counter the quirks of the bot faster or slower.
+ We would thus suggest that for a player of Tilmans skill level the bot
+ is an interesting single opponent for more matches than for Michele - but
+ certainly for some more matches than were played during the experiment.
+\end_layout
+
+\begin_layout Standard
+Overall these experiments also fullfil our initial design goal - to create
+ a bot that is a challenge for Michele and defeatable by Tilman.
+ 
+\end_layout
+
+\begin_layout Standard
+Taking the highly subjective nature of this evaluation criteria into account
+ we decided to also test the performance of our bot againtst the default
+ Unreal Tournament bots, documented in fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:2-of-our"
+
+\end_inset
+
+.
+ Our bots won two out of six matches.
+ They do however hurt each others performance, as they try to do fairly
+ similar things.
+ For example they will try to get the same kind of ammunition at a similar
+ moment of gameplay - resulting in only one bot achieving his plan.
+ So whilst we are satisfied with the performance of our bot in isolation,
+ we understand now that in order to use multiple bots we would need to make
+ some adjustments - for example by implementing a working memory that would
+ remember attractiveness of different ammunition spawn points and how confidentl
+y the bot believes that an item he might want to go for is currently spawned
+ and reachable.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename BotAgainstUtBot.png
+	width 9cm
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:2-of-our"
+
+\end_inset
+
+2 of our bots, 4 other bots
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Francesco.png
+	width 9cm
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Francecso-vs-our"
+
+\end_inset
+
+Francecso vs our bot
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Michele.png
+	width 9cm
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Michele-vs-our"
+
+\end_inset
+
+Michele vs our bot
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Tilman.png
+	width 9cm
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Tilman-vs-our"
+
+\end_inset
+
+Tilman vs our bot
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Potential Improvements
+\end_layout
+
+\begin_layout Subsection
+Movement
+\end_layout
+
+\begin_layout Standard
+A way for resolve the problems with getting stuck could be to check, before
+ performing a random movement, if the bot will collide with some other objects,
+ and to check intended movements before execution.
+\end_layout
+
+\begin_layout Standard
+Another improvement, for the navigation system, would be handle the dodge
+ behaviour better.
+ In fact, right now, the bot select, randomly, a couple of actions to perform
+ for dodge the incoming projectiles.
+ A better solution could be to analyse the current weapon used by the enemy
+ and have a different behaviour based on that.
+ For example, if the enemy is shooting with the bio gun the bot need to
+ have a different behaviour compared to when is being shot at with a rocket
+ luncher.
+\end_layout
+
+\begin_layout Standard
+Mirroring of the enemies movement might be a nice addition in order to create
+ a more interesting, human like interaction with the bot.
+\end_layout
+
+\begin_layout Subsection
+Actions
+\end_layout
+
+\begin_layout Standard
+It would be nice to implement all the basic actions for all the weapons,
+ using the secondary mode more and refining with pre- and postconditions,
+ as well as with designed rewards, when the bot will chose which weapon.
+ Additionally it would be interesting to improve the abstraction of the
+ actions; while for example the Supression Fire action use weapons that
+ are hard coded inside its class, it would be better create individual actions
+ for all the weapons and from there, create post conditions that can satisfy
+ that goal.
+ Some actions for tactical positioning - like retreating from an enemies
+ line of fire if he is judged to be stronger - would also make the bot more
+ interesting.
+ We believe that we in fact have a system that supports a quick and reliable
+ expansion of the actions.
+ In other projects we also worked with behaviour trees, and these, whilst
+ scaling better than pure finite state machines, do not scale very well
+ to increased complexity
+\end_layout
+
+\begin_layout Subsection
+Targeting 
+\end_layout
+
+\begin_layout Standard
+A main flaw of the current target manager is that it doesn't check if the
+ target is actually visible or if there is an obstacle (like a wall between
+ the bot and the player).
+ This can be improved by post process the data from the sensors better and
+ implementing more sensors inside the system.
+\end_layout
+
+\begin_layout Subsection
+Sensors 
+\end_layout
+
+\begin_layout Standard
+The sensor class can be improved.
+ An important one would be analzying the area near the bot to see if there
+ are pick up objects available.
+ Right now the movement is based only on the navigation points.
+ These only take into consideration the fixed item spawned points.
+ This causes weird behaviours when the bot is looking for weapons and is
+ near to a weapon that was dropped by a killed player - such a source of
+ ammunition is skipped because the sensory system does not inform the blackboard
+ about this item.
+\end_layout
+
+\begin_layout Subsection
+Aiming Prediction
 \end_layout
 
 \begin_layout Standard
@@ -1730,70 +2411,6 @@ options "aaai"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Section
-Appendix
-\end_layout
-
-\begin_layout Standard
-World state symbols: 
-\end_layout
-
-\begin_layout Itemize
-PlayerIsVisible
-\end_layout
-
-\begin_layout Itemize
-HasSuppressionAmmunition 
-\end_layout
-
-\begin_layout Itemize
-IsTargetDead
-\end_layout
-
-\begin_layout Itemize
-ShockGunAmmunition 
-\end_layout
-
-\begin_layout Itemize
-HasLowHealth 
-\end_layout
-
-\begin_layout Itemize
-HasGrenadeAmmunition 
-\end_layout
-
-\begin_layout Itemize
-HasRocketAmmunition
-\end_layout
-
-\begin_layout Itemize
-HasLightiningGunAmmo
-\end_layout
-
-\begin_layout Itemize
-HasMachineGunAmmo
-\end_layout
-
-\begin_layout Itemize
-HasFlakAmmo
-\end_layout
-
-\begin_layout Itemize
-HasAdrenaline
-\end_layout
-
-\begin_layout Itemize
-PerformAdrenalineAction
-\end_layout
-
-\begin_layout Itemize
-SuppressionFire
-\end_layout
-
-\begin_layout Itemize
-HasGunAmmunition
 \end_layout
 
 \end_body
